@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Upkeep turns messy documents into organized, review-ready records in seconds with Vision OCR.">
+    <title>Upkeep | Review-Ready Records in Seconds</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Upkeep home">
+        <svg class="brand-logo" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M16 17c4-4 11-5 17 0v32c-6-5-13-4-17 0V17Z"></path>
+          <path d="M33 17c6-5 13-4 17 0v32c-4-4-11-5-17 0V17Z"></path>
+          <path class="brand-logo-accent" d="M33 44V19"></path>
+          <path class="brand-logo-accent" d="M25 27l8-8 8 8"></path>
+        </svg>
+        <span>Upkeep</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#value">Value</a>
+        <a href="#workflow">How it works</a>
+        <a href="#model">Why Upkeep</a>
+      </nav>
+      <a class="header-cta" href="#request">Request access</a>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <h1>Upkeep</h1>
+          <p class="hero-line">Clean records in your hands in seconds.</p>
+          <p class="hero-text">
+            Drop in receipts, statements, work orders, or handwritten notes.
+            Upkeep uses Vision OCR to make them clean, organized, and ready for
+            review, export, and reconciliation, without complex software or
+            accounting knowledge.
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="#request">Request access</a>
+            <a class="button secondary" href="#workflow">See workflow</a>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-label="Document transformed into clean data">
+          <div class="loose-document" aria-hidden="true">
+            <div class="doc-title">WORK ORDER</div>
+            <div class="doc-line wide"></div>
+            <div class="doc-line"></div>
+            <div class="doc-line short"></div>
+            <div class="doc-total">$52.97</div>
+          </div>
+          <div class="flow-lines" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="clean-record">
+            <div class="record-top">
+              <strong>Review-ready</strong>
+              <span>Ready</span>
+            </div>
+            <dl>
+              <div><dt>Vendor</dt><dd>Summit Supply</dd></div>
+              <div><dt>Date</dt><dd>Jun 14, 2024</dd></div>
+              <div><dt>Asset</dt><dd>AC Unit #3</dd></div>
+              <div><dt>Total</dt><dd>$52.97</dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <section class="value" id="value">
+        <div>
+          <h2>No software maze. No accounting guesswork.</h2>
+          <p>
+            Upkeep gives you the part you actually need: documents cleaned up,
+            details pulled out, and records prepared for action. You do not need
+            to learn accounting tools, build spreadsheets, or manually decode every
+            receipt, statement, and note.
+          </p>
+        </div>
+      </section>
+
+      <section class="workflow" id="workflow" aria-labelledby="workflow-title">
+        <div class="section-copy">
+          <h2 id="workflow-title">From document pile to ready records.</h2>
+          <p>
+            Scroll through the flow: upload what you have, let Vision OCR read it,
+            and receive organized records that are ready to review or export.
+          </p>
+        </div>
+
+        <div class="flow-shell" data-active-step="1">
+          <div class="flow-stage" aria-label="Scroll-driven Vision OCR workflow preview">
+            <div class="stage-progress" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="stage-card source-card">
+              <span class="stage-label">Source document</span>
+              <div class="messy-paper" aria-hidden="true">
+                <span class="paper-heading">Summit Supply Co.</span>
+                <span>Hydraulic Filter .......... 34.82</span>
+                <span>Oil 5W-30 (1qt) ........... 6.49</span>
+                <span>Shop Towels ............... 7.90</span>
+                <span>Total 52.97</span>
+                <em>AC unit #3 - fan belt replaced</em>
+                <strong>PO # missing</strong>
+              </div>
+            </div>
+
+            <div class="stage-card ocr-card">
+              <span class="stage-label">Vision OCR</span>
+              <div class="scan-window" aria-hidden="true">
+                <span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+
+            <div class="stage-card record-card">
+              <span class="stage-label">Clean record</span>
+              <div class="field-table" aria-hidden="true">
+                <div><span>Document type</span><strong>Work order</strong></div>
+                <div><span>Vendor</span><strong>Summit Supply</strong></div>
+                <div><span>Date</span><strong>Jun 14, 2024</strong></div>
+                <div><span>Asset</span><strong>AC Unit #3</strong></div>
+                <div><span>Total</span><strong>$52.97</strong></div>
+                <div class="review"><span>PO number</span><strong>Needs review</strong></div>
+              </div>
+            </div>
+
+            <div class="stage-card ready-card">
+              <span class="stage-label">Ready for you</span>
+              <div class="ready-panel" aria-hidden="true">
+                <strong>Record prepared</strong>
+                <p>4 fields matched. 1 detail flagged.</p>
+                <div class="ready-actions">
+                  <span>Review exception</span>
+                  <span>Export record</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flow-steps" aria-label="Workflow steps">
+            <article class="flow-step is-active" data-flow-step="1">
+              <span>01</span>
+              <h3>Upload any document.</h3>
+              <p>Receipts, bank statements, work orders, and handwritten notes can arrive messy. Upkeep starts with what you already have.</p>
+            </article>
+            <article class="flow-step" data-flow-step="2">
+              <span>02</span>
+              <h3>Vision OCR reads the details.</h3>
+              <p>Totals, vendors, dates, transaction lines, assets, and notes are identified in seconds without you learning a new system.</p>
+            </article>
+            <article class="flow-step" data-flow-step="3">
+              <span>03</span>
+              <h3>Upkeep prepares the record.</h3>
+              <p>The extracted values are shaped into clean fields, ready to search, export, review, or hand off to your existing process.</p>
+            </article>
+            <article class="flow-step" data-flow-step="4">
+              <span>04</span>
+              <h3>Your documents are ready.</h3>
+              <p>Missing or uncertain details are flagged clearly, so you only review what needs attention instead of cleaning up every line yourself.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="model" id="model">
+        <div>
+          <h2>Financial records without the software maze.</h2>
+          <p>
+            Upkeep keeps the power close to the user. Vision OCR reads the
+            paperwork, Upkeep organizes the results, and the final record is
+            ready without asking you to become an accountant or operate a complex
+            back-office platform.
+          </p>
+        </div>
+        <div class="model-visual" aria-label="Vision OCR validation preview">
+          <div class="source-lines" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="model-mark" aria-hidden="true"></div>
+          <div class="validation-list">
+            <div><span>Total</span><strong>Matched</strong></div>
+            <div><span>Vendor</span><strong>Matched</strong></div>
+            <div><span>Asset</span><strong>Matched</strong></div>
+            <div class="attention"><span>PO number</span><strong>Review</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="request" id="request">
+        <div>
+          <h2>Get review-ready documents in seconds.</h2>
+          <p>Upload the paperwork. Upkeep prepares the record. You stay in control.</p>
+        </div>
+        <a class="button light" href="mailto:hello@upkeep.local">Request access</a>
+      </section>
+    </main>
+
+    <footer>
+      <span>Upkeep</span>
+      <p><a href="logo-samples.html">Logo samples</a> &middot; Privacy &middot; Terms &middot; Support</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
