@@ -1,53 +1,98 @@
-const flowShell = document.querySelector(".flow-shell");
-const flowSteps = Array.from(document.querySelectorAll("[data-flow-step]"));
+const revealItems = Array.from(document.querySelectorAll(".reveal"));
+const productFrame = document.querySelector(".product-frame");
+const runStepLabel = document.querySelector("#runStepLabel");
+const runTitle = document.querySelector("#runTitle");
+const runBody = document.querySelector("#runBody");
+const runRows = Array.from(document.querySelectorAll("[data-run-row]"));
+const runCards = Array.from(document.querySelectorAll("[data-run-card]"));
 
-let activeStep = "1";
-let ticking = false;
+const sampleRun = [
+  {
+    step: "1",
+    label: "Step 1 of 4",
+    title: "Drop in the day's paperwork.",
+    body: "A receipt, a service work order, and a bank statement enter one intake.",
+    row: "1"
+  },
+  {
+    step: "2",
+    label: "Step 2 of 4",
+    title: "Vision OCR reads the useful details.",
+    body: "Vendor, total, date, asset, and statement lines are pulled into focus.",
+    row: "1"
+  },
+  {
+    step: "3",
+    label: "Step 3 of 4",
+    title: "Upkeep prepares the record.",
+    body: "The receipt and work order become structured fields you can search later.",
+    row: "2"
+  },
+  {
+    step: "4",
+    label: "Step 4 of 4",
+    title: "Clear the one exception.",
+    body: "The statement charge is confirmed while the rest stays ready.",
+    row: "3"
+  }
+];
 
-const setActiveStep = (stepNumber) => {
-  if (!flowShell || activeStep === stepNumber) return;
+if ("IntersectionObserver" in window) {
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.16, rootMargin: "0px 0px -8% 0px" }
+  );
 
-  activeStep = stepNumber;
-  flowShell.dataset.activeStep = stepNumber;
-  flowSteps.forEach((step) => {
-    step.classList.toggle("is-active", step.dataset.flowStep === stepNumber);
+  revealItems.forEach((item) => revealObserver.observe(item));
+} else {
+  revealItems.forEach((item) => item.classList.add("is-visible"));
+}
+
+const applySampleRunStep = (current) => {
+  productFrame.dataset.runStep = current.step;
+  if (runStepLabel) runStepLabel.textContent = current.label;
+  if (runTitle) runTitle.textContent = current.title;
+  if (runBody) runBody.textContent = current.body;
+
+  runRows.forEach((row) => {
+    row.classList.toggle("is-active", row.dataset.runRow === current.row);
+  });
+
+  runCards.forEach((card) => {
+    card.classList.toggle("is-active", card.dataset.runCard === current.step);
   });
 };
 
-const updateActiveStep = () => {
-  ticking = false;
+const setSampleRunStep = (index, shouldFade = false) => {
+  const current = sampleRun[index];
 
-  if (!flowShell || !flowSteps.length) return;
+  if (!current || !productFrame) return;
 
-  const targetY = window.innerHeight * 0.52;
-  let closestStep = flowSteps[0];
-  let closestDistance = Number.POSITIVE_INFINITY;
+  if (!shouldFade) {
+    applySampleRunStep(current);
+    return;
+  }
 
-  flowSteps.forEach((step) => {
-    const rect = step.getBoundingClientRect();
-    const stepCenter = rect.top + rect.height * 0.5;
-    const distance = Math.abs(stepCenter - targetY);
-
-    if (distance < closestDistance) {
-      closestDistance = distance;
-      closestStep = step;
-    }
-  });
-
-  setActiveStep(closestStep.dataset.flowStep);
+  productFrame.classList.add("is-swapping");
+  window.setTimeout(() => {
+    applySampleRunStep(current);
+    productFrame.classList.remove("is-swapping");
+  }, 160);
 };
 
-const requestStepUpdate = () => {
-  if (ticking) return;
-  ticking = true;
-  window.requestAnimationFrame(updateActiveStep);
-};
+if (productFrame && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  let sampleRunIndex = 0;
+  setSampleRunStep(sampleRunIndex);
 
-if (flowShell && flowSteps.length) {
-  flowShell.dataset.activeStep = activeStep;
-  flowSteps[0].classList.add("is-active");
-  updateActiveStep();
-
-  window.addEventListener("scroll", requestStepUpdate, { passive: true });
-  window.addEventListener("resize", requestStepUpdate);
+  window.setInterval(() => {
+    sampleRunIndex = (sampleRunIndex + 1) % sampleRun.length;
+    setSampleRunStep(sampleRunIndex, true);
+  }, 2600);
 }

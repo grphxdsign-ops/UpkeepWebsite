@@ -3,14 +3,19 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Upkeep turns messy documents into organized, review-ready records in seconds with Vision OCR.">
-    <title>Upkeep | Review-Ready Records in Seconds</title>
+    <meta name="description" content="Upkeep uses Vision OCR to turn receipts, statements, work orders, and handwritten notes into organized records ready for review, export, and reconciliation.">
+    <meta property="og:title" content="Upkeep | Records ready in seconds">
+    <meta property="og:description" content="Upload the paperwork. Upkeep reads it, organizes it, and clears the record for handoff.">
+    <title>Upkeep | Records ready in seconds</title>
+    <script>document.documentElement.classList.add("js");</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
     <header class="site-header">
       <a class="brand" href="#top" aria-label="Upkeep home">
         <svg class="brand-logo" viewBox="0 0 64 64" aria-hidden="true">
@@ -22,188 +27,220 @@
         <span>Upkeep</span>
       </a>
       <nav aria-label="Primary navigation">
-        <a href="#value">Value</a>
-        <a href="#workflow">How it works</a>
-        <a href="#model">Why Upkeep</a>
+        <a href="#how">Live example</a>
+        <a href="#workspace">Workspace</a>
+        <a href="#review">Review</a>
+        <a href="#request">Access</a>
       </nav>
       <a class="header-cta" href="#request">Request access</a>
     </header>
 
-    <main id="top">
-      <section class="hero">
-        <div class="hero-copy">
-          <h1>Upkeep</h1>
-          <p class="hero-line">Clean records in your hands in seconds.</p>
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="hero-copy reveal">
+          <p class="quiet-label">Vision OCR document prep</p>
+          <h1 class="animated-headline" aria-label="Turn messy paperwork into records you can trust.">
+            <span class="sr-only">Turn messy paperwork into records you can trust.</span>
+            <span class="headline-rotator" aria-hidden="true">
+              <span>Turn messy paperwork</span>
+              <span>Into records</span>
+              <span>You can trust</span>
+            </span>
+          </h1>
           <p class="hero-text">
-            Drop in receipts, statements, work orders, or handwritten notes.
-            Upkeep uses Vision OCR to make them clean, organized, and ready for
-            review, export, and reconciliation, without complex software or
-            accounting knowledge.
+            Upload receipts, statements, work orders, and notes. Upkeep prepares
+            clean records and flags the details that need a second look.
           </p>
-          <div class="hero-actions">
-            <a class="button" href="#request">Request access</a>
-            <a class="button secondary" href="#workflow">See workflow</a>
+          <div class="hero-actions" aria-label="Primary actions">
+            <a class="button primary" href="#how">Watch it work</a>
+            <a class="button secondary" href="#workspace">See the workspace</a>
           </div>
+          <dl class="trust-strip" aria-label="What Upkeep prepares">
+            <div><dt>Input</dt><dd>Any daily paperwork</dd></div>
+            <div><dt>Output</dt><dd>Clean searchable records</dd></div>
+            <div><dt>Your job</dt><dd>Sit back and relax</dd></div>
+          </dl>
         </div>
 
-        <div class="hero-visual" aria-label="Document transformed into clean data">
-          <div class="loose-document" aria-hidden="true">
-            <div class="doc-title">WORK ORDER</div>
-            <div class="doc-line wide"></div>
-            <div class="doc-line"></div>
-            <div class="doc-line short"></div>
-            <div class="doc-total">$52.97</div>
-          </div>
-          <div class="flow-lines" aria-hidden="true">
-            <span></span><span></span><span></span>
-          </div>
-          <div class="clean-record">
-            <div class="record-top">
-              <strong>Review-ready</strong>
-              <span>Ready</span>
-            </div>
-            <dl>
-              <div><dt>Vendor</dt><dd>Summit Supply</dd></div>
-              <div><dt>Date</dt><dd>Jun 14, 2024</dd></div>
-              <div><dt>Asset</dt><dd>AC Unit #3</dd></div>
-              <div><dt>Total</dt><dd>$52.97</dd></div>
-            </dl>
-          </div>
-        </div>
-      </section>
+        <div class="product-frame reveal" data-run-step="1" aria-label="Upkeep workspace preview">
+          <div class="app-shell">
+            <aside class="app-sidebar" aria-label="Document types">
+              <span class="sidebar-dot"></span>
+              <button class="sidebar-item is-active" type="button">Inbox</button>
+              <button class="sidebar-item" type="button">Receipts</button>
+              <button class="sidebar-item" type="button">Statements</button>
+              <button class="sidebar-item" type="button">Work orders</button>
+            </aside>
 
-      <section class="value" id="value">
-        <div>
-          <h2>No software maze. No accounting guesswork.</h2>
-          <p>
-            Upkeep gives you the part you actually need: documents cleaned up,
-            details pulled out, and records prepared for action. You do not need
-            to learn accounting tools, build spreadsheets, or manually decode every
-            receipt, statement, and note.
-          </p>
-        </div>
-      </section>
-
-      <section class="workflow" id="workflow" aria-labelledby="workflow-title">
-        <div class="section-copy">
-          <h2 id="workflow-title">From document pile to ready records.</h2>
-          <p>
-            Scroll through the flow: upload what you have, let Vision OCR read it,
-            and receive organized records that are ready to review or export.
-          </p>
-        </div>
-
-        <div class="flow-shell" data-active-step="1">
-          <div class="flow-stage" aria-label="Scroll-driven Vision OCR workflow preview">
-            <div class="stage-progress" aria-hidden="true">
-              <span></span><span></span><span></span><span></span>
-            </div>
-            <div class="stage-card source-card">
-              <span class="stage-label">Source document</span>
-              <div class="messy-paper" aria-hidden="true">
-                <span class="paper-heading">Summit Supply Co.</span>
-                <span>Hydraulic Filter .......... 34.82</span>
-                <span>Oil 5W-30 (1qt) ........... 6.49</span>
-                <span>Shop Towels ............... 7.90</span>
-                <span>Total 52.97</span>
-                <em>AC unit #3 - fan belt replaced</em>
-                <strong>PO # missing</strong>
+            <section class="app-main" aria-label="Record preparation">
+              <div class="app-toolbar">
+                <span>Sample paperwork</span>
+                <strong id="runStepLabel">Step 1 of 4</strong>
               </div>
-            </div>
-
-            <div class="stage-card ocr-card">
-              <span class="stage-label">Vision OCR</span>
-              <div class="scan-window" aria-hidden="true">
+              <div class="run-progress" aria-hidden="true">
                 <span></span><span></span><span></span><span></span>
               </div>
-            </div>
-
-            <div class="stage-card record-card">
-              <span class="stage-label">Clean record</span>
-              <div class="field-table" aria-hidden="true">
-                <div><span>Document type</span><strong>Work order</strong></div>
-                <div><span>Vendor</span><strong>Summit Supply</strong></div>
-                <div><span>Date</span><strong>Jun 14, 2024</strong></div>
-                <div><span>Asset</span><strong>AC Unit #3</strong></div>
-                <div><span>Total</span><strong>$52.97</strong></div>
-                <div class="review"><span>PO number</span><strong>Needs review</strong></div>
-              </div>
-            </div>
-
-            <div class="stage-card ready-card">
-              <span class="stage-label">Ready for you</span>
-              <div class="ready-panel" aria-hidden="true">
-                <strong>Record prepared</strong>
-                <p>4 fields matched. 1 detail flagged.</p>
-                <div class="ready-actions">
-                  <span>Review exception</span>
-                  <span>Export record</span>
+              <div class="drop-zone">
+                <div class="drop-zone-copy">
+                  <strong id="runTitle">Drop in the day&apos;s paperwork.</strong>
+                  <p id="runBody">A receipt, a service work order, and a bank statement enter one intake.</p>
                 </div>
               </div>
+              <div class="record-list">
+                <article class="record-row is-active" data-run-row="1">
+                  <span class="file-type">Receipt</span>
+                  <div><strong>Summit Supply</strong><small>Total, tax, asset matched</small></div>
+                  <b class="status ready">Ready</b>
+                </article>
+                <article class="record-row" data-run-row="2">
+                  <span class="file-type">Work order</span>
+                  <div><strong>AC Unit #3 service</strong><small>Technician note attached</small></div>
+                  <b class="status ready">Ready</b>
+                </article>
+                <article class="record-row" data-run-row="3">
+                  <span class="file-type">Statement</span>
+                  <div><strong>June operating account</strong><small>Statement line cleared</small></div>
+                  <b class="status cleared">Cleared</b>
+                </article>
+              </div>
+            </section>
+
+            <aside class="record-detail" aria-label="Prepared record details">
+              <span class="quiet-label">Prepared record</span>
+              <h2>Summit Supply</h2>
+              <dl>
+                <div><dt>Date</dt><dd>May 14, 2026</dd></div>
+                <div><dt>Total</dt><dd>$52.97</dd></div>
+                <div><dt>Asset</dt><dd>AC Unit #3</dd></div>
+                <div class="is-cleared"><dt>Statement match</dt><dd>Cleared</dd></div>
+              </dl>
+              <button class="approve-button" type="button">Approve ready fields</button>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="how" id="how" aria-labelledby="how-title">
+        <div class="section-heading reveal">
+          <p class="quiet-label">Live example</p>
+          <h2 id="how-title">Clear the paperwork without opening a spreadsheet.</h2>
+          <p>Upkeep keeps the day&apos;s documents moving from intake to cleared, so records are ready before small tasks become a backlog.</p>
+        </div>
+        <div class="process-grid">
+          <article class="process-card reveal is-active" data-run-card="1">
+            <span>01</span>
+            <h3>Open the inbox.</h3>
+            <p>Drop in mixed paperwork from the day without sorting it first.</p>
+          </article>
+          <article class="process-card reveal" data-run-card="2">
+            <span>02</span>
+            <h3>Upkeep reads the stack.</h3>
+            <p>Vision OCR identifies the vendor, total, asset note, and statement lines.</p>
+          </article>
+          <article class="process-card reveal" data-run-card="3">
+            <span>03</span>
+            <h3>The record takes shape.</h3>
+            <p>Useful fields appear as a prepared record, not as a wall of extracted text.</p>
+          </article>
+          <article class="process-card reveal" data-run-card="4">
+            <span>04</span>
+            <h3>Clear the final exception.</h3>
+            <p>The statement line is resolved while the ready fields stay usable.</p>
+          </article>
+        </div>
+      </section>
+
+      <span class="anchor-alias" id="control" aria-hidden="true"></span>
+
+      <section class="workspace" id="workspace" aria-labelledby="workspace-title">
+        <div class="section-heading reveal">
+          <p class="quiet-label">Workspace</p>
+          <h2 id="workspace-title">The work stays organized from the first upload.</h2>
+        </div>
+        <div class="workspace-layout">
+          <div class="library-panel reveal">
+            <div class="panel-top">
+              <h3>Document inbox</h3>
+              <span>Search</span>
+            </div>
+            <div class="search-bar">Find vendor, total, asset, or note</div>
+            <div class="category-tabs" role="list" aria-label="Document categories">
+              <span role="listitem" class="is-active">All</span>
+              <span role="listitem">Receipts</span>
+              <span role="listitem">Statements</span>
+              <span role="listitem">Work orders</span>
+            </div>
+            <div class="library-list">
+              <article><strong>Summit Supply</strong><span>Ready record</span></article>
+              <article><strong>Harbor Bank</strong><span>Ready record</span></article>
+              <article><strong>Handwritten fuel note</strong><span>Ready record</span></article>
             </div>
           </div>
-
-          <div class="flow-steps" aria-label="Workflow steps">
-            <article class="flow-step is-active" data-flow-step="1">
-              <span>01</span>
-              <h3>Upload any document.</h3>
-              <p>Receipts, bank statements, work orders, and handwritten notes can arrive messy. Upkeep starts with what you already have.</p>
-            </article>
-            <article class="flow-step" data-flow-step="2">
-              <span>02</span>
-              <h3>Vision OCR reads the details.</h3>
-              <p>Totals, vendors, dates, transaction lines, assets, and notes are identified in seconds without you learning a new system.</p>
-            </article>
-            <article class="flow-step" data-flow-step="3">
-              <span>03</span>
-              <h3>Upkeep prepares the record.</h3>
-              <p>The extracted values are shaped into clean fields, ready to search, export, review, or hand off to your existing process.</p>
-            </article>
-            <article class="flow-step" data-flow-step="4">
-              <span>04</span>
-              <h3>Your documents are ready.</h3>
-              <p>Missing or uncertain details are flagged clearly, so you only review what needs attention instead of cleaning up every line yourself.</p>
-            </article>
+          <div class="workspace-copy reveal">
+            <h3>Built for the way paperwork actually arrives.</h3>
+            <p>
+              You do not need to rename files, sort folders, or copy numbers by
+              hand before you can start. Upkeep reads the stack, groups the records,
+              and makes the next action obvious.
+            </p>
+            <ul>
+              <li>Receipts, statements, work orders, and notes enter one inbox.</li>
+              <li>Prepared fields are ready to search, clear, or hand off.</li>
+              <li>Unclear details are separated instead of slowing everything down.</li>
+            </ul>
           </div>
         </div>
       </section>
 
-      <section class="model" id="model">
-        <div>
-          <h2>Financial records without the software maze.</h2>
-          <p>
-            Upkeep keeps the power close to the user. Vision OCR reads the
-            paperwork, Upkeep organizes the results, and the final record is
-            ready without asking you to become an accountant or operate a complex
-            back-office platform.
-          </p>
+      <section class="review" id="review" aria-labelledby="review-title">
+        <div class="section-heading reveal">
+          <p class="quiet-label">Cleared update</p>
+          <h2 id="review-title">The exception is cleared. The stack can move.</h2>
         </div>
-        <div class="model-visual" aria-label="Vision OCR validation preview">
-          <div class="source-lines" aria-hidden="true">
-            <span></span><span></span><span></span><span></span>
-          </div>
-          <div class="model-mark" aria-hidden="true"></div>
-          <div class="validation-list">
-            <div><span>Total</span><strong>Matched</strong></div>
-            <div><span>Vendor</span><strong>Matched</strong></div>
-            <div><span>Asset</span><strong>Matched</strong></div>
-            <div class="attention"><span>PO number</span><strong>Review</strong></div>
-          </div>
+        <div class="review-grid">
+          <article class="review-card reveal">
+            <span class="status ready">Ready</span>
+            <h3>Matched totals</h3>
+            <p>Clean fields can move forward without waiting on an exception queue.</p>
+          </article>
+          <article class="review-card reveal">
+            <span class="status cleared">Cleared</span>
+            <h3>Statement line resolved</h3>
+            <p>The record is prepared and the charge has been confirmed for handoff.</p>
+            <div class="field-example">
+              <span>Confirmed</span>
+              <strong>$84.20 hardware charge</strong>
+            </div>
+          </article>
+          <article class="review-card reveal">
+            <span class="status ready">Export</span>
+            <h3>Keep your workflow</h3>
+            <p>Prepared records are ready for reconciliation, handoff, or export.</p>
+          </article>
         </div>
       </section>
 
-      <section class="request" id="request">
+      <section class="request reveal" id="request">
         <div>
-          <h2>Get review-ready documents in seconds.</h2>
-          <p>Upload the paperwork. Upkeep prepares the record. You stay in control.</p>
+          <p class="quiet-label">Ready when you are</p>
+          <h2>Give Upkeep a stack of paperwork. Get organized records back.</h2>
+          <p>Upload the document. Upkeep prepares the record. You stay in control through final clearance.</p>
         </div>
         <a class="button light" href="mailto:hello@upkeep.local">Request access</a>
       </section>
     </main>
 
     <footer>
-      <span>Upkeep</span>
-      <p><a href="logo-samples.html">Logo samples</a> &middot; Privacy &middot; Terms &middot; Support</p>
+      <a class="brand footer-brand" href="#top" aria-label="Upkeep home">
+        <svg class="brand-logo" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M16 17c4-4 11-5 17 0v32c-6-5-13-4-17 0V17Z"></path>
+          <path d="M33 17c6-5 13-4 17 0v32c-4-4-11-5-17 0V17Z"></path>
+          <path class="brand-logo-accent" d="M33 44V19"></path>
+          <path class="brand-logo-accent" d="M25 27l8-8 8 8"></path>
+        </svg>
+        <span>Upkeep</span>
+      </a>
+      <p><a href="design-lab.html">Design lab</a> &middot; <a href="logo-samples.html">Logo samples</a> &middot; Privacy &middot; Terms &middot; Support</p>
     </footer>
 
     <script src="script.js"></script>

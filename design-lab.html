@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Explore premium interactive design directions for Upkeep.">
+    <title>Upkeep Design Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700;900&family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="design-lab.css">
+  </head>
+  <body>
+    <header class="lab-header">
+      <a class="lab-brand" href="index.html" aria-label="Back to Upkeep home">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M16 17c4-4 11-5 17 0v32c-6-5-13-4-17 0V17Z"></path>
+          <path d="M33 17c6-5 13-4 17 0v32c-4-4-11-5-17 0V17Z"></path>
+          <path class="accent" d="M33 44V19"></path>
+          <path class="accent" d="M25 27l8-8 8 8"></path>
+        </svg>
+        <span>Upkeep</span>
+      </a>
+      <nav aria-label="Design directions">
+        <a href="#ledger">Living Ledger</a>
+        <a href="#observatory">Observatory</a>
+        <a href="#cleanroom">Cleanroom</a>
+      </nav>
+      <a class="lab-back" href="index.html">Main site</a>
+    </header>
+
+    <main>
+      <section class="lab-intro">
+        <p class="eyebrow">Design lab</p>
+        <h1>Three immersive directions for Upkeep.</h1>
+        <p>
+          Each prototype is built as a plug-and-play visual system: brand tone,
+          motion language, section flow, and interaction patterns for turning
+          messy paperwork into review-ready records.
+        </p>
+      </section>
+
+      <section class="direction ledger" id="ledger" data-theme="ledger">
+        <div class="direction-copy reveal">
+          <p class="eyebrow">01 / Living Ledger</p>
+          <h2>The book opens, and the paperwork organizes itself.</h2>
+          <p>
+            An editorial, tactile take on the Upkeep mark. Receipts and work
+            orders land on an open digital book, then resolve into clean rows
+            ready for review.
+          </p>
+          <div class="choice-row">
+            <button class="choice is-active" data-demo="receipt" aria-pressed="true">Receipt</button>
+            <button class="choice" data-demo="statement" aria-pressed="false">Statement</button>
+            <button class="choice" data-demo="note" aria-pressed="false">Handwritten note</button>
+          </div>
+        </div>
+        <div class="ledger-stage reveal" aria-label="Living Ledger interaction preview">
+          <div class="book-spread">
+            <div class="book-page page-left">
+              <span class="paper-chip chip-one">Summit Supply</span>
+              <span class="paper-chip chip-two">$52.97</span>
+              <span class="paper-chip chip-three">PO missing</span>
+            </div>
+            <div class="book-page page-right">
+              <div class="record-line"><span>Vendor</span><strong data-field="vendor">Summit Supply</strong></div>
+              <div class="record-line"><span>Document</span><strong data-field="document">Work order</strong></div>
+              <div class="record-line"><span>Total</span><strong data-field="total">$52.97</strong></div>
+              <div class="record-line alert"><span>Review</span><strong data-field="review">PO number</strong></div>
+            </div>
+          </div>
+          <div class="turn-cue" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="direction observatory" id="observatory" data-theme="observatory">
+        <div class="direction-copy reveal">
+          <p class="eyebrow">02 / Document Observatory</p>
+          <h2>Every document becomes a signal you can act on.</h2>
+          <p>
+            A darker, more cinematic hero direction where scattered paperwork
+            orbits the Upkeep mark. Hover a signal and it pulls forward with
+            extracted fields.
+          </p>
+        </div>
+        <div class="orbit-stage reveal" aria-label="Document Observatory interaction preview">
+          <div class="orbit-core">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <path d="M16 17c4-4 11-5 17 0v32c-6-5-13-4-17 0V17Z"></path>
+              <path d="M33 17c6-5 13-4 17 0v32c-4-4-11-5-17 0V17Z"></path>
+              <path d="M33 44V19"></path>
+              <path d="M25 27l8-8 8 8"></path>
+            </svg>
+          </div>
+          <button class="signal signal-one" data-label="Receipt" data-value="$52.97">Receipt</button>
+          <button class="signal signal-two" data-label="Statement" data-value="18 lines">Statement</button>
+          <button class="signal signal-three" data-label="Work order" data-value="Asset tagged">Work order</button>
+          <button class="signal signal-four" data-label="Note" data-value="Needs review">Note</button>
+          <div class="signal-panel" aria-live="polite">
+            <span id="signalLabel">Receipt</span>
+            <strong id="signalValue">$52.97</strong>
+            <p>Classified, extracted, and ready for your review flow.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="direction cleanroom" id="cleanroom" data-theme="cleanroom">
+        <div class="direction-copy reveal">
+          <p class="eyebrow">03 / Cleanroom Pipeline</p>
+          <h2>A precise processing line from upload to ready record.</h2>
+          <p>
+            The most product-forward option: clear, bright, fast, and premium.
+            It makes the user feel like the hard part is already handled.
+          </p>
+        </div>
+        <div class="pipeline-stage reveal" aria-label="Cleanroom Pipeline interaction preview">
+          <div class="pipe-track" aria-hidden="true"></div>
+          <article class="pipe-card raw is-current">
+            <span>Upload</span>
+            <strong>Messy source</strong>
+            <p>Receipt, note, statement, or work order.</p>
+          </article>
+          <article class="pipe-card read">
+            <span>Vision OCR</span>
+            <strong>Fields found</strong>
+            <p>Vendor, total, date, asset, memo.</p>
+          </article>
+          <article class="pipe-card ready">
+            <span>Ready</span>
+            <strong>Record prepared</strong>
+            <p>Review exceptions, then export.</p>
+          </article>
+          <button class="pipeline-button" type="button">Run the flow</button>
+        </div>
+      </section>
+
+      <section class="lab-decision reveal">
+        <p class="eyebrow">Recommendation</p>
+        <h2>Start with Cleanroom, borrow the soul from Living Ledger.</h2>
+        <p>
+          Cleanroom is the clearest conversion path for a real product site.
+          Living Ledger gives the brand memorability. The strongest final site
+          likely uses Cleanroom structure, Living Ledger logo moments, and a
+          restrained Observatory hero accent.
+        </p>
+        <a class="final-link" href="index.html">Return to main site</a>
+      </section>
+    </main>
+
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
+    <script src="design-lab.js"></script>
+  </body>
+</html>
