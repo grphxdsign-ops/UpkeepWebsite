@@ -595,15 +595,15 @@ const initKineticHero = () => {
   const hero = document.querySelector("[data-kinetic-scene]");
   const stage = hero?.querySelector(".kinetic-stage");
   const receipt = hero?.querySelector(".kinetic-receipt-asset");
+  const scanFrame = hero?.querySelector(".receipt-scan-frame");
   const shredLayer = hero?.querySelector(".receipt-shred-layer");
-  const numberStream = hero?.querySelector(".number-stream");
   const record = hero?.querySelector(".kinetic-record");
   const copy = hero?.querySelector(".kinetic-copy");
   const notes = Array.from(hero?.querySelectorAll("[data-scroll-note]") ?? []);
   const fields = Array.from(hero?.querySelectorAll(".record-field") ?? []);
   const wordmark = hero?.querySelector(".kinetic-wordmark");
 
-  if (!hero || !stage || !receipt || !shredLayer || !numberStream || !record || !fields.length) return;
+  if (!hero || !stage || !receipt || !scanFrame || !shredLayer || !record || !fields.length) return;
 
   const clamp01 = (value) => Math.max(0, Math.min(1, value));
   const smoothstep = (start, end, value) => {
@@ -611,36 +611,29 @@ const initKineticHero = () => {
     return easeInOut((value - start) / (end - start));
   };
 
-  const tokens = [
-    { text: "Market Place", field: 0, sx: 0.32, sy: 0.2, tx: 0.48, ty: 0.56, start: 0.42, end: 0.86, bend: 88 },
-    { text: "May 14, 2025", field: 1, sx: 0.34, sy: 0.38, tx: 0.48, ty: 0.56, start: 0.45, end: 0.88, bend: 116 },
-    { text: "Office Supplies", field: 2, sx: 0.34, sy: 0.52, tx: 0.48, ty: 0.52, start: 0.49, end: 0.9, bend: 134 },
-    { text: "$138.08", field: 3, sx: 0.7, sy: 0.74, tx: 0.48, ty: 0.56, start: 0.53, end: 0.92, bend: 148 },
-    { text: "Visa 4216", field: 4, sx: 0.48, sy: 0.85, tx: 0.48, ty: 0.55, start: 0.58, end: 0.94, bend: 126 }
-  ];
-
   const polygonString = (points) =>
     `polygon(${points.map(([x, y]) => `${x.toFixed(1)}% ${y.toFixed(1)}%`).join(", ")})`;
 
   const morphPolygon = (from, to, amount) =>
     polygonString(from.map(([x, y], index) => [lerp(x, to[index][0], amount), lerp(y, to[index][1], amount)]));
 
-  const paperPieces = Array.from({ length: 128 }, (_, index) => {
-    const columns = 14;
+  const paperPieces = Array.from({ length: prefersReducedMotion ? 0 : 276 }, (_, index) => {
+    const columns = 23;
+    const rows = Math.ceil(276 / columns);
     const column = index % columns;
     const row = Math.floor(index / columns);
-    const isStrip = randomUnit(index + 2050) > 0.62;
-    const jitterX = (randomUnit(index + 2100) - 0.5) * 0.028;
-    const jitterY = (randomUnit(index + 2200) - 0.5) * 0.032;
-    const width = isStrip ? 0.014 + randomUnit(index + 2300) * 0.036 : 0.006 + randomUnit(index + 2300) * 0.017;
-    const height = isStrip ? 0.006 + randomUnit(index + 2400) * 0.022 : 0.006 + randomUnit(index + 2400) * 0.02;
-    const x = clamp01(0.035 + column * 0.068 + jitterX);
-    const y = clamp01(0.035 + row * 0.086 + jitterY);
+    const isStrip = randomUnit(index + 2050) > 0.72;
+    const jitterX = (randomUnit(index + 2100) - 0.5) * 0.018;
+    const jitterY = (randomUnit(index + 2200) - 0.5) * 0.022;
+    const width = isStrip ? 0.009 + randomUnit(index + 2300) * 0.026 : 0.0038 + randomUnit(index + 2300) * 0.011;
+    const height = isStrip ? 0.004 + randomUnit(index + 2400) * 0.014 : 0.0036 + randomUnit(index + 2400) * 0.011;
+    const x = clamp01(0.035 + column * (0.93 / columns) + jitterX);
+    const y = clamp01(0.03 + row * (0.91 / Math.max(1, rows - 1)) + jitterY);
     const outward = column < columns * 0.42 ? -1 : column > columns * 0.58 ? 1 : randomUnit(index + 2500) > 0.5 ? 1 : -1;
-    const field = index % fields.length;
-    const start = 0.32 + row * 0.014 + randomUnit(index + 2600) * 0.078;
-    const buildStart = 0.58 + field * 0.018 + randomUnit(index + 3450) * 0.08;
-    const buildEnd = Math.min(0.95, buildStart + 0.23 + randomUnit(index + 3550) * 0.1);
+    const field = Math.min(fields.length - 1, Math.floor((index / 276) * fields.length));
+    const start = 0.36 + row * 0.008 + randomUnit(index + 2600) * 0.09;
+    const buildStart = 0.56 + field * 0.035 + randomUnit(index + 3450) * 0.055;
+    const buildEnd = Math.min(0.93, buildStart + 0.18 + randomUnit(index + 3550) * 0.07);
     const clipA = [
       [randomUnit(index + 3100) * 16, 0],
       [42 + randomUnit(index + 3150) * 16, randomUnit(index + 3200) * 10],
@@ -666,12 +659,12 @@ const initKineticHero = () => {
       field,
       tx: 0.12 + randomUnit(index + 3600) * 0.76,
       ty: 0.18 + randomUnit(index + 3700) * 0.55,
-      targetW: isStrip ? 18 + randomUnit(index + 3800) * 58 : 6 + randomUnit(index + 3800) * 18,
-      targetH: isStrip ? 2 + randomUnit(index + 3900) * 5 : 2 + randomUnit(index + 3900) * 4,
-      dx: outward * (36 + randomUnit(index + 2700) * 156),
-      dy: 46 + row * 18 + randomUnit(index + 2800) * 168,
-      rot: (randomUnit(index + 2900) - 0.5) * 58,
-      targetRot: (randomUnit(index + 3000) - 0.5) * 5,
+      targetW: isStrip ? 5 + randomUnit(index + 3800) * 15 : 2 + randomUnit(index + 3800) * 6,
+      targetH: isStrip ? 1.6 + randomUnit(index + 3900) * 3.2 : 1.4 + randomUnit(index + 3900) * 2.8,
+      dx: outward * (28 + randomUnit(index + 2700) * 134),
+      dy: 24 + row * 12 + randomUnit(index + 2800) * 132,
+      rot: (randomUnit(index + 2900) - 0.5) * 86,
+      targetRot: (randomUnit(index + 3000) - 0.5) * 9,
       start,
       end: start + 0.18 + randomUnit(index + 4500) * 0.17,
       buildStart,
@@ -683,14 +676,6 @@ const initKineticHero = () => {
     };
   });
 
-  const tokenNodes = tokens.map((token, index) => {
-    const node = document.createElement("span");
-    node.textContent = token.text;
-      node.style.setProperty("--token-scale", String(0.88 + randomUnit(index + 1420) * 0.18));
-    numberStream.append(node);
-    return node;
-  });
-
   const pieceNodes = paperPieces.map((piece, index) => {
     const node = document.createElement("span");
     node.className = "receipt-piece";
@@ -698,6 +683,27 @@ const initKineticHero = () => {
     node.style.setProperty("--piece-origin", `${40 + randomUnit(index + 1700) * 35}% ${35 + randomUnit(index + 1800) * 42}%`);
     shredLayer.append(node);
     return node;
+  });
+
+  const fieldCharacters = fields.map((field) => {
+    const value = field.querySelector("strong");
+    if (!value) return [];
+    const hasIndicator = Boolean(value.querySelector("em"));
+    const text = value.textContent.trim();
+    value.textContent = "";
+    const chars = Array.from(text).map((char) => {
+      const span = document.createElement("span");
+      span.className = char === " " ? "record-char is-space" : "record-char";
+      span.textContent = char === " " ? "\u00a0" : char;
+      value.append(span);
+      return span;
+    });
+
+    if (hasIndicator) {
+      value.append(document.createElement("em"));
+    }
+
+    return chars;
   });
 
   let viewportHeight = window.innerHeight;
@@ -723,12 +729,18 @@ const initKineticHero = () => {
     const absorbFlow = smoothstep(0.54, 0.88, progress) * (1 - smoothstep(0.94, 1, progress) * 0.35);
     const isMobile = window.innerWidth <= 640;
     const copyFade = smoothstep(isMobile ? 0.16 : 0.2, isMobile ? 0.32 : 0.38, progress);
-    const receiptDrop = isMobile ? 112 : 154;
+    const receiptDrop = isMobile ? 34 : 154;
     const parseLift = isMobile ? -20 : -26;
+    const mobileStageLift = isMobile ? smoothstep(0.27, 0.48, progress) * -160 : 0;
+    const mobileScanLift = isMobile ? Math.sin(clamp01((progress - 0.22) / 0.3) * Math.PI) * -138 : 0;
+    const scanFlow = smoothstep(0.24, 0.38, progress) * (1 - smoothstep(0.54, 0.64, progress));
+    const scanSweep = smoothstep(0.25, 0.52, progress);
     const receiptSway = Math.sin(progress * Math.PI * 2.8) * (isMobile ? 8 : 18);
     const receiptX = lerp(0, isMobile ? 0 : -42, receiptFlow) + lerp(0, isMobile ? -8 : -68, parseFlow) + receiptSway * (1 - tearFlow * 0.7);
-    const receiptY = lerp(0, receiptDrop, receiptFlow) + lerp(0, parseLift, parseFlow);
+    const receiptY = lerp(0, receiptDrop, receiptFlow) + lerp(0, parseLift, parseFlow) + mobileStageLift + mobileScanLift;
     const receiptRotate = lerp(-10, 5.5, receiptFlow) + lerp(0, 8.5, parseFlow) + Math.sin(progress * Math.PI * 2.2) * (1 - tearFlow) * 1.8;
+    const receiptFlipY = lerp(isMobile ? -8 : -18, 0, smoothstep(0, 0.22, progress)) + Math.sin(progress * Math.PI * 1.4) * (1 - tearFlow) * (isMobile ? 1.4 : 2.8);
+    const receiptFlipX = lerp(isMobile ? 5 : 8, 0, smoothstep(0.02, 0.28, progress));
     const receiptScale = lerp(1, isMobile ? 0.76 : 0.84, parseFlow);
     const intactFade = smoothstep(0.4, 0.64, progress);
     const dissolveFade = smoothstep(0.5, 0.8, progress);
@@ -738,8 +750,13 @@ const initKineticHero = () => {
     hero.style.setProperty("--receipt-x", `${receiptX.toFixed(2)}px`);
     hero.style.setProperty("--receipt-y", `${receiptY.toFixed(2)}px`);
     hero.style.setProperty("--receipt-rotate", `${receiptRotate.toFixed(2)}deg`);
+    hero.style.setProperty("--receipt-flip-y", `${receiptFlipY.toFixed(2)}deg`);
+    hero.style.setProperty("--receipt-flip-x", `${receiptFlipX.toFixed(2)}deg`);
     hero.style.setProperty("--receipt-scale", receiptScale.toFixed(3));
     hero.style.setProperty("--receipt-opacity", receiptOpacity.toFixed(3));
+    hero.style.setProperty("--scan-opacity", scanFlow.toFixed(3));
+    hero.style.setProperty("--scan-y", `${lerp(7, 93, scanSweep).toFixed(2)}%`);
+    hero.style.setProperty("--scan-intensity", (0.35 + Math.sin(scanSweep * Math.PI) * 0.65).toFixed(3));
     hero.style.setProperty("--receipt-shadow-alpha", (0.5 + shadowPeak * 0.22).toFixed(3));
     hero.style.setProperty("--wordmark-shadow-x", `${(receiptX * 0.38).toFixed(2)}px`);
     hero.style.setProperty("--wordmark-shadow-y", `${(receiptY * 0.12).toFixed(2)}px`);
@@ -770,14 +787,32 @@ const initKineticHero = () => {
       const fieldProgress = smoothstep(0.62 + index * 0.04, 0.78 + index * 0.028, progress);
       field.style.setProperty("--field-fill", fieldProgress.toFixed(3));
       field.classList.toggle("is-filled", fieldProgress > 0.84);
+      field.tabIndex = recordFlow > 0.72 ? 0 : -1;
+      field.setAttribute("aria-hidden", recordFlow > 0.72 ? "false" : "true");
+
+      const chars = fieldCharacters[index] ?? [];
+      chars.forEach((char, charIndex) => {
+        const charStart = charIndex / Math.max(1, chars.length);
+        const charReveal = smoothstep(charStart, charStart + 0.22, fieldProgress);
+        char.style.setProperty("--char-opacity", charReveal.toFixed(3));
+        char.style.setProperty("--char-y", `${lerp(8, 0, charReveal).toFixed(2)}px`);
+      });
     });
 
+    record.tabIndex = recordFlow > 0.35 ? 0 : -1;
+    record.setAttribute("aria-hidden", recordFlow > 0.35 ? "false" : "true");
+
+    const noteStarts = [0.56, 0.66, 0.76, 0.86];
+    const currentNote = noteStarts.reduce((current, start, index) => (progress >= start - 0.02 ? index : current), -1);
+
     notes.forEach((note, index) => {
-      const start = [0.3, 0.43, 0.57, 0.7][index] ?? 0;
+      const start = noteStarts[index] ?? 0;
       const opacity = smoothstep(start, start + 0.055, progress);
       note.style.setProperty("--note-opacity", opacity.toFixed(3));
       note.style.setProperty("--note-y", `${lerp(16, 0, opacity).toFixed(2)}px`);
       note.classList.toggle("is-active", opacity > 0.92);
+      note.classList.toggle("is-current", index === currentNote);
+      note.setAttribute("aria-hidden", opacity > 0.05 ? "false" : "true");
     });
   };
 
@@ -803,7 +838,8 @@ const initKineticHero = () => {
   record.addEventListener("focusout", clearRecordFocus);
 
   fields.forEach((field) => {
-    field.tabIndex = 0;
+    field.tabIndex = -1;
+    field.setAttribute("aria-hidden", "true");
     field.addEventListener("pointerenter", () => field.classList.add("is-focus"));
     field.addEventListener("pointerleave", () => field.classList.remove("is-focus"));
     field.addEventListener("focus", () => field.classList.add("is-focus"));
@@ -832,14 +868,16 @@ const initKineticHero = () => {
       const targetX = fieldRect.left - stageRect.left + fieldRect.width * piece.tx - width * 0.5;
       const targetY = fieldRect.top - stageRect.top + fieldRect.height * piece.ty - height * 0.5;
       const tumble = Math.sin(pieceProgress * Math.PI) * (18 + index * 0.42);
-      const drop = piece.dy * pieceProgress * mobileScale + pieceProgress * pieceProgress * (window.innerWidth <= 640 ? 54 : 112);
-      const drift = piece.dx * pieceProgress * mobileScale + Math.sin(progress * 18 + index) * 8 * pieceProgress;
+      const pour = smoothstep(piece.buildStart - 0.08, piece.buildEnd, progress);
+      const gravity = pieceProgress * pieceProgress * (window.innerWidth <= 640 ? 34 : 92);
+      const drop = piece.dy * pieceProgress * mobileScale + gravity - pour * (window.innerWidth <= 640 ? 42 : 74);
+      const drift = piece.dx * pieceProgress * mobileScale + Math.sin(progress * 20 + index) * 9 * pieceProgress * (1 - pour * 0.45);
       const midX = x + drift;
       const midY = y + drop;
       const currentX = lerp(midX, targetX, build);
       const currentY = lerp(midY, targetY, build);
       const settlePulse = Math.sin(build * Math.PI);
-      const opacity = appear * (1 - absorb) * (0.2 + settlePulse * 0.32);
+      const opacity = appear * (1 - absorb * 0.96) * (0.18 + settlePulse * 0.42);
 
       node.style.left = `${x.toFixed(2)}px`;
       node.style.top = `${y.toFixed(2)}px`;
@@ -852,47 +890,12 @@ const initKineticHero = () => {
       node.style.setProperty("--piece-x", `${(currentX - x).toFixed(2)}px`);
       node.style.setProperty("--piece-y", `${(currentY - y).toFixed(2)}px`);
       node.style.setProperty("--piece-rotate", `${lerp(piece.rot * pieceProgress + tumble, piece.targetRot, build).toFixed(2)}deg`);
-      node.style.setProperty("--piece-scale", (1 - pieceProgress * 0.08 - build * 0.16 - absorb * 0.16).toFixed(3));
-      node.style.setProperty("--piece-brightness", (1 - pieceProgress * 0.1 + build * 0.24).toFixed(3));
-      node.style.setProperty("--piece-saturation", (1 + build * 0.55).toFixed(3));
-      node.style.setProperty("--piece-blur", `${(absorb * 1.8).toFixed(2)}px`);
-      node.style.setProperty("--piece-radius", `${lerp(0.5, 5, build).toFixed(2)}px`);
-      node.style.setProperty("--piece-paper-alpha", (build * 0.035).toFixed(3));
-    });
-  };
-
-  const setTokenPositions = (progress) => {
-    const stageRect = stage.getBoundingClientRect();
-    const receiptRect = receipt.getBoundingClientRect();
-    const fieldRects = fields.map((field) => field.getBoundingClientRect());
-    const finishFade = smoothstep(0.9, 0.98, progress);
-
-    tokens.forEach((token, index) => {
-      const tokenEnd = token.end - 0.03;
-      const tokenProgress = smoothstep(token.start, tokenEnd, progress);
-      const activeIn = smoothstep(token.start, token.start + 0.05, progress);
-      const activeOut = 1 - smoothstep(tokenEnd - 0.06, tokenEnd + 0.03, progress);
-      const fieldRect = fieldRects[token.field] ?? fieldRects[0];
-      const startX = receiptRect.left - stageRect.left + receiptRect.width * token.sx;
-      const tokenLift = smoothstep(token.start, token.start + 0.18, progress) * (window.innerWidth <= 640 ? 140 : 260);
-      const startY = receiptRect.top - stageRect.top + receiptRect.height * token.sy - tokenLift;
-      const endX = fieldRect.left - stageRect.left + fieldRect.width * token.tx;
-      const endY = fieldRect.top - stageRect.top + fieldRect.height * token.ty;
-      const gravity =
-        Math.sin(tokenProgress * Math.PI) * token.bend * 0.44 +
-        tokenProgress * tokenProgress * (window.innerWidth <= 640 ? 14 : 26);
-      const drift = Math.sin(tokenProgress * Math.PI * 2 + index) * (6 + index * 0.25);
-      const x = lerp(startX, endX, tokenProgress) + drift;
-      const y = lerp(startY, endY, tokenProgress) + gravity;
-      const settle = smoothstep(tokenEnd - 0.08, tokenEnd + 0.02, progress);
-      const opacity = Math.max(0, Math.min(activeIn, activeOut)) * (1 - finishFade) * (1 - settle * 0.18);
-
-      tokenNodes[index].style.setProperty("--token-x", `${x.toFixed(2)}px`);
-      tokenNodes[index].style.setProperty("--token-y", `${y.toFixed(2)}px`);
-      tokenNodes[index].style.setProperty("--token-opacity", opacity.toFixed(3));
-      tokenNodes[index].style.setProperty("--token-rotate", `${lerp(-8 + index % 5, 2 - index % 4, tokenProgress).toFixed(2)}deg`);
-      tokenNodes[index].style.setProperty("--token-scale", (0.92 + Math.sin(tokenProgress * Math.PI) * 0.12 - settle * 0.18).toFixed(3));
-      tokenNodes[index].style.setProperty("--token-blur", `${(settle * 1.1).toFixed(2)}px`);
+      node.style.setProperty("--piece-scale", (1 - pieceProgress * 0.06 - build * 0.34 - absorb * 0.28).toFixed(3));
+      node.style.setProperty("--piece-brightness", (1 - pieceProgress * 0.08 + build * 0.32).toFixed(3));
+      node.style.setProperty("--piece-saturation", (1 + build * 0.35).toFixed(3));
+      node.style.setProperty("--piece-blur", `${(absorb * 1.25).toFixed(2)}px`);
+      node.style.setProperty("--piece-radius", `${lerp(0.5, 7, build).toFixed(2)}px`);
+      node.style.setProperty("--piece-paper-alpha", (build * 0.02).toFixed(3));
     });
   };
 
@@ -903,7 +906,6 @@ const initKineticHero = () => {
     latestProgress = progress;
     setHeroVariables(progress);
     setPaperPieces(progress);
-    setTokenPositions(progress);
   };
 
   const requestRender = () => {
@@ -925,8 +927,21 @@ const initKineticHero = () => {
 const initSmoothAnchors = () => {
   if (prefersReducedMotion) return;
 
+  const clamp01 = (value) => Math.max(0, Math.min(1, value));
+  const kineticScene = document.querySelector("[data-kinetic-scene]");
+
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener("click", (event) => {
+      const progressTarget = anchor.dataset.scrollProgress;
+      if (progressTarget && kineticScene) {
+        event.preventDefault();
+        const sceneTop = kineticScene.getBoundingClientRect().top + window.scrollY;
+        const sceneTravel = Math.max(0, kineticScene.offsetHeight - window.innerHeight);
+        const targetY = sceneTop + sceneTravel * clamp01(Number(progressTarget));
+        window.scrollTo({ top: targetY, behavior: "smooth" });
+        return;
+      }
+
       const id = anchor.getAttribute("href");
       if (!id || id === "#") return;
       const target = document.querySelector(id);

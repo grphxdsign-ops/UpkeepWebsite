@@ -6,7 +6,16 @@
     <meta name="description" content="Upkeep turns receipts, statements, work orders, and handwritten notes into organized records ready for review, export, and reconciliation.">
     <meta property="og:title" content="Upkeep | Records ready in seconds">
     <meta property="og:description" content="Upload the paperwork. Upkeep reads it, organizes it, and clears the record for handoff.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://upkeep-website.vercel.app/">
+    <meta property="og:image" content="https://upkeep-website.vercel.app/assets/upkeep-concept.png">
+    <meta property="og:image:alt" content="Upkeep turns document uploads into organized records.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Upkeep | Records ready in seconds">
+    <meta name="twitter:description" content="Upload the paperwork. Upkeep reads it, organizes it, and clears the record for handoff.">
+    <meta name="twitter:image" content="https://upkeep-website.vercel.app/assets/upkeep-concept.png">
     <title>Upkeep | Records ready in seconds</title>
+    <link rel="canonical" href="https://upkeep-website.vercel.app/">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23010403'/%3E%3Cpath d='M16 17c4-4 11-5 17 0v32c-6-5-13-4-17 0V17Z' fill='none' stroke='%23d7f32c' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M33 17c6-5 13-4 17 0v32c-4-4-11-5-17 0V17Z' fill='none' stroke='%23d7f32c' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M33 44V19M25 27l8-8 8 8' fill='none' stroke='%23d7f32c' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
     <script>document.documentElement.classList.add("js");</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,14 +37,14 @@
         <span>Upkeep</span>
       </a>
       <nav aria-label="Primary navigation">
-        <a href="#how">How it works</a>
-        <a href="#workspace">For business</a>
-        <a href="#review">Security</a>
-        <a href="#request">Pricing</a>
-        <a href="#request">Resources</a>
+        <a href="#top" data-scroll-progress="0.42">How it works</a>
+        <a href="#top" data-scroll-progress="0.56">For business</a>
+        <a href="#top" data-scroll-progress="0.76">Security</a>
+        <a href="#top" data-scroll-progress="0.9">Pricing</a>
+        <a href="#top" data-scroll-progress="0.9">Resources</a>
       </nav>
-      <a class="login-link" href="#request">Log in</a>
-      <a class="header-cta" href="#request">Get early access <span aria-hidden="true">↗</span></a>
+      <a class="login-link" href="#top" data-scroll-progress="0.9">Log in</a>
+      <a class="header-cta" href="#top" data-scroll-progress="0.9">Get early access <span aria-hidden="true">&#8599;</span></a>
     </header>
 
     <main id="main">
@@ -45,28 +54,34 @@
         <div class="kinetic-wordmark" aria-hidden="true">Upkeep</div>
         <div class="kinetic-copy reveal">
           <p class="kinetic-kicker">Documents to done</p>
-          <h1>From paperwork<br>to <span>clean records.</span></h1>
+          <h1 aria-label="From paperwork to clean records.">From paperwork <br>to <span>clean records.</span></h1>
           <p class="kinetic-text">Upkeep turns receipts, statements, and files into organized records you can actually use.</p>
           <div class="kinetic-actions" aria-label="Primary actions">
-            <a class="kinetic-button" href="#how">
+            <a class="kinetic-button" href="#top" data-scroll-progress="0.78">
               See records form
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M5 12h13"></path>
                 <path d="m13 6 6 6-6 6"></path>
               </svg>
             </a>
-            <a class="kinetic-play" href="#how"><span aria-hidden="true"></span> How it works</a>
+            <a class="kinetic-play" href="#top" data-scroll-progress="0.42"><span aria-hidden="true"></span> How it works</a>
           </div>
         </div>
 
         <div class="kinetic-visual" aria-label="Animated document to record preview">
-          <img class="kinetic-receipt-asset" src="assets/hero/upkeep-receipt-cutout.png" alt="Receipt scanned by Upkeep with total and payment details.">
+          <img class="kinetic-receipt-asset" src="assets/hero/upkeep-receipt-cutout.webp" alt="Receipt scanned by Upkeep with total and payment details.">
+          <div class="receipt-scan-frame" aria-hidden="true">
+            <span class="scan-corner corner-tl"></span>
+            <span class="scan-corner corner-tr"></span>
+            <span class="scan-corner corner-bl"></span>
+            <span class="scan-corner corner-br"></span>
+            <span class="scan-beam"></span>
+            <span class="scan-sheen"></span>
+          </div>
           <div class="receipt-shred-layer" aria-hidden="true"></div>
           <div class="receipt-wordmark-shadow" aria-hidden="true"></div>
 
-          <div class="number-stream" aria-hidden="true"></div>
-
-          <div class="kinetic-record" aria-label="Interactive prepared record preview" tabindex="0">
+          <div class="kinetic-record" aria-label="Interactive prepared record preview" tabindex="-1" aria-hidden="true">
             <div class="record-field" data-record-tip="Detected from the receipt header.">
               <span>Vendor</span>
               <strong>Market Place</strong>
@@ -95,7 +110,7 @@
           </div>
         </div>
 
-        <div class="scroll-notes" aria-hidden="true">
+        <div class="scroll-notes" aria-label="Upkeep process steps">
           <aside class="scroll-note note-left" data-scroll-note="0">
             <strong>Upload without setup.</strong>
             <p>A receipt, statement, invoice, or daily file goes in without learning complex software.</p>
