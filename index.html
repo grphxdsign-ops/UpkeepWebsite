@@ -3,17 +3,18 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Upkeep uses Vision OCR to turn receipts, statements, work orders, and handwritten notes into organized records ready for review, export, and reconciliation.">
+    <meta name="description" content="Upkeep turns receipts, statements, work orders, and handwritten notes into organized records ready for review, export, and reconciliation.">
     <meta property="og:title" content="Upkeep | Records ready in seconds">
     <meta property="og:description" content="Upload the paperwork. Upkeep reads it, organizes it, and clears the record for handoff.">
     <title>Upkeep | Records ready in seconds</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23010403'/%3E%3Cpath d='M16 17c4-4 11-5 17 0v32c-6-5-13-4-17 0V17Z' fill='none' stroke='%23d7f32c' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M33 17c6-5 13-4 17 0v32c-4-4-11-5-17 0V17Z' fill='none' stroke='%23d7f32c' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M33 44V19M25 27l8-8 8 8' fill='none' stroke='%23d7f32c' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
     <script>document.documentElement.classList.add("js");</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
   </head>
-  <body>
+  <body class="kinetic-page">
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="site-header">
@@ -27,96 +28,104 @@
         <span>Upkeep</span>
       </a>
       <nav aria-label="Primary navigation">
-        <a href="#how">Live example</a>
-        <a href="#workspace">Workspace</a>
-        <a href="#review">Review</a>
-        <a href="#request">Access</a>
+        <a href="#how">How it works</a>
+        <a href="#workspace">For business</a>
+        <a href="#review">Security</a>
+        <a href="#request">Pricing</a>
+        <a href="#request">Resources</a>
       </nav>
-      <a class="header-cta" href="#request">Request access</a>
+      <a class="login-link" href="#request">Log in</a>
+      <a class="header-cta" href="#request">Get early access <span aria-hidden="true">↗</span></a>
     </header>
 
     <main id="main">
-      <section class="hero" id="top">
-        <div class="hero-copy reveal">
-          <p class="quiet-label">Vision OCR document prep</p>
-          <h1 class="animated-headline" aria-label="Turn messy paperwork into records you can trust.">
-            <span class="sr-only">Turn messy paperwork into records you can trust.</span>
-            <span class="headline-rotator" aria-hidden="true">
-              <span>Turn messy paperwork</span>
-              <span>Into records</span>
-              <span>You can trust</span>
-            </span>
-          </h1>
-          <p class="hero-text">
-            Upload receipts, statements, work orders, and notes. Upkeep prepares
-            clean records and flags the details that need a second look.
-          </p>
-          <div class="hero-actions" aria-label="Primary actions">
-            <a class="button primary" href="#how">Watch it work</a>
-            <a class="button secondary" href="#workspace">See the workspace</a>
+      <section class="kinetic-hero" id="top" data-kinetic-scene>
+        <div class="kinetic-stage">
+        <canvas id="kineticParticleCanvas" class="kinetic-particle-canvas" aria-hidden="true"></canvas>
+        <div class="kinetic-wordmark" aria-hidden="true">Upkeep</div>
+        <div class="kinetic-copy reveal">
+          <p class="kinetic-kicker">Documents to done</p>
+          <h1>From paperwork<br>to <span>clean records.</span></h1>
+          <p class="kinetic-text">Upkeep turns receipts, statements, and files into organized records you can actually use.</p>
+          <div class="kinetic-actions" aria-label="Primary actions">
+            <a class="kinetic-button" href="#how">
+              See records form
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h13"></path>
+                <path d="m13 6 6 6-6 6"></path>
+              </svg>
+            </a>
+            <a class="kinetic-play" href="#how"><span aria-hidden="true"></span> How it works</a>
           </div>
-          <dl class="trust-strip" aria-label="What Upkeep prepares">
-            <div><dt>Input</dt><dd>Any daily paperwork</dd></div>
-            <div><dt>Output</dt><dd>Clean searchable records</dd></div>
-            <div><dt>Your job</dt><dd>Sit back and relax</dd></div>
-          </dl>
         </div>
 
-        <div class="product-frame reveal" data-run-step="1" aria-label="Upkeep workspace preview">
-          <div class="app-shell">
-            <aside class="app-sidebar" aria-label="Document types">
-              <span class="sidebar-dot"></span>
-              <button class="sidebar-item is-active" type="button">Inbox</button>
-              <button class="sidebar-item" type="button">Receipts</button>
-              <button class="sidebar-item" type="button">Statements</button>
-              <button class="sidebar-item" type="button">Work orders</button>
-            </aside>
+        <div class="kinetic-visual" aria-label="Animated document to record preview">
+          <img class="kinetic-receipt-asset" src="assets/hero/upkeep-receipt-cutout.png" alt="Receipt scanned by Upkeep with total and payment details.">
+          <div class="receipt-shred-layer" aria-hidden="true"></div>
+          <div class="receipt-wordmark-shadow" aria-hidden="true"></div>
 
-            <section class="app-main" aria-label="Record preparation">
-              <div class="app-toolbar">
-                <span>Sample paperwork</span>
-                <strong id="runStepLabel">Step 1 of 4</strong>
-              </div>
-              <div class="run-progress" aria-hidden="true">
-                <span></span><span></span><span></span><span></span>
-              </div>
-              <div class="drop-zone">
-                <div class="drop-zone-copy">
-                  <strong id="runTitle">Drop in the day&apos;s paperwork.</strong>
-                  <p id="runBody">A receipt, a service work order, and a bank statement enter one intake.</p>
-                </div>
-              </div>
-              <div class="record-list">
-                <article class="record-row is-active" data-run-row="1">
-                  <span class="file-type">Receipt</span>
-                  <div><strong>Summit Supply</strong><small>Total, tax, asset matched</small></div>
-                  <b class="status ready">Ready</b>
-                </article>
-                <article class="record-row" data-run-row="2">
-                  <span class="file-type">Work order</span>
-                  <div><strong>AC Unit #3 service</strong><small>Technician note attached</small></div>
-                  <b class="status ready">Ready</b>
-                </article>
-                <article class="record-row" data-run-row="3">
-                  <span class="file-type">Statement</span>
-                  <div><strong>June operating account</strong><small>Statement line cleared</small></div>
-                  <b class="status cleared">Cleared</b>
-                </article>
-              </div>
-            </section>
+          <div class="number-stream" aria-hidden="true"></div>
 
-            <aside class="record-detail" aria-label="Prepared record details">
-              <span class="quiet-label">Prepared record</span>
-              <h2>Summit Supply</h2>
-              <dl>
-                <div><dt>Date</dt><dd>May 14, 2026</dd></div>
-                <div><dt>Total</dt><dd>$52.97</dd></div>
-                <div><dt>Asset</dt><dd>AC Unit #3</dd></div>
-                <div class="is-cleared"><dt>Statement match</dt><dd>Cleared</dd></div>
-              </dl>
-              <button class="approve-button" type="button">Approve ready fields</button>
-            </aside>
+          <div class="kinetic-record" aria-label="Interactive prepared record preview" tabindex="0">
+            <div class="record-field" data-record-tip="Detected from the receipt header.">
+              <span>Vendor</span>
+              <strong>Market Place</strong>
+            </div>
+            <div class="record-field" data-record-tip="Pulled from the purchase timestamp.">
+              <span>Date</span>
+              <strong>May 14, 2025</strong>
+            </div>
+            <div class="record-field" data-record-tip="Suggested from the line items.">
+              <span>Category</span>
+              <strong class="record-pill">Office Supplies <em></em></strong>
+            </div>
+            <div class="record-field" data-record-tip="Balanced against subtotal, tax, and total.">
+              <span>Total</span>
+              <strong>$138.08</strong>
+            </div>
+            <div class="record-field" data-record-tip="Matched to the payment line.">
+              <span>Payment</span>
+              <strong>Visa &bull;&bull;&bull;&bull; 4216</strong>
+            </div>
+            <div class="record-field status-field" data-record-tip="Ready to review, keep, or export.">
+              <span>Status</span>
+              <strong class="status-pill">Ready</strong>
+            </div>
+            <div class="record-created"><span aria-hidden="true">&#10003;</span> Record created</div>
           </div>
+        </div>
+
+        <div class="scroll-notes" aria-hidden="true">
+          <aside class="scroll-note note-left" data-scroll-note="0">
+            <strong>Upload without setup.</strong>
+            <p>A receipt, statement, invoice, or daily file goes in without learning complex software.</p>
+          </aside>
+          <aside class="scroll-note note-right" data-scroll-note="1">
+            <strong>Upkeep reads the useful fields.</strong>
+            <p>Vendor, date, total, category, and payment separate from the page.</p>
+          </aside>
+          <aside class="scroll-note note-left note-low" data-scroll-note="2">
+            <strong>The file becomes structure.</strong>
+            <p>The proof stays attached while the numbers become searchable.</p>
+          </aside>
+          <aside class="scroll-note note-right note-low" data-scroll-note="3">
+            <strong>Ready for review or handoff.</strong>
+            <p>Details land in a clean record your team can keep, export, or approve.</p>
+          </aside>
+        </div>
+
+        <div class="kinetic-trust" aria-label="Built for document-heavy teams">
+          <p>Built for document-heavy teams</p>
+          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4z"></path><path d="M8 10h8M8 14h5"></path></svg>Retail</span>
+          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V7l7-4 7 4v12"></path><path d="M9 19v-7h6v7"></path></svg>Studios</span>
+          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8h10l2 4v7H5v-7l2-4Z"></path><path d="M8 8V5h8v3M8 15h8"></path></svg>Trades</span>
+          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M4 12h16"></path><path d="M7 7h10v10H7z"></path></svg>Clinics</span>
+        </div>
+
+        <div class="kinetic-security" aria-label="Security proof">
+          <span aria-hidden="true">&#10003;</span>
+          <p><strong>SOC 2 TYPE II</strong><br>Enterprise grade security</p>
+        </div>
         </div>
       </section>
 
@@ -135,7 +144,7 @@
           <article class="process-card reveal" data-run-card="2">
             <span>02</span>
             <h3>Upkeep reads the stack.</h3>
-            <p>Vision OCR identifies the vendor, total, asset note, and statement lines.</p>
+            <p>Vendor, total, notes, and statement lines lift out of the page automatically.</p>
           </article>
           <article class="process-card reveal" data-run-card="3">
             <span>03</span>
