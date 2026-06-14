@@ -19,16 +19,16 @@
   --stage: oklch(0.145 0.018 165);
   --stage-2: oklch(0.21 0.026 165);
   --stage-void: #030806;
-  --stage-void-2: #071511;
-  --stage-glass: #0a1411;
-  --acid: oklch(0.72 0.12 166);
-  --accent-rgb: 82 198 160;
-  --accent-muted-rgb: 118 177 148;
+  --stage-void-2: #0e1511;
+  --stage-glass: #121a15;
+  --acid: oklch(0.7 0.098 151);
+  --accent-rgb: 126 186 134;
+  --accent-muted-rgb: 94 148 104;
   --ember: oklch(0.62 0.17 42);
   --ember-deep: oklch(0.32 0.09 38);
   --flow-night: #070713;
   --flow-ink: #101225;
-  --flow-cyan: #3ee9ff;
+  --flow-cyan: #b7c8ad;
   --flow-violet: #8d6cff;
   --flow-lime: #68d0a8;
   --flow-paper: #f6f1df;
@@ -2077,7 +2077,7 @@ body.kinetic-page .header-cta {
   border-color: transparent;
   border-radius: 10px;
   background: var(--acid);
-  color: #071511;
+  color: #06110b;
   box-shadow: 0 18px 50px rgb(var(--accent-rgb) / 0.12);
 }
 
@@ -2103,7 +2103,8 @@ body.kinetic-page .header-cta {
   --wordmark-shadow-x: 0px;
   --wordmark-shadow-y: 0px;
   --wordmark-shadow-scale: 1;
-  --wordmark-shadow-opacity: 0.34;
+  --wordmark-shadow-opacity: 0.28;
+  --wordmark-opacity: 0.9;
   --record-opacity: 0;
   --record-x: 180px;
   --record-y: 44px;
@@ -2129,9 +2130,10 @@ body.kinetic-page .header-cta {
   isolation: isolate;
   padding: 122px clamp(32px, 4.2vw, 70px) 44px;
   background:
-    radial-gradient(ellipse at 62% 36%, rgb(83 150 112 / 0.16), transparent 34%),
-    radial-gradient(ellipse at 35% 78%, rgb(126 64 34 / 0.13), transparent 42%),
-    linear-gradient(180deg, #060908 0%, #09110e 54%, #030504 100%);
+    radial-gradient(ellipse at 62% 36%, rgb(138 174 143 / 0.13), transparent 34%),
+    radial-gradient(ellipse at 36% 76%, rgb(53 76 55 / 0.2), transparent 42%),
+    radial-gradient(ellipse at 82% 10%, rgb(122 139 104 / 0.11), transparent 36%),
+    linear-gradient(180deg, #050806 0%, #0d130f 54%, #030504 100%);
 }
 
 .kinetic-hero::before,
@@ -2146,7 +2148,7 @@ body.kinetic-page .header-cta {
 .kinetic-hero::before {
   background:
     radial-gradient(circle at 22% 18%, rgb(255 253 246 / 0.026) 0 1px, transparent 1px),
-    radial-gradient(circle at 72% 64%, rgb(120 194 146 / 0.036) 0 1px, transparent 1px);
+    radial-gradient(circle at 72% 64%, rgb(138 174 143 / 0.034) 0 1px, transparent 1px);
   background-size: 23px 23px, 37px 37px;
   mask-image: radial-gradient(circle at 54% 38%, black, transparent 76%);
   opacity: 0.24;
@@ -2174,7 +2176,7 @@ body.kinetic-page .header-cta {
 
 .kinetic-copy {
   position: relative;
-  z-index: 7;
+  z-index: 10;
   display: block;
   max-width: 700px;
   opacity: var(--copy-opacity, 1);
@@ -2235,7 +2237,7 @@ body.kinetic-page .header-cta {
   padding: 0 22px;
   border-radius: 9px;
   background: var(--acid);
-  color: #071511;
+  color: #06110b;
   box-shadow: 0 18px 52px rgb(var(--accent-rgb) / 0.12);
   transition: transform 180ms var(--ease), box-shadow 180ms var(--ease);
 }
@@ -2308,26 +2310,29 @@ body.kinetic-page .kinetic-play:focus-visible span {
 
 .kinetic-wordmark {
   position: absolute;
-  left: clamp(18px, 4.8vw, 72px);
+  left: 50%;
   right: auto;
-  bottom: clamp(30px, 4.4vw, 58px);
+  bottom: clamp(14px, 2.8vh, 32px);
   z-index: 1;
-  color: rgb(255 253 246 / 0.86);
+  width: calc(100vw - clamp(18px, 2vw, 30px));
+  color: rgb(255 253 246 / 0.82);
   font-family: var(--font-display), "Bricolage Grotesque", Manrope, sans-serif;
-  font-size: clamp(150px, 23.2vw, 332px);
+  font-size: min(clamp(122px, 22vw, 304px), calc((100vw - 18px) / 3.04));
   font-weight: 800;
-  letter-spacing: -0.062em;
-  line-height: 0.86;
+  letter-spacing: -0.06em;
+  line-height: 0.96;
+  text-align: center;
   white-space: nowrap;
   text-shadow:
     0 2px 0 rgb(255 253 246 / 0.08),
-    0 42px 42px rgb(1 4 3 / 0.82);
+    0 34px 46px rgb(1 4 3 / 0.76);
   filter: none;
-  -webkit-mask-image: linear-gradient(180deg, black 0 72%, rgb(0 0 0 / 0.82) 100%);
-  mask-image: linear-gradient(180deg, black 0 72%, rgb(0 0 0 / 0.82) 100%);
   display: block;
-  opacity: 0.95;
-  transform: translate3d(var(--kinetic-x, 0), var(--kinetic-y, 0), 0);
+  opacity: var(--wordmark-opacity, 0.9);
+  pointer-events: none;
+  transform: translate3d(calc(-50% + var(--kinetic-x, 0px)), var(--kinetic-y, 0), 0);
+  transform-origin: center bottom;
+  will-change: transform;
 }
 
 .kinetic-visual {
@@ -2397,7 +2402,8 @@ body.kinetic-page .kinetic-play:focus-visible span {
   filter:
     brightness(var(--receipt-brightness, 1))
     saturate(var(--receipt-saturate, 1))
-    drop-shadow(34px 50px 38px rgb(1 4 3 / var(--receipt-shadow-alpha)));
+    drop-shadow(18px 30px 22px rgb(3 4 8 / calc(var(--receipt-shadow-alpha) * 0.42)))
+    drop-shadow(34px 58px 46px rgb(3 4 8 / calc(var(--receipt-shadow-alpha) * 0.58)));
   opacity: var(--receipt-opacity);
   transform:
     perspective(980px)
@@ -2413,7 +2419,8 @@ body.kinetic-page .kinetic-play:focus-visible span {
   filter:
     brightness(var(--receipt-brightness, 1))
     saturate(var(--receipt-saturate, 1))
-    drop-shadow(40px 58px 42px rgb(1 4 3 / calc(var(--receipt-shadow-alpha) + 0.08)));
+    drop-shadow(20px 34px 25px rgb(3 4 8 / calc((var(--receipt-shadow-alpha) + 0.08) * 0.42)))
+    drop-shadow(40px 62px 50px rgb(3 4 8 / calc((var(--receipt-shadow-alpha) + 0.08) * 0.58)));
 }
 
 .receipt-scan-frame {
@@ -2604,21 +2611,47 @@ body.kinetic-page .kinetic-play:focus-visible span {
 .receipt-wordmark-shadow {
   position: absolute;
   left: min(66vw, 960px);
-  bottom: clamp(64px, 9vh, 112px);
+  bottom: clamp(0px, 2.6vh, 34px);
   z-index: 2;
-  width: clamp(270px, 34vw, 560px);
-  height: clamp(70px, 9vw, 128px);
+  width: clamp(640px, 68vw, 1080px);
+  height: clamp(260px, 28vw, 430px);
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgb(1 4 3 / 0.82), rgb(1 4 3 / 0.46) 42%, transparent 72%);
-  filter: blur(20px);
+  background:
+    radial-gradient(ellipse at 50% 54%, rgb(3 4 8 / 0.54), rgb(3 4 8 / 0.25) 30%, rgb(3 4 8 / 0.08) 54%, transparent 76%),
+    radial-gradient(ellipse at 34% 46%, rgb(3 4 8 / 0.18), transparent 66%),
+    radial-gradient(ellipse at 70% 48%, rgb(3 4 8 / 0.14), transparent 68%);
+  filter: blur(26px);
   display: block;
+  mix-blend-mode: multiply;
   opacity: var(--wordmark-shadow-opacity);
+  overflow: visible;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 52%, black 0 42%, rgb(0 0 0 / 0.68) 58%, transparent 82%);
+  mask-image: radial-gradient(ellipse at 50% 52%, black 0 42%, rgb(0 0 0 / 0.68) 58%, transparent 82%);
   transform:
     translate3d(-50%, 0, 0)
     translate3d(var(--wordmark-shadow-x), var(--wordmark-shadow-y), 0)
     scale(var(--wordmark-shadow-scale));
   transform-origin: 50% 50%;
   will-change: transform, opacity;
+}
+
+.receipt-wordmark-shadow::before,
+.receipt-wordmark-shadow::after {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgb(3 4 8 / 0.24), rgb(3 4 8 / 0.08) 42%, transparent 76%);
+  content: "";
+}
+
+.receipt-wordmark-shadow::before {
+  inset: 18% 11% 17% 4%;
+  transform: rotate(-7deg) translate3d(-5%, 4%, 0);
+}
+
+.receipt-wordmark-shadow::after {
+  inset: 25% 4% 20% 28%;
+  opacity: 0.72;
+  transform: rotate(6deg) translate3d(8%, -2%, 0);
 }
 
 .receipt-grain {
@@ -3229,7 +3262,7 @@ body.kinetic-page .request > * {
 
 body.kinetic-page .button.light {
   background: var(--acid);
-  color: #071511;
+  color: #06110b;
   box-shadow: 0 18px 46px rgb(var(--accent-rgb) / 0.14);
 }
 
@@ -3814,7 +3847,7 @@ body.kinetic-page .kinetic-copy.reveal {
   }
 
   .kinetic-wordmark {
-    font-size: clamp(150px, 23.2vw, 300px);
+    font-size: min(clamp(116px, 22vw, 288px), calc((100vw - 18px) / 3.04));
   }
 }
 
@@ -3853,9 +3886,11 @@ body.kinetic-page .kinetic-copy.reveal {
   }
 
   .kinetic-wordmark {
-    left: 18px;
-    bottom: 54px;
-    font-size: clamp(136px, 24vw, 190px);
+    left: 50%;
+    right: auto;
+    width: calc(100vw - 18px);
+    bottom: 22px;
+    font-size: min(clamp(104px, 21.6vw, 168px), calc((100vw - 18px) / 3.04));
   }
 
   .kinetic-trust {
@@ -3912,9 +3947,11 @@ body.kinetic-page .kinetic-copy.reveal {
   }
 
   .kinetic-wordmark {
-    left: 0;
-    bottom: 42px;
-    font-size: clamp(90px, 26vw, 112px);
+    left: 50%;
+    right: auto;
+    width: calc(100vw - 16px);
+    bottom: 18px;
+    font-size: min(clamp(76px, 23vw, 104px), calc((100vw - 16px) / 3.04));
   }
 
   .kinetic-trust {
@@ -3944,7 +3981,7 @@ body.kinetic-page .kinetic-copy.reveal {
   }
 
   .kinetic-wordmark {
-    font-size: clamp(142px, 23.2vw, 300px);
+    font-size: min(clamp(116px, 22vw, 288px), calc((100vw - 18px) / 3.04));
   }
 }
 
@@ -4013,9 +4050,10 @@ body.kinetic-page .kinetic-copy.reveal {
   }
 
   .receipt-wordmark-shadow {
-    left: 48%;
-    bottom: 94px;
-    width: 290px;
+    left: 50%;
+    bottom: 54px;
+    width: min(620px, 138vw);
+    height: 240px;
   }
 
   .kinetic-record {
@@ -4091,7 +4129,11 @@ body.kinetic-page .kinetic-copy.reveal {
   }
 
   .receipt-wordmark-shadow {
-    display: none;
+    left: 50%;
+    bottom: 40px;
+    width: min(760px, 126vw);
+    height: 260px;
+    display: block;
   }
 
   .kinetic-record {
@@ -4465,19 +4507,22 @@ body.kinetic-page .record-created span {
 
   body.kinetic-page .kinetic-receipt-asset,
   body.kinetic-page .receipt-scan-frame {
-    top: 535px;
-    width: min(282px, 72vw);
+    top: 405px;
+    width: min(260px, 68vw);
   }
 
   body.kinetic-page .kinetic-wordmark {
-    left: 0;
-    bottom: 38px;
-    font-size: clamp(88px, 25vw, 108px);
+    left: 50%;
+    right: auto;
+    width: calc(100vw - 16px);
+    bottom: 18px;
+    font-size: min(clamp(76px, 23vw, 104px), calc((100vw - 16px) / 3.04));
   }
 
   body.kinetic-page .scroll-notes {
+    top: 96px;
     right: 18px;
-    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    bottom: auto;
     left: 18px;
     width: auto;
     gap: 5px;
@@ -4531,7 +4576,7 @@ body.kinetic-page .record-created span {
   }
 
   body.kinetic-page .kinetic-record {
-    top: 190px;
+    top: 260px;
     width: min(288px, 82vw);
     min-height: 418px;
     padding: 18px 19px 16px;

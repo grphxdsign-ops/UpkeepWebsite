@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Upkeep Workspace</title>
+    <script>document.documentElement.classList.add("js");</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="backend.css">
+  </head>
+  <body>
+    <main class="backend-shell">
+      <aside class="backend-sidebar" aria-label="Backend navigation">
+        <a class="brand" href="/">
+          <svg class="brand-logo" viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M16 17c4-4 11-5 17 0v32c-6-5-13-4-17 0V17Z"></path>
+            <path d="M33 17c6-5 13-4 17 0v32c-4-4-11-5-17 0V17Z"></path>
+            <path class="brand-logo-accent" d="M33 44V19"></path>
+            <path class="brand-logo-accent" d="M25 27l8-8 8 8"></path>
+          </svg>
+          <span>Upkeep</span>
+        </a>
+        <nav class="backend-nav" aria-label="Workspace views">
+          <a href="#intake" class="is-active">Inbox</a>
+          <a href="#records">Records</a>
+          <a href="#review">Review</a>
+          <a href="#storage">Storage</a>
+        </nav>
+        <div class="connection-card">
+          <span>Storage mode</span>
+          <strong id="connectionState">Checking</strong>
+        </div>
+      </aside>
+
+      <section class="workspace" aria-label="Backend application workspace">
+        <section class="app-view inbox-view is-active" id="intake" aria-labelledby="intakeTitle">
+          <section class="intake-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="quiet-label">Inbox</p>
+                <h2 id="intakeTitle">Add source documents</h2>
+              </div>
+              <span id="uploadCount">0 files</span>
+            </div>
+
+            <label class="drop-target" for="documentInput">
+              <input id="documentInput" type="file" accept=".txt,.csv,.json,image/*" multiple>
+              <strong>Add documents</strong>
+              <small>TXT, CSV, JSON, or image files</small>
+            </label>
+
+            <div class="file-list" id="fileList" aria-live="polite">
+              <p>No documents selected.</p>
+            </div>
+
+            <div class="intake-actions">
+              <button class="button primary" id="processButton" type="button" disabled>Process</button>
+              <button class="button secondary" id="clearButton" type="button">Clear</button>
+            </div>
+
+            <p class="status-line" id="statusLine">Ready for upload.</p>
+          </section>
+        </section>
+
+        <section class="app-view records-view" id="records" aria-labelledby="recordsTitle">
+          <section class="record-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="quiet-label">Queue</p>
+                <h2 id="recordsTitle">Prepared records</h2>
+              </div>
+              <span id="recordCount">0 records</span>
+            </div>
+
+            <div class="stat-grid">
+              <article>
+                <span>Documents</span>
+                <strong id="documentTotal">0</strong>
+              </article>
+              <article>
+                <span>Ready</span>
+                <strong id="readyTotal">0</strong>
+              </article>
+              <article>
+                <span>Review</span>
+                <strong id="reviewTotal">0</strong>
+              </article>
+            </div>
+
+            <div class="queue-actions">
+              <button class="button secondary" id="selectAllRecordsButton" type="button" disabled>Select all transactions</button>
+            </div>
+
+            <div class="records-list" id="recordsList" aria-live="polite">
+              <p>No records yet.</p>
+            </div>
+          </section>
+
+          <aside class="detail-panel" aria-labelledby="detailTitle">
+            <p class="quiet-label">Record detail</p>
+            <h2 id="detailTitle">Select a record</h2>
+            <dl id="detailFields">
+              <div><dt>Status</dt><dd>Waiting</dd></div>
+              <div><dt>Amount</dt><dd>-</dd></div>
+              <div><dt>Document</dt><dd>-</dd></div>
+            </dl>
+            <div class="detail-actions">
+              <button class="button primary" id="saveButton" type="button" disabled>Save changes</button>
+              <button class="button secondary" id="approveButton" type="button" disabled>Mark ready</button>
+              <button class="button secondary" id="flagButton" type="button" disabled>Needs review</button>
+              <button class="button danger" id="deleteRecordButton" type="button" disabled>Delete line</button>
+            </div>
+          </aside>
+        </section>
+
+        <section class="app-view review-view" id="review" aria-labelledby="reviewTitle">
+          <section class="export-panel" aria-label="Create export documents">
+            <div class="report-builder">
+              <div>
+                <p class="quiet-label">Review</p>
+                <h2 id="reviewTitle">Create documents</h2>
+              </div>
+              <div class="doc-type-grid" id="reportTypeOptions" aria-label="Document type">
+                <button class="doc-type-option is-active" type="button" data-report-type="balance-transactions">
+                  <strong>Transaction list</strong>
+                  <span>Line-by-line export</span>
+                </button>
+                <button class="doc-type-option" type="button" data-report-type="banking-reconciliation">
+                  <strong>Bank reconciliation</strong>
+                  <span>Matched banking review</span>
+                </button>
+                <button class="doc-type-option" type="button" data-report-type="income-statement">
+                  <strong>Income statement</strong>
+                  <span>Income and expense rollup</span>
+                </button>
+                <button class="doc-type-option" type="button" data-report-type="balance-sheet">
+                  <strong>Balance sheet</strong>
+                  <span>Assets, liabilities, equity</span>
+                </button>
+                <button class="doc-type-option" type="button" data-report-type="cash-flow">
+                  <strong>Cash flow statement</strong>
+                  <span>Cash movement summary</span>
+                </button>
+              </div>
+              <div class="report-controls">
+                <select id="reportType" aria-label="Document type">
+                  <option value="balance-transactions">Transaction list</option>
+                  <option value="banking-reconciliation">Bank reconciliation</option>
+                  <option value="income-statement">Income statement</option>
+                  <option value="balance-sheet">Balance sheet</option>
+                  <option value="cash-flow">Cash flow statement</option>
+                </select>
+                <a class="button secondary" id="exportCsvButton" href="/api/export.csv?set=balance-transactions">Download as CSV</a>
+                <a class="button secondary" id="exportSheetButton" href="/api/export.sheet?set=balance-transactions">Download as Sheets</a>
+                <a class="button secondary" id="exportDocButton" href="/api/export.doc?set=balance-transactions">Download as DOC</a>
+                <a class="button primary" id="exportPdfButton" href="/api/export.pdf?set=balance-transactions">Download as PDF</a>
+              </div>
+            </div>
+          </section>
+          <section class="preview-panel" aria-label="Export preview">
+            <div class="panel-heading">
+              <div>
+                <p class="quiet-label">Preview</p>
+                <h2 id="previewTitle">Transaction list</h2>
+              </div>
+              <span id="previewCount">0 records</span>
+            </div>
+            <div class="export-preview" id="exportPreview"></div>
+          </section>
+        </section>
+
+        <section class="app-view storage-view" id="storage" aria-labelledby="storageTitle">
+          <section class="storage-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="quiet-label">Storage</p>
+                <h2 id="storageTitle">Downloaded files</h2>
+              </div>
+            </div>
+            <div class="storage-actions">
+              <button class="button secondary" id="downloadStorageButton" type="button" disabled>Download selected</button>
+              <button class="button danger" id="deleteStorageButton" type="button" disabled>Delete selected</button>
+            </div>
+            <div class="storage-list" id="storageList">
+              <p>No files stored yet.</p>
+            </div>
+          </section>
+        </section>
+        <datalist id="categoryOptions"></datalist>
+      </section>
+    </main>
+    <script src="backend.js"></script>
+  </body>
+</html>

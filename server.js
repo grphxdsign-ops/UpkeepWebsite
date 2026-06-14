@@ -9,7 +9,7 @@ const root = __dirname;
 const port = Number(process.env.PORT || 4377);
 const host = process.env.HOST || "127.0.0.1";
 const supabaseUrl = trimTrailingSlash(process.env.SUPABASE_URL || "");
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || "";
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 const ocrStudioApi = process.env.OCR_STUDIO_API || "http://127.0.0.1:8787/api/vision-ocr";
 
 const memoryStore = {

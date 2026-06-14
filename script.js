@@ -175,8 +175,8 @@ const initHeroFlow = () => {
     ctx.translate(x, y);
     ctx.rotate(angle);
     ctx.globalAlpha = alpha;
-    ctx.fillStyle = tint > 0.58 ? "rgba(217, 255, 88, 0.22)" : "rgba(246, 241, 223, 0.68)";
-    ctx.strokeStyle = tint > 0.58 ? "rgba(217, 255, 88, 0.52)" : "rgba(62, 233, 255, 0.48)";
+    ctx.fillStyle = tint > 0.58 ? "rgba(126, 186, 134, 0.24)" : "rgba(246, 241, 223, 0.68)";
+    ctx.strokeStyle = tint > 0.58 ? "rgba(126, 186, 134, 0.5)" : "rgba(188, 216, 180, 0.42)";
     ctx.lineWidth = 1.2;
     ctx.beginPath();
     ctx.moveTo(-glyphWidth / 2, -glyphHeight / 2);
@@ -220,7 +220,7 @@ const initHeroFlow = () => {
       ctx.setLineDash([8 + index * 2, 16 + index * 3]);
       ctx.lineDashOffset = -time * (32 + index * 4);
       ctx.lineWidth = index % 2 === 0 ? 1.2 : 1.8;
-      ctx.strokeStyle = index % 2 === 0 ? "rgba(62, 233, 255, 0.22)" : "rgba(141, 108, 255, 0.2)";
+      ctx.strokeStyle = index % 2 === 0 ? "rgba(126, 186, 134, 0.22)" : "rgba(204, 226, 190, 0.16)";
       ctx.beginPath();
       ctx.moveTo(startX, startY);
       ctx.bezierCurveTo(width * 0.27, startY - height * 0.18, coreX - width * 0.08, coreY + lane, coreX, coreY + lane * 0.2);
@@ -242,7 +242,7 @@ const initHeroFlow = () => {
 
     for (let index = 0; index < 4; index += 1) {
       const pulse = Math.sin(time * 0.9 + index * 1.4) * 0.5 + 0.5;
-      ctx.strokeStyle = index % 2 === 0 ? `rgba(62, 233, 255, ${0.14 + pulse * 0.13})` : `rgba(217, 255, 88, ${0.08 + pulse * 0.1})`;
+      ctx.strokeStyle = index % 2 === 0 ? `rgba(126, 186, 134, ${0.14 + pulse * 0.13})` : `rgba(204, 226, 190, ${0.08 + pulse * 0.1})`;
       ctx.lineWidth = 1 + index * 0.35;
       ctx.beginPath();
       ctx.ellipse(
@@ -260,10 +260,10 @@ const initHeroFlow = () => {
     const sweep = (time * 0.34) % 1;
     const scanY = coreY - radius * 0.62 + sweep * radius * 1.24;
     const scanGradient = ctx.createLinearGradient(coreX - radius * 0.84, scanY, coreX + radius * 0.84, scanY);
-    scanGradient.addColorStop(0, "rgba(62, 233, 255, 0)");
-    scanGradient.addColorStop(0.45, "rgba(62, 233, 255, 0.72)");
-    scanGradient.addColorStop(0.58, "rgba(217, 255, 88, 0.9)");
-    scanGradient.addColorStop(1, "rgba(62, 233, 255, 0)");
+    scanGradient.addColorStop(0, "rgba(126, 186, 134, 0)");
+    scanGradient.addColorStop(0.45, "rgba(126, 186, 134, 0.72)");
+    scanGradient.addColorStop(0.58, "rgba(204, 226, 190, 0.82)");
+    scanGradient.addColorStop(1, "rgba(126, 186, 134, 0)");
     ctx.strokeStyle = scanGradient;
     ctx.lineWidth = 2.4;
     ctx.beginPath();
@@ -297,7 +297,7 @@ const initHeroFlow = () => {
         drawDocumentGlyph(x, y, 24 * particle.size, (particle.lane * 0.9) + time * 0.08, alpha, particle.tint);
       } else {
         const dotRadius = 1.6 + particle.size * 2.2;
-        ctx.fillStyle = particle.tint > 0.62 ? `rgba(217, 255, 88, ${alpha})` : `rgba(62, 233, 255, ${alpha})`;
+        ctx.fillStyle = particle.tint > 0.62 ? `rgba(126, 186, 134, ${alpha})` : `rgba(204, 226, 190, ${alpha * 0.78})`;
         ctx.beginPath();
         ctx.arc(x, y, dotRadius, 0, Math.PI * 2);
         ctx.fill();
@@ -337,7 +337,7 @@ const initHeroFlow = () => {
       ctx.lineTo(spineX + lineLength, rowY);
       ctx.stroke();
 
-      ctx.fillStyle = index === 3 ? "rgba(217, 255, 88, 0.88)" : "rgba(62, 233, 255, 0.72)";
+      ctx.fillStyle = index === 3 ? "rgba(126, 186, 134, 0.88)" : "rgba(204, 226, 190, 0.58)";
       ctx.beginPath();
       ctx.arc(spineX - 13, rowY, 3.2 + shimmer * 1.2, 0, Math.PI * 2);
       ctx.fill();
@@ -355,8 +355,8 @@ const initHeroFlow = () => {
     stage.style.setProperty("--hero-py", ((pointer.y - 0.5) * 2).toFixed(3));
 
     ctx.clearRect(0, 0, width, height);
-    drawGlow(width * 0.5, height * 0.5, Math.min(width, height) * 0.54, "rgba(62, 233, 255, ALPHA)", 0.08);
-    drawGlow(width * 0.67, height * 0.38, Math.min(width, height) * 0.42, "rgba(141, 108, 255, ALPHA)", 0.11);
+    drawGlow(width * 0.5, height * 0.5, Math.min(width, height) * 0.54, "rgba(126, 186, 134, ALPHA)", 0.08);
+    drawGlow(width * 0.67, height * 0.38, Math.min(width, height) * 0.42, "rgba(94, 148, 104, ALPHA)", 0.1);
     drawRoute(time);
     drawParticles(time);
     drawCore(time);
@@ -473,11 +473,11 @@ const initKineticShaderBackground = () => {
       float pointerAura = smoothstep(0.82, 0.0, length(p - pointer));
       float lowerWash = smoothstep(-0.9, 0.46, -p.y + u_progress * 0.38);
 
-      vec3 base = vec3(0.018, 0.028, 0.024);
-      vec3 acid = vec3(0.30, 0.70, 0.55);
-      vec3 oxide = vec3(0.42, 0.22, 0.13);
-      vec3 teal = vec3(0.08, 0.36, 0.30);
-      vec3 paper = vec3(0.88, 0.84, 0.68);
+      vec3 base = vec3(0.022, 0.023, 0.030);
+      vec3 acid = vec3(0.49, 0.73, 0.53);
+      vec3 oxide = vec3(0.10, 0.20, 0.12);
+      vec3 teal = vec3(0.07, 0.10, 0.08);
+      vec3 paper = vec3(0.92, 0.88, 0.78);
 
       vec3 color = base;
       color += acid * (receiptAura * 0.055 + recordAura * 0.07 + pointerAura * 0.026);
@@ -643,6 +643,17 @@ const initKineticHero = () => {
     if (start === end) return value >= end ? 1 : 0;
     return easeInOut((value - start) / (end - start));
   };
+  const shatterStart = 0.72;
+  const shatterEnd = 0.995;
+  const particleFieldStarts = [0.78, 0.8, 0.82, 0.84, 0.86, 0.88];
+  const fieldFromReceiptDepth = (depth) => {
+    if (depth > 0.82) return 5;
+    if (depth > 0.66) return 4;
+    if (depth > 0.5) return 3;
+    if (depth > 0.34) return 2;
+    if (depth > 0.18) return 1;
+    return 0;
+  };
 
   const shredContext = shredLayer instanceof HTMLCanvasElement ? shredLayer.getContext("2d", { alpha: true }) : null;
   const grid = window.innerWidth <= 640
@@ -666,10 +677,10 @@ const initKineticHero = () => {
     const x = clamp01(column / columns + jitterX / columns);
     const y = clamp01(row / rows + jitterY / rows);
     const outward = column < columns * 0.42 ? -1 : column > columns * 0.58 ? 1 : randomUnit(index + 2500) > 0.5 ? 1 : -1;
-    const field = Math.min(fields.length - 1, Math.floor(rowDepth * fields.length));
-    const start = 0.4 + (1 - rowDepth) * 0.26 + randomUnit(index + 2600) * 0.045;
-    const pourStart = Math.min(0.78, start + 0.08 + randomUnit(index + 3450) * 0.11);
-    const pourEnd = Math.min(0.95, pourStart + 0.16 + randomUnit(index + 3550) * 0.08);
+    const field = Math.min(fields.length - 1, fieldFromReceiptDepth(rowDepth));
+    const start = shatterStart + (1 - rowDepth) * 0.18 + randomUnit(index + 2600) * 0.04;
+    const pourStart = Math.min(0.94, Math.max(start + 0.04, particleFieldStarts[field] - 0.02 + randomUnit(index + 3450) * 0.055));
+    const pourEnd = Math.min(0.985, pourStart + 0.12 + randomUnit(index + 3550) * 0.065);
 
     return {
       x,
@@ -785,35 +796,47 @@ const initKineticHero = () => {
 
   const setHeroVariables = (progress) => {
     const receiptFlow = smoothstep(0.04, 0.58, progress);
-    const tearFlow = smoothstep(0.4, 0.82, progress);
-    const parseFlow = smoothstep(0.48, 0.86, progress);
-    const recordFlow = smoothstep(0.48, 0.64, progress);
-    const completeFlow = smoothstep(0.74, 0.9, progress);
-    const absorbFlow = smoothstep(0.54, 0.9, progress) * (1 - smoothstep(0.96, 1, progress) * 0.35);
+    const centerFlow = smoothstep(0.14, 0.54, progress);
+    const tearFlow = smoothstep(shatterStart, 0.92, progress);
+    const parseFlow = smoothstep(0.76, 0.94, progress);
+    const recordFlow = smoothstep(0.68, 0.78, progress);
+    const completeFlow = smoothstep(0.82, 0.93, progress);
+    const absorbFlow = smoothstep(0.76, 0.98, progress) * (1 - smoothstep(0.985, 1, progress) * 0.2);
     const isMobile = window.innerWidth <= 640;
     const copyFade = smoothstep(isMobile ? 0.16 : 0.2, isMobile ? 0.32 : 0.38, progress);
-    const receiptDrop = isMobile ? 34 : 154;
-    const parseLift = isMobile ? -20 : -26;
-    const mobileStageLift = isMobile ? smoothstep(0.27, 0.48, progress) * -160 : 0;
-    const mobileScanLift = isMobile ? Math.sin(clamp01((progress - 0.22) / 0.3) * Math.PI) * -138 : 0;
-    const scanFlow = smoothstep(0.22, 0.32, progress) * (1 - smoothstep(0.56, 0.66, progress));
-    const scanSweep = smoothstep(0.24, 0.55, progress);
+    const receiptDrop = isMobile ? 46 : 166;
+    const parseLift = isMobile ? -10 : -18;
+    const mobileStageLift = isMobile ? smoothstep(shatterStart, 0.9, progress) * -72 : 0;
+    const mobileScanLift = 0;
+    const scanFlow = smoothstep(0.5, 0.6, progress) * (1 - smoothstep(0.72, 0.79, progress));
+    const scanSweep = smoothstep(0.52, 0.7, progress);
+    const stageWidth = stage.clientWidth || window.innerWidth;
+    const anchorX = isMobile
+      ? stageWidth * 0.5
+      : window.innerWidth <= 980
+        ? stageWidth * 0.62
+        : window.innerWidth <= 1280
+          ? Math.min(stageWidth * 0.64, 820)
+          : Math.min(stageWidth * 0.66, 960);
+    const centerOffsetX = stageWidth * 0.5 - anchorX;
     const receiptSway = Math.sin(progress * Math.PI * 2.8) * (isMobile ? 8 : 18);
-    const receiptX = lerp(0, isMobile ? 0 : -42, receiptFlow) + lerp(0, isMobile ? -8 : -68, parseFlow) + receiptSway * (1 - tearFlow * 0.7);
+    const receiptX = lerp(0, centerOffsetX, centerFlow) + lerp(0, isMobile ? -2 : 0, parseFlow) + receiptSway * (1 - tearFlow * 0.82);
     const receiptY = lerp(0, receiptDrop, receiptFlow) + lerp(0, parseLift, parseFlow) + mobileStageLift + mobileScanLift;
-    const receiptRotate = lerp(-10, 5.5, receiptFlow) + lerp(0, 8.5, parseFlow) + Math.sin(progress * Math.PI * 2.2) * (1 - tearFlow) * 1.8;
+    const scanSettle = smoothstep(0.34, 0.58, progress) * (1 - smoothstep(0.68, 0.78, progress));
+    const baseReceiptRotate = lerp(-10, 3.2, receiptFlow);
+    const receiptRotate = lerp(baseReceiptRotate, 0.35, scanSettle) + lerp(0, 5.8, parseFlow) + Math.sin(progress * Math.PI * 2.2) * (1 - tearFlow) * 1.25;
     const receiptFlipY = lerp(isMobile ? -8 : -18, 0, smoothstep(0, 0.22, progress)) + Math.sin(progress * Math.PI * 1.4) * (1 - tearFlow) * (isMobile ? 1.4 : 2.8);
     const receiptFlipX = lerp(isMobile ? 5 : 8, 0, smoothstep(0.02, 0.28, progress));
     const receiptScale = lerp(1, isMobile ? 0.76 : 0.84, parseFlow);
-    const cutFlow = smoothstep(0.4, 0.82, progress);
-    const dissolveFade = smoothstep(0.78, 0.91, progress);
+    const cutFlow = smoothstep(shatterStart, 0.94, progress);
+    const dissolveFade = smoothstep(0.86, 0.975, progress);
     const receiptOpacity = Math.max(0, 1 - dissolveFade);
     const shadowPeak = Math.sin(clamp01((progress - 0.05) / 0.58) * Math.PI);
-    const scannerLock = smoothstep(0.22, 0.34, progress);
-    const scanAnchorX = isMobile ? -5 : -40;
-    const scanAnchorY = isMobile ? -78 : 126;
-    const scanAnchorRotate = isMobile ? 2.5 : 1.8;
-    const scanAnchorScale = isMobile ? 0.78 : 0.9;
+    const scannerLock = smoothstep(0.24, 0.34, progress);
+    const scanAnchorX = centerOffsetX;
+    const scanAnchorY = isMobile ? -8 : 118;
+    const scanAnchorRotate = isMobile ? 0.15 : 0.05;
+    const scanAnchorScale = isMobile ? 1.12 : 1.16;
     const receiptScanHighlight = scanFlow * Math.sin(scanSweep * Math.PI);
 
     hero.style.setProperty("--receipt-x", `${receiptX.toFixed(2)}px`);
@@ -835,11 +858,12 @@ const initKineticHero = () => {
     hero.style.setProperty("--scan-frame-scale", lerp(receiptScale, scanAnchorScale, scannerLock).toFixed(3));
     hero.style.setProperty("--scan-frame-flip-y", `${lerp(receiptFlipY, 0, scannerLock).toFixed(2)}deg`);
     hero.style.setProperty("--scan-frame-flip-x", `${lerp(receiptFlipX, 0, scannerLock).toFixed(2)}deg`);
-    hero.style.setProperty("--receipt-shadow-alpha", (0.66 + shadowPeak * 0.24).toFixed(3));
-    hero.style.setProperty("--wordmark-shadow-x", `${(receiptX * 0.38).toFixed(2)}px`);
-    hero.style.setProperty("--wordmark-shadow-y", `${(receiptY * 0.12).toFixed(2)}px`);
-    hero.style.setProperty("--wordmark-shadow-scale", (0.82 + shadowPeak * 0.42 + parseFlow * 0.12).toFixed(3));
-    hero.style.setProperty("--wordmark-shadow-opacity", ((0.2 + shadowPeak * 0.48) * (1 - parseFlow * 0.42)).toFixed(3));
+    const wordmarkShadowPass = smoothstep(0.08, 0.48, progress) * (1 - smoothstep(0.58, 0.78, progress));
+    hero.style.setProperty("--receipt-shadow-alpha", (0.48 + shadowPeak * 0.2).toFixed(3));
+    hero.style.setProperty("--wordmark-shadow-x", `${(receiptX * 0.42).toFixed(2)}px`);
+    hero.style.setProperty("--wordmark-shadow-y", `${(receiptY * 0.16 + lerp(0, 22, receiptFlow)).toFixed(2)}px`);
+    hero.style.setProperty("--wordmark-shadow-scale", (1.05 + shadowPeak * 0.18).toFixed(3));
+    hero.style.setProperty("--wordmark-shadow-opacity", (wordmarkShadowPass * (0.16 + shadowPeak * 0.22)).toFixed(3));
     hero.style.setProperty("--record-opacity", recordFlow.toFixed(3));
     hero.style.setProperty("--record-x", `${lerp(isMobile ? 0 : 10, 0, recordFlow).toFixed(2)}px`);
     hero.style.setProperty("--record-y", `${lerp(isMobile ? 18 : 30, 0, recordFlow).toFixed(2)}px`);
@@ -855,14 +879,14 @@ const initKineticHero = () => {
     }
 
     if (wordmark) {
-      const wordmarkExit = smoothstep(isMobile ? 0.24 : 0.26, isMobile ? 0.48 : 0.56, progress);
-      wordmark.style.setProperty("--wordmark-opacity", (0.95 * (1 - wordmarkExit)).toFixed(3));
-      wordmark.style.setProperty("--kinetic-x", `${lerp(0, isMobile ? 0 : -18, progress).toFixed(2)}px`);
-      wordmark.style.setProperty("--kinetic-y", `${lerp(0, isMobile ? 26 : 48, wordmarkExit).toFixed(2)}px`);
+      const wordmarkFade = smoothstep(isMobile ? 0.42 : 0.44, isMobile ? 0.68 : 0.66, progress);
+      wordmark.style.setProperty("--wordmark-opacity", ((isMobile ? 0.86 : 0.9) * (1 - wordmarkFade)).toFixed(3));
+      wordmark.style.setProperty("--kinetic-x", "0px");
+      wordmark.style.setProperty("--kinetic-y", "0px");
     }
 
     fields.forEach((field, index) => {
-      const fieldProgress = smoothstep(0.56 + index * 0.026, 0.7 + index * 0.023, progress);
+      const fieldProgress = smoothstep(0.68 + index * 0.024, 0.8 + index * 0.02, progress);
       field.style.setProperty("--field-fill", fieldProgress.toFixed(3));
       field.classList.toggle("is-filled", fieldProgress > 0.84);
       field.tabIndex = recordFlow > 0.72 ? 0 : -1;
@@ -930,7 +954,7 @@ const initKineticHero = () => {
     resizeShredCanvas();
     shredContext.clearRect(0, 0, shredWidth, shredHeight);
 
-    if (progress < 0.36 || progress > 0.992 || !receipt.complete || !receipt.naturalWidth) {
+    if (progress < shatterStart || progress > shatterEnd || !receipt.complete || !receipt.naturalWidth) {
       return;
     }
 
@@ -938,6 +962,7 @@ const initKineticHero = () => {
     const receiptRect = receipt.getBoundingClientRect();
     const recordRect = record.getBoundingClientRect();
     const fieldRects = fields.map((field) => field.getBoundingClientRect());
+    const valueRects = fields.map((field) => (field.querySelector("strong") || field).getBoundingClientRect());
     const mobileScale = window.innerWidth <= 640 ? 0.55 : 1;
     const naturalWidth = receipt.naturalWidth;
     const naturalHeight = receipt.naturalHeight;
@@ -959,12 +984,13 @@ const initKineticHero = () => {
       const y = receiptRect.top - stageRect.top + receiptRect.height * piece.y;
       const startWidth = receiptRect.width * piece.w;
       const startHeight = receiptRect.height * piece.h;
-      const chipScale = Math.max(0.08, 1 - pieceProgress * 0.12 - pour * 0.68 - absorb * 0.46);
+      const chipScale = Math.max(0.055, 1 - pieceProgress * 0.34 - pour * 0.94 - absorb * 0.6);
       const width = Math.max(1.1, startWidth * chipScale);
       const height = Math.max(1.1, startHeight * chipScale);
       const fieldRect = fieldRects[piece.field] ?? fieldRects[0];
-      const targetX = fieldRect.left - stageRect.left + fieldRect.width * clamp01(piece.tx) - width * 0.5;
-      const targetY = fieldRect.top - stageRect.top + fieldRect.height * clamp01(piece.ty) - height * 0.5;
+      const valueRect = valueRects[piece.field] ?? fieldRect;
+      const targetX = valueRect.left - stageRect.left + valueRect.width * clamp01(piece.tx) - width * 0.5;
+      const targetY = valueRect.top - stageRect.top + valueRect.height * clamp01(piece.ty) - height * 0.5;
       const settleX = lerp(targetX, absorbX - width * 0.5, absorb * 0.4);
       const settleY = lerp(targetY, absorbY - height * 0.5, absorb * 0.28);
       const tumble = Math.sin(pieceProgress * Math.PI * piece.flutter) * (18 + (index % 31) * 1.8);
@@ -975,7 +1001,7 @@ const initKineticHero = () => {
       const midY = y + drop;
       const currentX = lerp(midX, settleX, pour);
       const currentY = lerp(midY, settleY, pour) + Math.sin(pour * Math.PI) * (window.innerWidth <= 640 ? -18 : -44);
-      const alpha = Math.min(0.86, visible * (0.48 + pour * 0.32));
+      const alpha = Math.min(0.46, visible * (0.26 + pour * 0.18));
       const sourceX = Math.max(0, naturalWidth * piece.x);
       const sourceY = Math.max(0, naturalHeight * piece.y);
       const sourceW = Math.min(naturalWidth - sourceX, naturalWidth * piece.w);
@@ -991,7 +1017,7 @@ const initKineticHero = () => {
 
       if (pour > 0.18) {
         shredContext.globalCompositeOperation = "screen";
-        shredContext.fillStyle = `rgba(82, 198, 160, ${0.04 + pour * 0.1})`;
+        shredContext.fillStyle = `rgba(126, 186, 134, ${0.035 + pour * 0.085})`;
         shredContext.fillRect(-width * 0.5, -height * 0.5, width, height);
       }
 
@@ -1010,8 +1036,8 @@ const initKineticHero = () => {
       latestProgress = progress;
       setHeroVariables(progress);
 
-      const pieceActiveNow = progress >= 0.36 && progress <= 0.995;
-      const pieceWasActive = latestPieceProgress >= 0.36 && latestPieceProgress <= 0.995;
+      const pieceActiveNow = progress >= shatterStart && progress <= shatterEnd;
+      const pieceWasActive = latestPieceProgress >= shatterStart && latestPieceProgress <= shatterEnd;
       const pieceDelta = window.innerWidth <= 640 ? 0.008 : 0.005;
       const shouldFlushPieces = !pieceActiveNow || !Number.isFinite(latestPieceProgress) || !pieceWasActive;
       const shouldStepPieces = pieceActiveNow && Math.abs(progress - latestPieceProgress) >= pieceDelta;
