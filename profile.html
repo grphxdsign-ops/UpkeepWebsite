@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Set up your Upkeep profile</title>
+    <script>document.documentElement.classList.add("js");</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="profile.css">
+  </head>
+  <body>
+    <main class="login-shell profile-shell">
+      <a class="brand" href="/">
+        <svg class="brand-logo" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M16 17c4-4 11-5 17 0v32c-6-5-13-4-17 0V17Z"></path>
+          <path d="M33 17c6-5 13-4 17 0v32c-4-4-11-5-17 0V17Z"></path>
+          <path class="brand-logo-accent" d="M33 44V19"></path>
+          <path class="brand-logo-accent" d="M25 27l8-8 8 8"></path>
+        </svg>
+        <span>Upkeep</span>
+      </a>
+
+      <section class="login-grid profile-grid" aria-label="Profile setup">
+        <div class="login-copy profile-copy">
+          <p class="quiet-label">Profile setup</p>
+          <h1>Tell Upkeep who is keeping what.</h1>
+        </div>
+
+        <form class="login-panel profile-panel" id="profileForm">
+          <label>
+            <span>Your name</span>
+            <input id="profileName" name="name" type="text" autocomplete="name" required>
+          </label>
+
+          <label>
+            <span>Business</span>
+            <input id="profileBusiness" name="business" type="text" autocomplete="organization" required>
+          </label>
+
+          <label>
+            <span>What are you using Upkeep for?</span>
+            <textarea id="profileUseFor" name="useFor" rows="4" required></textarea>
+          </label>
+
+          <label>
+            <span>Where did you hear about Upkeep?</span>
+            <input id="profileReferredFrom" name="referredFrom" type="text" required>
+          </label>
+
+          <p class="form-error" id="profileError" role="alert"></p>
+
+          <button class="submit-button" id="profileSubmit" type="submit">Continue to workspace</button>
+        </form>
+      </section>
+    </main>
+    <script src="profile.js"></script>
+  </body>
+</html>

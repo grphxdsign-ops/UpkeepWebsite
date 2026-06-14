@@ -175,8 +175,8 @@ const initHeroFlow = () => {
     ctx.translate(x, y);
     ctx.rotate(angle);
     ctx.globalAlpha = alpha;
-    ctx.fillStyle = tint > 0.58 ? "rgba(126, 186, 134, 0.24)" : "rgba(246, 241, 223, 0.68)";
-    ctx.strokeStyle = tint > 0.58 ? "rgba(126, 186, 134, 0.5)" : "rgba(188, 216, 180, 0.42)";
+    ctx.fillStyle = tint > 0.58 ? "rgba(158, 232, 111, 0.24)" : "rgba(246, 241, 223, 0.68)";
+    ctx.strokeStyle = tint > 0.58 ? "rgba(158, 232, 111, 0.5)" : "rgba(202, 232, 184, 0.42)";
     ctx.lineWidth = 1.2;
     ctx.beginPath();
     ctx.moveTo(-glyphWidth / 2, -glyphHeight / 2);
@@ -220,7 +220,7 @@ const initHeroFlow = () => {
       ctx.setLineDash([8 + index * 2, 16 + index * 3]);
       ctx.lineDashOffset = -time * (32 + index * 4);
       ctx.lineWidth = index % 2 === 0 ? 1.2 : 1.8;
-      ctx.strokeStyle = index % 2 === 0 ? "rgba(126, 186, 134, 0.22)" : "rgba(204, 226, 190, 0.16)";
+      ctx.strokeStyle = index % 2 === 0 ? "rgba(158, 232, 111, 0.22)" : "rgba(214, 239, 198, 0.16)";
       ctx.beginPath();
       ctx.moveTo(startX, startY);
       ctx.bezierCurveTo(width * 0.27, startY - height * 0.18, coreX - width * 0.08, coreY + lane, coreX, coreY + lane * 0.2);
@@ -242,7 +242,7 @@ const initHeroFlow = () => {
 
     for (let index = 0; index < 4; index += 1) {
       const pulse = Math.sin(time * 0.9 + index * 1.4) * 0.5 + 0.5;
-      ctx.strokeStyle = index % 2 === 0 ? `rgba(126, 186, 134, ${0.14 + pulse * 0.13})` : `rgba(204, 226, 190, ${0.08 + pulse * 0.1})`;
+      ctx.strokeStyle = index % 2 === 0 ? `rgba(158, 232, 111, ${0.14 + pulse * 0.13})` : `rgba(214, 239, 198, ${0.08 + pulse * 0.1})`;
       ctx.lineWidth = 1 + index * 0.35;
       ctx.beginPath();
       ctx.ellipse(
@@ -260,10 +260,10 @@ const initHeroFlow = () => {
     const sweep = (time * 0.34) % 1;
     const scanY = coreY - radius * 0.62 + sweep * radius * 1.24;
     const scanGradient = ctx.createLinearGradient(coreX - radius * 0.84, scanY, coreX + radius * 0.84, scanY);
-    scanGradient.addColorStop(0, "rgba(126, 186, 134, 0)");
-    scanGradient.addColorStop(0.45, "rgba(126, 186, 134, 0.72)");
-    scanGradient.addColorStop(0.58, "rgba(204, 226, 190, 0.82)");
-    scanGradient.addColorStop(1, "rgba(126, 186, 134, 0)");
+    scanGradient.addColorStop(0, "rgba(158, 232, 111, 0)");
+    scanGradient.addColorStop(0.45, "rgba(158, 232, 111, 0.72)");
+    scanGradient.addColorStop(0.58, "rgba(214, 239, 198, 0.82)");
+    scanGradient.addColorStop(1, "rgba(158, 232, 111, 0)");
     ctx.strokeStyle = scanGradient;
     ctx.lineWidth = 2.4;
     ctx.beginPath();
@@ -297,7 +297,7 @@ const initHeroFlow = () => {
         drawDocumentGlyph(x, y, 24 * particle.size, (particle.lane * 0.9) + time * 0.08, alpha, particle.tint);
       } else {
         const dotRadius = 1.6 + particle.size * 2.2;
-        ctx.fillStyle = particle.tint > 0.62 ? `rgba(126, 186, 134, ${alpha})` : `rgba(204, 226, 190, ${alpha * 0.78})`;
+        ctx.fillStyle = particle.tint > 0.62 ? `rgba(158, 232, 111, ${alpha})` : `rgba(214, 239, 198, ${alpha * 0.78})`;
         ctx.beginPath();
         ctx.arc(x, y, dotRadius, 0, Math.PI * 2);
         ctx.fill();
@@ -337,7 +337,7 @@ const initHeroFlow = () => {
       ctx.lineTo(spineX + lineLength, rowY);
       ctx.stroke();
 
-      ctx.fillStyle = index === 3 ? "rgba(126, 186, 134, 0.88)" : "rgba(204, 226, 190, 0.58)";
+      ctx.fillStyle = index === 3 ? "rgba(158, 232, 111, 0.88)" : "rgba(214, 239, 198, 0.58)";
       ctx.beginPath();
       ctx.arc(spineX - 13, rowY, 3.2 + shimmer * 1.2, 0, Math.PI * 2);
       ctx.fill();
@@ -355,7 +355,7 @@ const initHeroFlow = () => {
     stage.style.setProperty("--hero-py", ((pointer.y - 0.5) * 2).toFixed(3));
 
     ctx.clearRect(0, 0, width, height);
-    drawGlow(width * 0.5, height * 0.5, Math.min(width, height) * 0.54, "rgba(126, 186, 134, ALPHA)", 0.08);
+    drawGlow(width * 0.5, height * 0.5, Math.min(width, height) * 0.54, "rgba(158, 232, 111, ALPHA)", 0.08);
     drawGlow(width * 0.67, height * 0.38, Math.min(width, height) * 0.42, "rgba(94, 148, 104, ALPHA)", 0.1);
     drawRoute(time);
     drawParticles(time);
@@ -631,6 +631,7 @@ const initKineticHero = () => {
   const scanFrame = hero?.querySelector(".receipt-scan-frame");
   const shredLayer = hero?.querySelector(".receipt-shred-layer");
   const record = hero?.querySelector(".kinetic-record");
+  const recordTip = hero?.querySelector("[data-record-hover-tip]");
   const copy = hero?.querySelector(".kinetic-copy");
   const notes = Array.from(hero?.querySelectorAll("[data-scroll-note]") ?? []);
   const fields = Array.from(hero?.querySelectorAll(".record-field") ?? []);
@@ -638,14 +639,22 @@ const initKineticHero = () => {
 
   if (!hero || !stage || !receipt || !scanFrame || !shredLayer || !record || !fields.length) return;
 
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const clamp01 = (value) => Math.max(0, Math.min(1, value));
   const smoothstep = (start, end, value) => {
     if (start === end) return value >= end ? 1 : 0;
     return easeInOut((value - start) / (end - start));
   };
-  const shatterStart = 0.72;
-  const shatterEnd = 0.995;
-  const particleFieldStarts = [0.78, 0.8, 0.82, 0.84, 0.86, 0.88];
+  const shatterStart = 0.705;
+  const shatterComplete = 0.855;
+  const recordRevealStart = 0.865;
+  const recordRevealEnd = 0.915;
+  const shatterEnd = 0.999;
+  const particleFieldStarts = [0.91, 0.925, 0.94, 0.955, 0.968, 0.978];
+  const accentCanvasRgb = (getComputedStyle(document.documentElement).getPropertyValue("--accent-rgb").trim() || "158 232 111")
+    .split(/\s+/)
+    .slice(0, 3)
+    .join(", ");
   const fieldFromReceiptDepth = (depth) => {
     if (depth > 0.82) return 5;
     if (depth > 0.66) return 4;
@@ -678,9 +687,9 @@ const initKineticHero = () => {
     const y = clamp01(row / rows + jitterY / rows);
     const outward = column < columns * 0.42 ? -1 : column > columns * 0.58 ? 1 : randomUnit(index + 2500) > 0.5 ? 1 : -1;
     const field = Math.min(fields.length - 1, fieldFromReceiptDepth(rowDepth));
-    const start = shatterStart + (1 - rowDepth) * 0.18 + randomUnit(index + 2600) * 0.04;
-    const pourStart = Math.min(0.94, Math.max(start + 0.04, particleFieldStarts[field] - 0.02 + randomUnit(index + 3450) * 0.055));
-    const pourEnd = Math.min(0.985, pourStart + 0.12 + randomUnit(index + 3550) * 0.065);
+    const start = shatterStart + (1 - rowDepth) * 0.085 + randomUnit(index + 2600) * 0.015;
+    const pourStart = Math.min(0.982, Math.max(recordRevealEnd + 0.006, particleFieldStarts[field] + randomUnit(index + 3450) * 0.026));
+    const pourEnd = Math.min(0.997, pourStart + 0.055 + randomUnit(index + 3550) * 0.026);
 
     return {
       x,
@@ -698,11 +707,11 @@ const initKineticHero = () => {
       flutter: 0.55 + randomUnit(index + 3150) * 1.2,
       spin: randomUnit(index + 3200) > 0.5 ? 1 : -1,
       start,
-      end: Math.min(0.9, start + 0.16 + randomUnit(index + 4500) * 0.08),
+      end: Math.min(shatterComplete, start + 0.095 + randomUnit(index + 4500) * 0.035),
       pourStart,
       pourEnd,
-      absorbStart: Math.max(pourStart + 0.05, pourEnd - 0.06),
-      absorbEnd: Math.min(0.995, pourEnd + 0.055 + randomUnit(index + 4600) * 0.04)
+      absorbStart: Math.max(pourStart + 0.026, pourEnd - 0.034),
+      absorbEnd: Math.min(0.999, pourEnd + 0.026 + randomUnit(index + 4600) * 0.02)
     };
   });
 
@@ -797,18 +806,18 @@ const initKineticHero = () => {
   const setHeroVariables = (progress) => {
     const receiptFlow = smoothstep(0.04, 0.58, progress);
     const centerFlow = smoothstep(0.14, 0.54, progress);
-    const tearFlow = smoothstep(shatterStart, 0.92, progress);
-    const parseFlow = smoothstep(0.76, 0.94, progress);
-    const recordFlow = smoothstep(0.68, 0.78, progress);
-    const completeFlow = smoothstep(0.82, 0.93, progress);
-    const absorbFlow = smoothstep(0.76, 0.98, progress) * (1 - smoothstep(0.985, 1, progress) * 0.2);
+    const tearFlow = smoothstep(shatterStart, shatterComplete, progress);
+    const parseFlow = smoothstep(0.74, 0.92, progress);
+    const recordFlow = smoothstep(recordRevealStart, recordRevealEnd, progress);
+    const completeFlow = smoothstep(recordRevealEnd, 0.99, progress);
+    const absorbFlow = smoothstep(recordRevealEnd, 0.995, progress) * (1 - smoothstep(0.992, 1, progress) * 0.2);
     const isMobile = window.innerWidth <= 640;
     const copyFade = smoothstep(isMobile ? 0.16 : 0.2, isMobile ? 0.32 : 0.38, progress);
     const receiptDrop = isMobile ? 46 : 166;
     const parseLift = isMobile ? -10 : -18;
-    const mobileStageLift = isMobile ? smoothstep(shatterStart, 0.9, progress) * -72 : 0;
+    const mobileStageLift = isMobile ? smoothstep(shatterStart, shatterComplete, progress) * -72 : 0;
     const mobileScanLift = 0;
-    const scanFlow = smoothstep(0.5, 0.6, progress) * (1 - smoothstep(0.72, 0.79, progress));
+    const scanFlow = smoothstep(0.5, 0.6, progress) * (1 - smoothstep(shatterStart, shatterStart + 0.065, progress));
     const scanSweep = smoothstep(0.52, 0.7, progress);
     const stageWidth = stage.clientWidth || window.innerWidth;
     const anchorX = isMobile
@@ -822,14 +831,14 @@ const initKineticHero = () => {
     const receiptSway = Math.sin(progress * Math.PI * 2.8) * (isMobile ? 8 : 18);
     const receiptX = lerp(0, centerOffsetX, centerFlow) + lerp(0, isMobile ? -2 : 0, parseFlow) + receiptSway * (1 - tearFlow * 0.82);
     const receiptY = lerp(0, receiptDrop, receiptFlow) + lerp(0, parseLift, parseFlow) + mobileStageLift + mobileScanLift;
-    const scanSettle = smoothstep(0.34, 0.58, progress) * (1 - smoothstep(0.68, 0.78, progress));
+    const scanSettle = smoothstep(0.34, 0.58, progress) * (1 - smoothstep(shatterStart - 0.055, shatterStart + 0.045, progress));
     const baseReceiptRotate = lerp(-10, 3.2, receiptFlow);
     const receiptRotate = lerp(baseReceiptRotate, 0.35, scanSettle) + lerp(0, 5.8, parseFlow) + Math.sin(progress * Math.PI * 2.2) * (1 - tearFlow) * 1.25;
     const receiptFlipY = lerp(isMobile ? -8 : -18, 0, smoothstep(0, 0.22, progress)) + Math.sin(progress * Math.PI * 1.4) * (1 - tearFlow) * (isMobile ? 1.4 : 2.8);
     const receiptFlipX = lerp(isMobile ? 5 : 8, 0, smoothstep(0.02, 0.28, progress));
     const receiptScale = lerp(1, isMobile ? 0.76 : 0.84, parseFlow);
-    const cutFlow = smoothstep(shatterStart, 0.94, progress);
-    const dissolveFade = smoothstep(0.86, 0.975, progress);
+    const cutFlow = smoothstep(shatterStart, shatterComplete, progress);
+    const dissolveFade = smoothstep(shatterStart + 0.035, recordRevealStart - 0.01, progress);
     const receiptOpacity = Math.max(0, 1 - dissolveFade);
     const shadowPeak = Math.sin(clamp01((progress - 0.05) / 0.58) * Math.PI);
     const scannerLock = smoothstep(0.24, 0.34, progress);
@@ -876,6 +885,7 @@ const initKineticHero = () => {
     if (copy) {
       copy.style.setProperty("--copy-opacity", (1 - copyFade).toFixed(3));
       copy.style.setProperty("--copy-y", `${lerp(0, isMobile ? -20 : -16, copyFade).toFixed(2)}px`);
+      copy.style.pointerEvents = copyFade > 0.72 ? "none" : "auto";
     }
 
     if (wordmark) {
@@ -886,7 +896,8 @@ const initKineticHero = () => {
     }
 
     fields.forEach((field, index) => {
-      const fieldProgress = smoothstep(0.68 + index * 0.024, 0.8 + index * 0.02, progress);
+      const fieldStart = particleFieldStarts[index] ?? particleFieldStarts[particleFieldStarts.length - 1];
+      const fieldProgress = smoothstep(fieldStart, Math.min(0.995, fieldStart + 0.06), progress);
       field.style.setProperty("--field-fill", fieldProgress.toFixed(3));
       field.classList.toggle("is-filled", fieldProgress > 0.84);
       field.tabIndex = recordFlow > 0.72 ? 0 : -1;
@@ -920,9 +931,45 @@ const initKineticHero = () => {
 
   const clearRecordFocus = () => {
     record.classList.remove("is-inspecting");
+    record.classList.remove("is-showing-tip");
+    if (recordTip) {
+      recordTip.setAttribute("aria-hidden", "true");
+    }
     record.style.setProperty("--record-tilt-x", "0deg");
     record.style.setProperty("--record-tilt-y", "0deg");
   };
+
+  const showRecordTip = (field) => {
+    if (!recordTip) return;
+
+    const text = field.dataset.recordTip || "";
+    if (!text) return;
+
+    const recordRect = record.getBoundingClientRect();
+    const fieldRect = field.getBoundingClientRect();
+    const centerY = fieldRect.top - recordRect.top + fieldRect.height / 2;
+    const y = clamp(centerY, 52, Math.max(52, recordRect.height - 52));
+
+    recordTip.textContent = text;
+    recordTip.style.setProperty("--record-tip-y", `${y.toFixed(2)}px`);
+    recordTip.setAttribute("aria-hidden", "false");
+    record.classList.add("is-showing-tip");
+  };
+
+  const hideRecordTip = () => {
+    record.classList.remove("is-showing-tip");
+    if (recordTip) {
+      recordTip.setAttribute("aria-hidden", "true");
+    }
+  };
+
+  document.addEventListener("pointermove", (event) => {
+    const target = event.target instanceof Element ? event.target : null;
+    if (target?.closest(".record-field")) return;
+
+    fields.forEach((field) => field.classList.remove("is-focus"));
+    hideRecordTip();
+  }, { passive: true });
 
   record.addEventListener("pointermove", (event) => {
     const rect = record.getBoundingClientRect();
@@ -942,10 +989,23 @@ const initKineticHero = () => {
   fields.forEach((field) => {
     field.tabIndex = -1;
     field.setAttribute("aria-hidden", "true");
-    field.addEventListener("pointerenter", () => field.classList.add("is-focus"));
-    field.addEventListener("pointerleave", () => field.classList.remove("is-focus"));
-    field.addEventListener("focus", () => field.classList.add("is-focus"));
-    field.addEventListener("blur", () => field.classList.remove("is-focus"));
+    field.addEventListener("pointerenter", () => {
+      field.classList.add("is-focus");
+      showRecordTip(field);
+    });
+    field.addEventListener("pointermove", () => showRecordTip(field), { passive: true });
+    field.addEventListener("pointerleave", () => {
+      field.classList.remove("is-focus");
+      hideRecordTip();
+    });
+    field.addEventListener("focus", () => {
+      field.classList.add("is-focus");
+      showRecordTip(field);
+    });
+    field.addEventListener("blur", () => {
+      field.classList.remove("is-focus");
+      hideRecordTip();
+    });
   });
 
   const setPaperPieces = (progress) => {
@@ -1017,7 +1077,7 @@ const initKineticHero = () => {
 
       if (pour > 0.18) {
         shredContext.globalCompositeOperation = "screen";
-        shredContext.fillStyle = `rgba(126, 186, 134, ${0.035 + pour * 0.085})`;
+        shredContext.fillStyle = `rgba(${accentCanvasRgb}, ${0.035 + pour * 0.085})`;
         shredContext.fillRect(-width * 0.5, -height * 0.5, width, height);
       }
 

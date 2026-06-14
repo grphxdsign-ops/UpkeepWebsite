@@ -1,5 +1,13 @@
 .chrome-profile/
 .edge-profile/
 .vercel/
+.upkeep-auth/
 node_modules/
 .DS_Store
+*.log
+backend-server-*.log
+assets/framer-free/
+references/
+render-*.png
+asset-render-*.png
+hero-js-*.png

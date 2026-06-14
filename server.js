@@ -1,5 +1,6 @@
 import { createServer } from "node:http";
-import { readFile, stat } from "node:fs/promises";
+import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { brotliCompressSync, gzipSync } from "node:zlib";
@@ -11,6 +12,11 @@ const host = process.env.HOST || "127.0.0.1";
 const supabaseUrl = trimTrailingSlash(process.env.SUPABASE_URL || "");
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 const ocrStudioApi = process.env.OCR_STUDIO_API || "http://127.0.0.1:8787/api/vision-ocr";
+const authDir = path.join(root, ".upkeep-auth");
+const usersFile = path.join(authDir, "users.json");
+const sessionCookieName = "upkeep_session";
+const sessionTtlMs = 1000 * 60 * 60 * 24 * 7;
+const sessions = new Map();
 
 const memoryStore = {
   documents: [],
@@ -34,6 +40,16 @@ const mimeTypes = new Map([
 const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url || "/", `http://${host}:${port}`);
+
+    if (url.pathname.startsWith("/api/auth/")) {
+      await handleAuthApi(request, response, url);
+      return;
+    }
+
+    if (url.pathname.startsWith("/api/") && url.pathname !== "/api/health" && !getSessionUser(request)) {
+      sendJson(response, 401, { error: "Sign in required." });
+      return;
+    }
 
     if (url.pathname.startsWith("/api/")) {
       await handleApi(request, response, url);
@@ -60,13 +76,52 @@ async function handleApi(request, response, url) {
     return;
   }
 
+  if (request.method === "GET" && url.pathname === "/api/profile") {
+    const user = await currentUser(request);
+    if (!user) {
+      sendJson(response, 401, { error: "Sign in required." });
+      return;
+    }
+    sendJson(response, 200, profilePayload(user));
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/profile") {
+    const user = await currentUser(request);
+    if (!user) {
+      sendJson(response, 401, { error: "Sign in required." });
+      return;
+    }
+
+    const payload = await readJsonBody(request);
+    let profile;
+    try {
+      profile = normalizeProfile(payload);
+    } catch (error) {
+      sendJson(response, 400, { error: error.message });
+      return;
+    }
+
+    const updated = await updateUserProfile(user.id, profile);
+    const token = getCookie(request, sessionCookieName);
+    const session = token ? sessions.get(token) : null;
+    if (session) session.user = publicUser(updated);
+    sendJson(response, 200, profilePayload(updated));
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/api/workspace") {
+    const user = await currentUser(request);
     const [documents, records, exports] = await Promise.all([
       listRows("upkeep_documents"),
       listRows("upkeep_records"),
       listRows("upkeep_exports")
     ]);
-    sendJson(response, 200, summarizeWorkspace(documents, records, exports));
+    sendJson(response, 200, {
+      ...summarizeWorkspace(documents, records, exports),
+      user: user ? publicUser(user) : null,
+      profile: user ? profilePayload(user).profile : null
+    });
     return;
   }
 
@@ -171,10 +226,111 @@ async function handleApi(request, response, url) {
   sendJson(response, 404, { error: "API route not found" });
 }
 
+async function handleAuthApi(request, response, url) {
+  if (request.method === "GET" && url.pathname === "/api/auth/session") {
+    const user = await currentUser(request);
+    sendJson(response, 200, user
+      ? { authenticated: true, user: publicUser(user) }
+      : { authenticated: false, user: null });
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/auth/signup") {
+    const payload = await readJsonBody(request);
+    const email = normalizeEmail(payload.email);
+    const password = String(payload.password || "");
+
+    try {
+      validateCredentials(email, password);
+    } catch (error) {
+      sendJson(response, 400, { error: error.message });
+      return;
+    }
+
+    const users = await readUsers();
+    if (users.some((user) => user.email === email)) {
+      sendJson(response, 409, { error: "An account already exists for that email." });
+      return;
+    }
+
+    const user = {
+      id: createId("usr"),
+      email,
+      password_hash: hashPassword(password),
+      created_at: new Date().toISOString()
+    };
+    users.push(user);
+    await writeUsers(users);
+
+    const token = createSession(user);
+    sendJson(response, 201, { authenticated: true, user: publicUser(user) }, {
+      "Set-Cookie": buildSessionCookie(token)
+    });
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/auth/login") {
+    const payload = await readJsonBody(request);
+    const email = normalizeEmail(payload.email);
+    const password = String(payload.password || "");
+    const users = await readUsers();
+    const user = users.find((item) => item.email === email);
+
+    if (!user || !verifyPassword(password, user.password_hash)) {
+      sendJson(response, 401, { error: "Email or password is incorrect." });
+      return;
+    }
+
+    const token = createSession(user);
+    sendJson(response, 200, { authenticated: true, user: publicUser(user) }, {
+      "Set-Cookie": buildSessionCookie(token)
+    });
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/auth/logout") {
+    const token = getCookie(request, sessionCookieName);
+    if (token) sessions.delete(token);
+    sendJson(response, 200, { ok: true }, {
+      "Set-Cookie": expireSessionCookie()
+    });
+    return;
+  }
+
+  sendJson(response, 404, { error: "Auth route not found" });
+}
+
 async function serveStatic(request, response, url) {
   const pathname = decodeURIComponent(url.pathname);
+  const session = getSessionUser(request);
+
+  const isBackendPage = pathname === "/backend" || pathname === "/backend.html";
+  const isProfilePage = pathname === "/profile" || pathname === "/profile.html";
+
+  if ((isBackendPage || isProfilePage) && !session) {
+    redirect(response, `/login?next=${encodeURIComponent("/backend")}`);
+    return;
+  }
+
+  if (isBackendPage && session) {
+    const user = await currentUser(request);
+    if (user && !publicUser(user).profileComplete) {
+      redirect(response, `/profile?next=${encodeURIComponent("/backend")}`);
+      return;
+    }
+  }
+
+  if ((pathname === "/login" || pathname === "/login.html") && session) {
+    redirect(response, `/profile?next=${encodeURIComponent("/backend")}`);
+    return;
+  }
+
   const requestedPath = pathname === "/"
     ? "index.html"
+    : pathname === "/login"
+      ? "login.html"
+    : pathname === "/profile"
+      ? "profile.html"
     : pathname === "/backend"
       ? "backend.html"
       : pathname.replace(/^\/+/, "");
@@ -217,6 +373,162 @@ async function serveStatic(request, response, url) {
 
   response.writeHead(200, headers);
   response.end(body);
+}
+
+async function readUsers() {
+  const raw = await readFile(usersFile, "utf8").catch((error) => {
+    if (error?.code === "ENOENT") return "[]";
+    throw error;
+  });
+  const users = JSON.parse(raw || "[]");
+  return Array.isArray(users) ? users : [];
+}
+
+async function writeUsers(users) {
+  await mkdir(authDir, { recursive: true });
+  await writeFile(usersFile, `${JSON.stringify(users, null, 2)}\n`);
+}
+
+async function currentUser(request) {
+  const session = getSessionUser(request);
+  if (!session?.user?.id) return null;
+  const users = await readUsers();
+  return users.find((user) => user.id === session.user.id) || null;
+}
+
+async function updateUserProfile(userId, profile) {
+  const users = await readUsers();
+  const index = users.findIndex((user) => user.id === userId);
+  if (index === -1) throw new Error("Account not found.");
+
+  users[index] = {
+    ...users[index],
+    profile,
+    profile_completed_at: users[index].profile_completed_at || new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  };
+  await writeUsers(users);
+  return users[index];
+}
+
+function profilePayload(user) {
+  const profile = user.profile || {};
+  return {
+    user: publicUser(user),
+    profile: {
+      name: String(profile.name || ""),
+      business: String(profile.business || ""),
+      useFor: String(profile.useFor || ""),
+      referredFrom: String(profile.referredFrom || ""),
+      updatedAt: profile.updatedAt || user.updated_at || ""
+    }
+  };
+}
+
+function normalizeProfile(payload) {
+  const profile = {
+    name: cleanProfileField(payload.name),
+    business: cleanProfileField(payload.business),
+    useFor: cleanProfileField(payload.useFor, 800),
+    referredFrom: cleanProfileField(payload.referredFrom, 220),
+    updatedAt: new Date().toISOString()
+  };
+
+  if (!profile.name) throw new Error("Add your name.");
+  if (!profile.business) throw new Error("Add your business.");
+  if (!profile.useFor) throw new Error("Tell us what you are using Upkeep for.");
+  if (!profile.referredFrom) throw new Error("Add where you heard about Upkeep.");
+
+  return profile;
+}
+
+function cleanProfileField(value, maxLength = 160) {
+  return String(value || "").trim().replace(/\s+/g, " ").slice(0, maxLength);
+}
+
+function normalizeEmail(email) {
+  return String(email || "").trim().toLowerCase();
+}
+
+function validateCredentials(email, password) {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    throw new Error("Enter a valid email address.");
+  }
+
+  if (password.length < 8) {
+    throw new Error("Password must be at least 8 characters.");
+  }
+}
+
+function hashPassword(password, salt = randomBytes(16).toString("hex")) {
+  const key = scryptSync(password, salt, 64).toString("hex");
+  return `${salt}:${key}`;
+}
+
+function verifyPassword(password, storedHash) {
+  const [salt, key] = String(storedHash || "").split(":");
+  if (!salt || !key) return false;
+
+  const expected = Buffer.from(key, "hex");
+  const actual = scryptSync(password, salt, 64);
+  return expected.length === actual.length && timingSafeEqual(expected, actual);
+}
+
+function createSession(user) {
+  const token = randomBytes(32).toString("hex");
+  sessions.set(token, {
+    user: publicUser(user),
+    expiresAt: Date.now() + sessionTtlMs
+  });
+  return token;
+}
+
+function getSessionUser(request) {
+  const token = getCookie(request, sessionCookieName);
+  if (!token) return null;
+
+  const session = sessions.get(token);
+  if (!session) return null;
+
+  if (session.expiresAt <= Date.now()) {
+    sessions.delete(token);
+    return null;
+  }
+
+  return session;
+}
+
+function publicUser(user) {
+  const profile = user.profile || {};
+  return {
+    id: user.id,
+    email: user.email,
+    profileComplete: Boolean(profile.name && profile.business && profile.useFor && profile.referredFrom)
+  };
+}
+
+function getCookie(request, name) {
+  const cookies = String(request.headers.cookie || "").split(";");
+  const prefix = `${name}=`;
+  for (const cookie of cookies) {
+    const value = cookie.trim();
+    if (value.startsWith(prefix)) return decodeURIComponent(value.slice(prefix.length));
+  }
+  return "";
+}
+
+function buildSessionCookie(token) {
+  const maxAge = Math.floor(sessionTtlMs / 1000);
+  return `${sessionCookieName}=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}`;
+}
+
+function expireSessionCookie() {
+  return `${sessionCookieName}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`;
+}
+
+function redirect(response, location) {
+  response.writeHead(302, { Location: location });
+  response.end();
 }
 
 function preferredCompression(request, contentType, byteLength) {
@@ -849,7 +1161,8 @@ async function readJsonBody(request) {
     body += chunk;
     if (body.length > 26 * 1024 * 1024) throw new Error("Request body is too large.");
   }
-  return body ? JSON.parse(body) : {};
+  const cleanBody = body.replace(/^\uFEFF/, "");
+  return cleanBody ? JSON.parse(cleanBody) : {};
 }
 
 async function fetchJson(url, options) {
@@ -870,8 +1183,8 @@ function supabaseHeaders() {
   };
 }
 
-function sendJson(response, statusCode, payload) {
-  response.writeHead(statusCode, { "Content-Type": "application/json; charset=utf-8" });
+function sendJson(response, statusCode, payload, headers = {}) {
+  response.writeHead(statusCode, { ...headers, "Content-Type": "application/json; charset=utf-8" });
   response.end(JSON.stringify(payload));
 }
 

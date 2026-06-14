@@ -1,0 +1,39 @@
+.profile-shell {
+  gap: 36px;
+}
+
+.profile-grid {
+  grid-template-columns: minmax(0, 0.92fr) minmax(360px, 470px);
+}
+
+.profile-copy h1 {
+  max-width: 760px;
+}
+
+.profile-panel {
+  gap: 15px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 112px;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 13px;
+  background: rgb(2 6 5 / 0.58);
+  color: var(--ink);
+  font: inherit;
+  outline: none;
+}
+
+textarea:focus-visible {
+  border-color: rgb(158 232 111 / 0.58);
+  box-shadow: 0 0 0 4px rgb(158 232 111 / 0.13);
+}
+
+@media (max-width: 820px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}

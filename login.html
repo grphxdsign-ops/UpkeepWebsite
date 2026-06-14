@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign in to Upkeep</title>
+    <script>document.documentElement.classList.add("js");</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="login.css">
+  </head>
+  <body>
+    <main class="login-shell">
+      <a class="brand" href="/">
+        <svg class="brand-logo" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M16 17c4-4 11-5 17 0v32c-6-5-13-4-17 0V17Z"></path>
+          <path d="M33 17c6-5 13-4 17 0v32c-4-4-11-5-17 0V17Z"></path>
+          <path class="brand-logo-accent" d="M33 44V19"></path>
+          <path class="brand-logo-accent" d="M25 27l8-8 8 8"></path>
+        </svg>
+        <span>Upkeep</span>
+      </a>
+
+      <section class="login-grid" aria-label="Account access">
+        <div class="login-copy">
+          <p class="quiet-label">Workspace access</p>
+          <h1>Receipts behave better with a name on the door.</h1>
+        </div>
+
+        <form class="login-panel" id="authForm">
+          <div class="mode-switch" aria-label="Account mode">
+            <button class="is-active" type="button" data-mode="login">Sign in</button>
+            <button type="button" data-mode="signup">Create account</button>
+          </div>
+
+          <label>
+            <span>Email</span>
+            <input id="email" name="email" type="email" autocomplete="email" required>
+          </label>
+
+          <label>
+            <span>Password</span>
+            <input id="password" name="password" type="password" autocomplete="current-password" minlength="8" required>
+          </label>
+
+          <p class="form-error" id="formError" role="alert"></p>
+
+          <button class="submit-button" id="submitButton" type="submit">Sign in</button>
+        </form>
+      </section>
+    </main>
+    <script src="login.js"></script>
+  </body>
+</html>

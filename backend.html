@@ -4,13 +4,63 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Upkeep Workspace</title>
-    <script>document.documentElement.classList.add("js");</script>
+    <script>
+      document.documentElement.classList.add("js");
+      try {
+        document.documentElement.dataset.theme = localStorage.getItem("upkeep-theme") || "dark";
+      } catch (error) {
+        document.documentElement.dataset.theme = "dark";
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="backend.css">
   </head>
   <body>
+    <svg class="icon-sprite" aria-hidden="true" focusable="false">
+      <symbol id="icon-inbox" viewBox="0 0 24 24">
+        <path d="M7 10.5h3.2c.6 0 1.1.3 1.4.8l.8 1.4c.3.5.8.8 1.4.8H17"></path>
+        <path d="M7.5 3.5h9c2.6 0 4 1.4 4 4v9c0 2.6-1.4 4-4 4h-9c-2.6 0-4-1.4-4-4v-9c0-2.6 1.4-4 4-4Z"></path>
+        <path d="M3.8 14h4.5"></path>
+        <path d="M15.8 14h4.4"></path>
+      </symbol>
+      <symbol id="icon-records" viewBox="0 0 24 24">
+        <path d="M8 6.5h8"></path>
+        <path d="M8 11.5h8"></path>
+        <path d="M8 16.5h5"></path>
+        <path d="M6.5 3.5h11c1.7 0 3 1.3 3 3v11c0 1.7-1.3 3-3 3h-11c-1.7 0-3-1.3-3-3v-11c0-1.7 1.3-3 3-3Z"></path>
+      </symbol>
+      <symbol id="icon-review" viewBox="0 0 24 24">
+        <path d="M9.5 12.1 11.3 14l3.5-4"></path>
+        <path d="M7 3.8h10c1.9 0 3.2 1.3 3.2 3.2v10c0 1.9-1.3 3.2-3.2 3.2H7c-1.9 0-3.2-1.3-3.2-3.2V7c0-1.9 1.3-3.2 3.2-3.2Z"></path>
+        <path d="M8 7.2h8"></path>
+      </symbol>
+      <symbol id="icon-storage" viewBox="0 0 24 24">
+        <path d="M6.5 8.5h11"></path>
+        <path d="M6.5 12h11"></path>
+        <path d="M9 15.5h6"></path>
+        <path d="M6.5 3.5h11c1.7 0 3 1.3 3 3v11c0 1.7-1.3 3-3 3h-11c-1.7 0-3-1.3-3-3v-11c0-1.7 1.3-3 3-3Z"></path>
+      </symbol>
+      <symbol id="icon-profile" viewBox="0 0 24 24">
+        <path d="M12 12.2a3.7 3.7 0 1 0 0-7.4 3.7 3.7 0 0 0 0 7.4Z"></path>
+        <path d="M5.8 20c.6-3.2 2.8-5.1 6.2-5.1s5.6 1.9 6.2 5.1"></path>
+      </symbol>
+      <symbol id="icon-sun" viewBox="0 0 24 24">
+        <path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path>
+        <path d="M12 2.8v2"></path>
+        <path d="M12 19.2v2"></path>
+        <path d="m4.2 4.2 1.4 1.4"></path>
+        <path d="m18.4 18.4 1.4 1.4"></path>
+        <path d="M2.8 12h2"></path>
+        <path d="M19.2 12h2"></path>
+        <path d="m4.2 19.8 1.4-1.4"></path>
+        <path d="m18.4 5.6 1.4-1.4"></path>
+      </symbol>
+      <symbol id="icon-moon" viewBox="0 0 24 24">
+        <path d="M20.2 14.5A7.6 7.6 0 0 1 9.5 3.8 8.4 8.4 0 1 0 20.2 14.5Z"></path>
+      </symbol>
+    </svg>
     <main class="backend-shell">
       <aside class="backend-sidebar" aria-label="Backend navigation">
         <a class="brand" href="/">
@@ -23,18 +73,46 @@
           <span>Upkeep</span>
         </a>
         <nav class="backend-nav" aria-label="Workspace views">
-          <a href="#intake" class="is-active">Inbox</a>
-          <a href="#records">Records</a>
-          <a href="#review">Review</a>
-          <a href="#storage">Storage</a>
+          <a href="#intake" class="is-active"><span class="nav-mark"><svg><use href="#icon-inbox"></use></svg></span><span>Inbox</span></a>
+          <a href="#records"><span class="nav-mark"><svg><use href="#icon-records"></use></svg></span><span>Records</span></a>
+          <a href="#review"><span class="nav-mark"><svg><use href="#icon-review"></use></svg></span><span>Review</span></a>
+          <a href="#storage"><span class="nav-mark"><svg><use href="#icon-storage"></use></svg></span><span>Storage</span></a>
         </nav>
-        <div class="connection-card">
-          <span>Storage mode</span>
-          <strong id="connectionState">Checking</strong>
+        <div class="theme-switcher" aria-label="Appearance">
+          <button class="theme-choice is-active" type="button" data-theme-choice="dark">
+            <svg><use href="#icon-moon"></use></svg>
+            <span>Dark</span>
+          </button>
+          <button class="theme-choice" type="button" data-theme-choice="light">
+            <svg><use href="#icon-sun"></use></svg>
+            <span>Light</span>
+          </button>
         </div>
+        <button class="sidebar-account" id="profileShortcut" type="button" data-view-link="profile" aria-label="Open profile and settings">
+          <span class="sidebar-avatar" id="sidebarInitial">U</span>
+          <div>
+            <strong id="sidebarProfileName">Upkeep user</strong>
+            <small id="sidebarProfileBusiness">Workspace loading</small>
+          </div>
+          <svg class="sidebar-account-icon"><use href="#icon-profile"></use></svg>
+        </button>
+        <button class="backend-logout" id="logoutButton" type="button">Log out</button>
       </aside>
 
       <section class="workspace" aria-label="Backend application workspace">
+        <header class="workspace-topbar">
+          <span class="workspace-icon" id="workspaceIcon" aria-hidden="true"><svg><use href="#icon-inbox"></use></svg></span>
+          <div>
+            <p class="quiet-label" id="workspaceLabel">Inbox</p>
+            <h1 id="workspaceGreeting">Your records, cleaned up.</h1>
+            <p id="workspaceSubcopy">Drop messy source files in. Upkeep turns them into review-ready financial records.</p>
+          </div>
+          <div class="workspace-actions" aria-label="Workspace quick actions">
+            <span class="workspace-business" id="workspaceBusiness">Business setup pending</span>
+            <a class="button primary compact" id="workspaceAction" href="#intake" data-view-link="intake">Add files</a>
+          </div>
+        </header>
+
         <section class="app-view inbox-view is-active" id="intake" aria-labelledby="intakeTitle">
           <section class="intake-panel">
             <div class="panel-heading">
@@ -47,8 +125,9 @@
 
             <label class="drop-target" for="documentInput">
               <input id="documentInput" type="file" accept=".txt,.csv,.json,image/*" multiple>
-              <strong>Add documents</strong>
-              <small>TXT, CSV, JSON, or image files</small>
+              <span class="drop-orbit" aria-hidden="true"></span>
+              <strong>Bring in the paper trail</strong>
+              <small>Receipts, statements, CSVs, JSON, or images</small>
             </label>
 
             <div class="file-list" id="fileList" aria-live="polite">
@@ -91,6 +170,7 @@
 
             <div class="queue-actions">
               <button class="button secondary" id="selectAllRecordsButton" type="button" disabled>Select all transactions</button>
+              <a class="button primary" href="#review" data-view-link="review">Build export</a>
             </div>
 
             <div class="records-list" id="recordsList" aria-live="polite">
@@ -187,6 +267,59 @@
               <p>No files stored yet.</p>
             </div>
           </section>
+        </section>
+
+        <section class="app-view profile-view" id="profile" aria-labelledby="profileTitle">
+          <section class="profile-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="quiet-label">Profile</p>
+                <h2 id="profileTitle">Profile details</h2>
+              </div>
+              <a class="button secondary compact" href="/profile?next=/backend%23profile">Edit</a>
+            </div>
+
+            <dl class="profile-fields" id="profileFields">
+              <div><dt>Name</dt><dd>-</dd></div>
+              <div><dt>Business</dt><dd>-</dd></div>
+              <div><dt>Using Upkeep for</dt><dd>-</dd></div>
+              <div><dt>Heard from</dt><dd>-</dd></div>
+            </dl>
+          </section>
+
+          <aside class="settings-panel" aria-label="Profile settings and account summary">
+            <div class="panel-heading">
+              <div>
+                <p class="quiet-label">Settings</p>
+                <h2>Workspace settings</h2>
+              </div>
+            </div>
+
+            <div class="settings-preferences">
+              <article class="preference-row">
+                <div>
+                  <strong>Appearance</strong>
+                  <span>Switch the workspace between focused dark mode and soft light mode.</span>
+                </div>
+                <div class="theme-control" aria-label="Theme mode">
+                  <button type="button" data-theme-choice="dark">
+                    <svg><use href="#icon-moon"></use></svg>
+                    Dark
+                  </button>
+                  <button type="button" data-theme-choice="light">
+                    <svg><use href="#icon-sun"></use></svg>
+                    Light
+                  </button>
+                </div>
+              </article>
+            </div>
+
+            <div class="settings-list" id="profileSummary">
+              <article><span>Records</span><strong>0</strong></article>
+              <article><span>Exports</span><strong>0</strong></article>
+              <article><span>Account</span><strong>Signed in</strong></article>
+            </div>
+          </aside>
         </section>
         <datalist id="categoryOptions"></datalist>
       </section>

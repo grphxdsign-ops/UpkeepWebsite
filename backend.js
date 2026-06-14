@@ -3,6 +3,8 @@ const state = {
   documents: [],
   records: [],
   exports: [],
+  user: null,
+  profile: null,
   selectedRecordId: "",
   selectedExportIds: new Set(),
   selectedStorageIds: new Set(),
@@ -11,7 +13,7 @@ const state = {
 };
 
 const els = {
-  connectionState: document.querySelector("#connectionState"),
+  logoutButton: document.querySelector("#logoutButton"),
   documentInput: document.querySelector("#documentInput"),
   uploadCount: document.querySelector("#uploadCount"),
   fileList: document.querySelector("#fileList"),
@@ -45,13 +47,29 @@ const els = {
   exportPdfButton: document.querySelector("#exportPdfButton"),
   exportPreview: document.querySelector("#exportPreview"),
   previewTitle: document.querySelector("#previewTitle"),
-  previewCount: document.querySelector("#previewCount")
+  previewCount: document.querySelector("#previewCount"),
+  profileFields: document.querySelector("#profileFields"),
+  profileSummary: document.querySelector("#profileSummary"),
+  workspaceGreeting: document.querySelector("#workspaceGreeting"),
+  workspaceSubcopy: document.querySelector("#workspaceSubcopy"),
+  workspaceLabel: document.querySelector("#workspaceLabel"),
+  workspaceIcon: document.querySelector("#workspaceIcon"),
+  workspaceAction: document.querySelector("#workspaceAction"),
+  workspaceBusiness: document.querySelector("#workspaceBusiness"),
+  sidebarInitial: document.querySelector("#sidebarInitial"),
+  sidebarProfileName: document.querySelector("#sidebarProfileName"),
+  sidebarProfileBusiness: document.querySelector("#sidebarProfileBusiness"),
+  profileShortcut: document.querySelector("#profileShortcut"),
+  themeChoices: Array.from(document.querySelectorAll("[data-theme-choice]"))
 };
 
 init();
 
 function init() {
+  initTheme();
+  els.logoutButton?.addEventListener("click", logout);
   els.documentInput.addEventListener("change", handleFiles);
+  document.addEventListener("click", handleViewShortcut);
   els.processButton.addEventListener("click", processSelectedFiles);
   els.clearButton.addEventListener("click", clearFiles);
   els.refreshButton?.addEventListener("click", loadWorkspace);
@@ -69,13 +87,40 @@ function init() {
   els.deleteStorageButton.addEventListener("click", deleteSelectedStorage);
   els.reportType.addEventListener("change", handleReportTypeChange);
   els.reportTypeOptions.addEventListener("click", handleReportOptionClick);
+  els.themeChoices.forEach((button) => {
+    button.addEventListener("click", () => setTheme(button.dataset.themeChoice));
+  });
   [els.exportCsvButton, els.exportSheetButton, els.exportDocButton, els.exportPdfButton].forEach((link) => {
     link.addEventListener("click", () => {
       window.setTimeout(loadWorkspace, 900);
     });
   });
   renderCategoryOptions();
-  loadWorkspace();
+  loadWorkspace().then(showInitialView);
+}
+
+function initTheme() {
+  let savedTheme = "dark";
+  try {
+    savedTheme = localStorage.getItem("upkeep-theme") || document.documentElement.dataset.theme || "dark";
+  } catch (error) {
+    savedTheme = document.documentElement.dataset.theme || "dark";
+  }
+  setTheme(savedTheme, false);
+}
+
+function setTheme(theme, shouldStore = true) {
+  const normalized = theme === "light" ? "light" : "dark";
+  document.documentElement.dataset.theme = normalized;
+  els.themeChoices.forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.themeChoice === normalized);
+  });
+  if (!shouldStore) return;
+  try {
+    localStorage.setItem("upkeep-theme", normalized);
+  } catch (error) {
+    // Theme still applies for this session when storage is unavailable.
+  }
 }
 
 async function loadWorkspace() {
@@ -84,11 +129,17 @@ async function loadWorkspace() {
   try {
     const workspace = await fetchJson("/api/workspace");
     applyWorkspace(workspace);
-    els.connectionState.textContent = workspace.supabaseConfigured ? "Connected" : "Local memory";
     setStatus("Ready.");
   } catch (error) {
-    els.connectionState.textContent = "Unavailable";
     setStatus(error.message || "Could not load workspace.", "error");
+  }
+}
+
+async function logout() {
+  try {
+    await fetchJson("/api/auth/logout", { method: "POST" });
+  } finally {
+    window.location.href = "/login";
   }
 }
 
@@ -121,7 +172,13 @@ function renderFiles() {
 
 function renderInboxDocuments() {
   if (!state.documents.length) {
-    els.fileList.innerHTML = "<p>No documents selected.</p>";
+    els.fileList.innerHTML = `
+      <article class="empty-state empty-state-inline">
+        <span class="empty-kicker">No source files yet</span>
+        <strong>Start with a receipt, invoice, statement, or image.</strong>
+        <p>Upkeep keeps the original file close while it prepares clean records for review.</p>
+      </article>
+    `;
     return;
   }
 
@@ -207,6 +264,8 @@ function applyWorkspace(workspace) {
   state.documents = workspace.documents || [];
   state.records = workspace.records || [];
   state.exports = workspace.exports || [];
+  state.user = workspace.user || null;
+  state.profile = workspace.profile || null;
   state.selectedStorageIds = new Set(Array.from(state.selectedStorageIds).filter((id) => state.exports.some((item) => item.id === id)));
 
   if (!state.records.some((record) => record.id === state.selectedRecordId)) {
@@ -219,6 +278,8 @@ function applyWorkspace(workspace) {
   updateRecordSelectionAction();
   renderDetail();
   renderStorage();
+  renderProfile();
+  renderShellProfile();
   updateExportLinks();
   renderExportPreview();
 }
@@ -228,11 +289,19 @@ function renderStats(stats) {
   els.readyTotal.textContent = stats.ready || 0;
   els.reviewTotal.textContent = stats.review || 0;
   els.recordCount.textContent = `${stats.records || 0} record${stats.records === 1 ? "" : "s"}`;
+  renderProfile();
 }
 
 function renderRecords() {
   if (!state.records.length) {
-    els.recordsList.innerHTML = "<p>No records yet.</p>";
+    els.recordsList.innerHTML = `
+      <article class="empty-state">
+        <span class="empty-kicker">Clean slate</span>
+        <strong>No records prepared yet.</strong>
+        <p>Add source documents and Upkeep will build categorized lines you can review, edit, and export.</p>
+        <a class="button primary compact" href="#intake" data-view-link="intake">Open inbox</a>
+      </article>
+    `;
     updateRecordSelectionAction();
     return;
   }
@@ -326,6 +395,16 @@ function handleRecordClick(event) {
   renderRecords();
   renderDetail();
   renderExportPreview();
+}
+
+function handleViewShortcut(event) {
+  const shortcut = event.target.closest("[data-view-link]");
+  if (!shortcut) return;
+  const target = shortcut.dataset.viewLink;
+  if (!target || !els.views.some((view) => view.id === target)) return;
+  event.preventDefault();
+  showView(target, `#${target}`);
+  window.history.replaceState(null, "", `#${target}`);
 }
 
 function handleRecordSelection(event) {
@@ -453,6 +532,7 @@ function handleNavClick(event) {
   event.preventDefault();
   const target = event.currentTarget.getAttribute("href")?.replace("#", "");
   showView(target, `#${target}`);
+  window.history.replaceState(null, "", `#${target}`);
 }
 
 function showView(viewId, activeHref) {
@@ -462,6 +542,21 @@ function showView(viewId, activeHref) {
     const href = link.getAttribute("href");
     link.classList.toggle("is-active", activeHref ? href === activeHref : href === `#${normalized}`);
   });
+  els.profileShortcut?.classList.toggle("is-active", normalized === "profile");
+  updateWorkspaceHeader(normalized);
+}
+
+function showInitialView() {
+  const target = window.location.hash.replace("#", "");
+  if (target && els.views.some((view) => view.id === target)) {
+    showView(target, `#${target}`);
+    return;
+  }
+  updateWorkspaceHeader(currentViewId());
+}
+
+function currentViewId() {
+  return els.views.find((view) => view.classList.contains("is-active"))?.id || "intake";
 }
 
 function setStatus(message, type = "info") {
@@ -577,7 +672,14 @@ function renderStorage() {
     meta: `${exportLabel(item.export_type)} - ${String(item.file_type || "export").toUpperCase()} - ${item.record_count || 0} records`
   }));
   if (!items.length) {
-    els.storageList.innerHTML = "<p>No downloaded files stored yet.</p>";
+    els.storageList.innerHTML = `
+      <article class="empty-state">
+        <span class="empty-kicker">Nothing stored</span>
+        <strong>Your exports will land here.</strong>
+        <p>Download a CSV, spreadsheet, document, or PDF from Review and it will stay available in this workspace.</p>
+        <a class="button secondary compact" href="#review" data-view-link="review">Go to review</a>
+      </article>
+    `;
     updateStorageActions();
     return;
   }
@@ -593,6 +695,109 @@ function renderStorage() {
     </article>
   `).join("");
   updateStorageActions();
+}
+
+function renderProfile() {
+  if (!els.profileFields || !els.profileSummary) return;
+
+  const profile = state.profile || {};
+  const user = state.user || {};
+  const name = profile.name || "Not set";
+  const business = profile.business || "Not set";
+  const useFor = profile.useFor || "Not set";
+  const referredFrom = profile.referredFrom || "Not set";
+
+  els.profileFields.innerHTML = `
+    <div><dt>Name</dt><dd>${escapeHtml(name)}</dd></div>
+    <div><dt>Email</dt><dd>${escapeHtml(user.email || "Not set")}</dd></div>
+    <div><dt>Business</dt><dd>${escapeHtml(business)}</dd></div>
+    <div><dt>Using Upkeep for</dt><dd>${escapeHtml(useFor)}</dd></div>
+    <div><dt>Heard from</dt><dd>${escapeHtml(referredFrom)}</dd></div>
+  `;
+
+  els.profileSummary.innerHTML = `
+    <article><span>Records</span><strong>${escapeHtml(state.records.length)}</strong></article>
+    <article><span>Exports</span><strong>${escapeHtml(state.exports.length)}</strong></article>
+    <article><span>Business</span><strong>${escapeHtml(business)}</strong></article>
+    <article><span>Account</span><strong>${user.profileComplete ? "Profile complete" : "Needs setup"}</strong></article>
+  `;
+  renderShellProfile();
+}
+
+function renderShellProfile() {
+  const profile = state.profile || {};
+  const user = state.user || {};
+  const rawName = profile.name || user.email?.split("@")[0] || "Upkeep user";
+  const firstName = rawName.split(/\s+/).filter(Boolean)[0] || "there";
+  const business = profile.business || "Profile setup pending";
+  const initial = rawName.trim().charAt(0).toUpperCase() || "U";
+
+  updateWorkspaceHeader(currentViewId(), firstName);
+  if (els.workspaceBusiness) els.workspaceBusiness.textContent = business;
+  if (els.sidebarInitial) els.sidebarInitial.textContent = initial;
+  if (els.sidebarProfileName) els.sidebarProfileName.textContent = rawName;
+  if (els.sidebarProfileBusiness) els.sidebarProfileBusiness.textContent = business;
+}
+
+function updateWorkspaceHeader(viewId = "intake", firstName = "") {
+  const readyCount = state.records.filter((record) => record.status === "ready" && !record.needs_review).length;
+  const reviewCount = state.records.filter((record) => record.status !== "ready" || record.needs_review).length;
+  const name = firstName || (state.profile?.name || state.user?.email?.split("@")[0] || "").split(/\s+/).filter(Boolean)[0] || "there";
+  const headerCopy = {
+    intake: {
+      label: "Inbox",
+      icon: "icon-inbox",
+      title: "Bring in the source files.",
+      subcopy: "Upload receipts, statements, exports, or images. Upkeep keeps the original attached while it prepares clean records.",
+      action: "Add files",
+      actionView: "intake"
+    },
+    records: {
+      label: "Records",
+      icon: "icon-records",
+      title: state.records.length ? `${name}, review what Upkeep found.` : "Review what Upkeep finds.",
+      subcopy: state.records.length
+        ? `${readyCount} ready, ${reviewCount} waiting for a quick look. Select any line to fix categories, dates, amounts, or notes.`
+        : "Processed files become readable financial lines here, with review flags when something needs attention.",
+      action: "Build export",
+      actionView: "review"
+    },
+    review: {
+      label: "Review",
+      icon: "icon-review",
+      title: "Turn records into documents.",
+      subcopy: "Pick the export you need, preview the output, then download a clean file for your accountant or records.",
+      action: "Choose records",
+      actionView: "records"
+    },
+    storage: {
+      label: "Storage",
+      icon: "icon-storage",
+      title: "Downloaded files live here.",
+      subcopy: "Every export you create stays easy to find, re-download, or clear out when the job is done.",
+      action: "Create export",
+      actionView: "review"
+    },
+    profile: {
+      label: "Settings",
+      icon: "icon-profile",
+      title: "Profile and workspace settings.",
+      subcopy: "Keep your business details current and choose the display mode that feels best for the work.",
+      action: "Open inbox",
+      actionView: "intake"
+    }
+  };
+  const copy = headerCopy[viewId] || headerCopy.intake;
+
+  if (els.workspaceLabel) els.workspaceLabel.textContent = copy.label;
+  if (els.workspaceGreeting) els.workspaceGreeting.textContent = copy.title;
+  if (els.workspaceSubcopy) els.workspaceSubcopy.textContent = copy.subcopy;
+  if (els.workspaceIcon) els.workspaceIcon.innerHTML = `<svg><use href="#${copy.icon}"></use></svg>`;
+  if (els.workspaceAction) {
+    els.workspaceAction.textContent = copy.action;
+    els.workspaceAction.href = `#${copy.actionView}`;
+    els.workspaceAction.dataset.viewLink = copy.actionView;
+  }
 }
 
 function handleStorageSelection(event) {
@@ -679,7 +884,14 @@ function renderExportPreview() {
   els.previewTitle.textContent = exportLabel(state.reportType);
   els.previewCount.textContent = `${records.length} record${records.length === 1 ? "" : "s"}`;
   if (!records.length) {
-    els.exportPreview.innerHTML = "<p>No selected transactions yet.</p>";
+    els.exportPreview.innerHTML = `
+      <article class="empty-state export-empty">
+        <span class="empty-kicker">Preview waiting</span>
+        <strong>Select records to build this document.</strong>
+        <p>Ready records show up here as a clean table or summary before you download.</p>
+        <a class="button secondary compact" href="#records" data-view-link="records">Choose records</a>
+      </article>
+    `;
     return;
   }
 
