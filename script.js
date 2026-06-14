@@ -644,48 +644,32 @@ const initKineticHero = () => {
     return easeInOut((value - start) / (end - start));
   };
 
-  const polygonString = (points) =>
-    `polygon(${points.map(([x, y]) => `${x.toFixed(1)}% ${y.toFixed(1)}%`).join(", ")})`;
-
-  const morphPolygon = (from, to, amount) =>
-    polygonString(from.map(([x, y], index) => [lerp(x, to[index][0], amount), lerp(y, to[index][1], amount)]));
-
-  const pieceCount = prefersReducedMotion ? 0 : window.innerWidth <= 640 ? 84 : 132;
-  const pieceColumns = window.innerWidth <= 640 ? 12 : 16;
+  const shredContext = shredLayer instanceof HTMLCanvasElement ? shredLayer.getContext("2d", { alpha: true }) : null;
+  const grid = window.innerWidth <= 640
+    ? { columns: 18, rows: 28 }
+    : window.innerWidth <= 980
+      ? { columns: 24, rows: 36 }
+      : { columns: 30, rows: 44 };
+  const pieceCount = prefersReducedMotion || !shredContext ? 0 : grid.columns * grid.rows;
 
   const paperPieces = Array.from({ length: pieceCount }, (_, index) => {
-    const columns = pieceColumns;
-    const rows = Math.ceil(pieceCount / columns);
+    const columns = grid.columns;
+    const rows = grid.rows;
     const column = index % columns;
     const row = Math.floor(index / columns);
-    const isStrip = randomUnit(index + 2050) > 0.68;
-    const jitterX = (randomUnit(index + 2100) - 0.5) * 0.018;
-    const jitterY = (randomUnit(index + 2200) - 0.5) * 0.022;
-    const width = isStrip ? 0.011 + randomUnit(index + 2300) * 0.028 : 0.005 + randomUnit(index + 2300) * 0.012;
-    const height = isStrip ? 0.005 + randomUnit(index + 2400) * 0.015 : 0.0048 + randomUnit(index + 2400) * 0.012;
-    const x = clamp01(0.035 + column * (0.93 / columns) + jitterX);
-    const y = clamp01(0.03 + row * (0.91 / Math.max(1, rows - 1)) + jitterY);
+    const rowDepth = (row + 0.5) / rows;
+    const columnDepth = (column + 0.5) / columns;
+    const jitterX = (randomUnit(index + 2100) - 0.5) * 0.16;
+    const jitterY = (randomUnit(index + 2200) - 0.5) * 0.18;
+    const width = (1 / columns) * (1.04 + randomUnit(index + 2300) * 0.24);
+    const height = (1 / rows) * (1.04 + randomUnit(index + 2400) * 0.3);
+    const x = clamp01(column / columns + jitterX / columns);
+    const y = clamp01(row / rows + jitterY / rows);
     const outward = column < columns * 0.42 ? -1 : column > columns * 0.58 ? 1 : randomUnit(index + 2500) > 0.5 ? 1 : -1;
-    const field = Math.min(fields.length - 1, Math.floor((index / Math.max(1, pieceCount)) * fields.length));
-    const start = 0.36 + row * 0.008 + randomUnit(index + 2600) * 0.09;
-    const buildStart = 0.56 + field * 0.035 + randomUnit(index + 3450) * 0.055;
-    const buildEnd = Math.min(0.93, buildStart + 0.18 + randomUnit(index + 3550) * 0.07);
-    const clipA = [
-      [randomUnit(index + 3100) * 16, 0],
-      [42 + randomUnit(index + 3150) * 16, randomUnit(index + 3200) * 10],
-      [100, randomUnit(index + 3250) * 20],
-      [84 + randomUnit(index + 3300) * 16, 100],
-      [38 + randomUnit(index + 3350) * 24, 84 + randomUnit(index + 3375) * 16],
-      [0, 70 + randomUnit(index + 3400) * 28]
-    ];
-    const clipB = [
-      [0, 30 + randomUnit(index + 4100) * 10],
-      [42 + randomUnit(index + 4150) * 12, 18 + randomUnit(index + 4200) * 8],
-      [100, 14 + randomUnit(index + 4250) * 10],
-      [100, 66 + randomUnit(index + 4300) * 10],
-      [46 + randomUnit(index + 4350) * 12, 76 + randomUnit(index + 4375) * 10],
-      [0, 82 + randomUnit(index + 4400) * 10]
-    ];
+    const field = Math.min(fields.length - 1, Math.floor(rowDepth * fields.length));
+    const start = 0.4 + (1 - rowDepth) * 0.26 + randomUnit(index + 2600) * 0.045;
+    const pourStart = Math.min(0.78, start + 0.08 + randomUnit(index + 3450) * 0.11);
+    const pourEnd = Math.min(0.95, pourStart + 0.16 + randomUnit(index + 3550) * 0.08);
 
     return {
       x,
@@ -693,33 +677,27 @@ const initKineticHero = () => {
       w: width,
       h: height,
       field,
-      tx: 0.12 + randomUnit(index + 3600) * 0.76,
-      ty: 0.18 + randomUnit(index + 3700) * 0.55,
-      targetW: isStrip ? 5 + randomUnit(index + 3800) * 15 : 2 + randomUnit(index + 3800) * 6,
-      targetH: isStrip ? 1.6 + randomUnit(index + 3900) * 3.2 : 1.4 + randomUnit(index + 3900) * 2.8,
-      dx: outward * (28 + randomUnit(index + 2700) * 134),
-      dy: 24 + row * 12 + randomUnit(index + 2800) * 132,
-      rot: (randomUnit(index + 2900) - 0.5) * 86,
-      targetRot: (randomUnit(index + 3000) - 0.5) * 9,
+      tx: 0.09 + columnDepth * 0.82 + (randomUnit(index + 3600) - 0.5) * 0.12,
+      ty: 0.22 + randomUnit(index + 3700) * 0.5,
+      dx: outward * (18 + randomUnit(index + 2700) * 94),
+      dy: 34 + rowDepth * 132 + randomUnit(index + 2800) * 92,
+      rot: (randomUnit(index + 2900) - 0.5) * 144,
+      targetRot: (randomUnit(index + 3000) - 0.5) * 12,
+      depth: rowDepth,
+      flutter: 0.55 + randomUnit(index + 3150) * 1.2,
+      spin: randomUnit(index + 3200) > 0.5 ? 1 : -1,
       start,
-      end: start + 0.18 + randomUnit(index + 4500) * 0.17,
-      buildStart,
-      buildEnd,
-      absorbStart: Math.max(buildStart, buildEnd - 0.07),
-      absorbEnd: Math.min(0.99, buildEnd + 0.07),
-      clipA,
-      clipB
+      end: Math.min(0.9, start + 0.16 + randomUnit(index + 4500) * 0.08),
+      pourStart,
+      pourEnd,
+      absorbStart: Math.max(pourStart + 0.05, pourEnd - 0.06),
+      absorbEnd: Math.min(0.995, pourEnd + 0.055 + randomUnit(index + 4600) * 0.04)
     };
   });
 
-  const pieceNodes = paperPieces.map((piece, index) => {
-    const node = document.createElement("span");
-    node.className = "receipt-piece";
-    node.style.clipPath = polygonString(piece.clipA);
-    node.style.setProperty("--piece-origin", `${40 + randomUnit(index + 1700) * 35}% ${35 + randomUnit(index + 1800) * 42}%`);
-    shredLayer.append(node);
-    return node;
-  });
+  let shredWidth = 0;
+  let shredHeight = 0;
+  let shredDpr = 1;
 
   const fieldCharacters = fields.map((field) => {
     const value = field.querySelector("strong");
@@ -777,29 +755,49 @@ const initKineticHero = () => {
   let targetProgress = 0;
   let ticking = false;
 
+  const resizeShredCanvas = () => {
+    if (!shredContext) return;
+
+    const width = Math.max(1, Math.round(stage.clientWidth));
+    const height = Math.max(1, Math.round(stage.clientHeight));
+    const dpr = Math.min(window.devicePixelRatio || 1, window.innerWidth <= 640 ? 1 : 1.25);
+
+    if (width === shredWidth && height === shredHeight && dpr === shredDpr) return;
+
+    shredWidth = width;
+    shredHeight = height;
+    shredDpr = dpr;
+    shredLayer.width = Math.round(width * dpr);
+    shredLayer.height = Math.round(height * dpr);
+    shredLayer.style.width = `${width}px`;
+    shredLayer.style.height = `${height}px`;
+    shredContext.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+
   const measure = () => {
     viewportHeight = window.innerHeight;
     heroTop = hero.offsetTop;
     heroTravel = Math.max(1, hero.offsetHeight - viewportHeight);
+    resizeShredCanvas();
   };
 
   const currentProgress = () => clamp01((window.scrollY - heroTop) / heroTravel);
 
   const setHeroVariables = (progress) => {
     const receiptFlow = smoothstep(0.04, 0.58, progress);
-    const tearFlow = smoothstep(0.34, 0.66, progress);
-    const parseFlow = smoothstep(0.46, 0.84, progress);
+    const tearFlow = smoothstep(0.4, 0.82, progress);
+    const parseFlow = smoothstep(0.48, 0.86, progress);
     const recordFlow = smoothstep(0.48, 0.64, progress);
     const completeFlow = smoothstep(0.74, 0.9, progress);
-    const absorbFlow = smoothstep(0.54, 0.88, progress) * (1 - smoothstep(0.94, 1, progress) * 0.35);
+    const absorbFlow = smoothstep(0.54, 0.9, progress) * (1 - smoothstep(0.96, 1, progress) * 0.35);
     const isMobile = window.innerWidth <= 640;
     const copyFade = smoothstep(isMobile ? 0.16 : 0.2, isMobile ? 0.32 : 0.38, progress);
     const receiptDrop = isMobile ? 34 : 154;
     const parseLift = isMobile ? -20 : -26;
     const mobileStageLift = isMobile ? smoothstep(0.27, 0.48, progress) * -160 : 0;
     const mobileScanLift = isMobile ? Math.sin(clamp01((progress - 0.22) / 0.3) * Math.PI) * -138 : 0;
-    const scanFlow = smoothstep(0.24, 0.38, progress) * (1 - smoothstep(0.54, 0.64, progress));
-    const scanSweep = smoothstep(0.25, 0.52, progress);
+    const scanFlow = smoothstep(0.22, 0.32, progress) * (1 - smoothstep(0.56, 0.66, progress));
+    const scanSweep = smoothstep(0.24, 0.55, progress);
     const receiptSway = Math.sin(progress * Math.PI * 2.8) * (isMobile ? 8 : 18);
     const receiptX = lerp(0, isMobile ? 0 : -42, receiptFlow) + lerp(0, isMobile ? -8 : -68, parseFlow) + receiptSway * (1 - tearFlow * 0.7);
     const receiptY = lerp(0, receiptDrop, receiptFlow) + lerp(0, parseLift, parseFlow) + mobileStageLift + mobileScanLift;
@@ -807,10 +805,16 @@ const initKineticHero = () => {
     const receiptFlipY = lerp(isMobile ? -8 : -18, 0, smoothstep(0, 0.22, progress)) + Math.sin(progress * Math.PI * 1.4) * (1 - tearFlow) * (isMobile ? 1.4 : 2.8);
     const receiptFlipX = lerp(isMobile ? 5 : 8, 0, smoothstep(0.02, 0.28, progress));
     const receiptScale = lerp(1, isMobile ? 0.76 : 0.84, parseFlow);
-    const intactFade = smoothstep(0.4, 0.64, progress);
-    const dissolveFade = smoothstep(0.5, 0.8, progress);
-    const receiptOpacity = Math.max(0, (1 - intactFade * 0.72) * (1 - dissolveFade));
+    const cutFlow = smoothstep(0.4, 0.82, progress);
+    const dissolveFade = smoothstep(0.78, 0.91, progress);
+    const receiptOpacity = Math.max(0, 1 - dissolveFade);
     const shadowPeak = Math.sin(clamp01((progress - 0.05) / 0.58) * Math.PI);
+    const scannerLock = smoothstep(0.22, 0.34, progress);
+    const scanAnchorX = isMobile ? -5 : -40;
+    const scanAnchorY = isMobile ? -78 : 126;
+    const scanAnchorRotate = isMobile ? 2.5 : 1.8;
+    const scanAnchorScale = isMobile ? 0.78 : 0.9;
+    const receiptScanHighlight = scanFlow * Math.sin(scanSweep * Math.PI);
 
     hero.style.setProperty("--receipt-x", `${receiptX.toFixed(2)}px`);
     hero.style.setProperty("--receipt-y", `${receiptY.toFixed(2)}px`);
@@ -819,9 +823,18 @@ const initKineticHero = () => {
     hero.style.setProperty("--receipt-flip-x", `${receiptFlipX.toFixed(2)}deg`);
     hero.style.setProperty("--receipt-scale", receiptScale.toFixed(3));
     hero.style.setProperty("--receipt-opacity", receiptOpacity.toFixed(3));
+    hero.style.setProperty("--receipt-cut", `${(cutFlow * 100).toFixed(2)}%`);
+    hero.style.setProperty("--receipt-brightness", (1 + receiptScanHighlight * 0.16).toFixed(3));
+    hero.style.setProperty("--receipt-saturate", (1 + receiptScanHighlight * 0.14).toFixed(3));
     hero.style.setProperty("--scan-opacity", scanFlow.toFixed(3));
     hero.style.setProperty("--scan-y", `${lerp(7, 93, scanSweep).toFixed(2)}%`);
     hero.style.setProperty("--scan-intensity", (0.35 + Math.sin(scanSweep * Math.PI) * 0.65).toFixed(3));
+    hero.style.setProperty("--scan-frame-x", `${lerp(receiptX, scanAnchorX, scannerLock).toFixed(2)}px`);
+    hero.style.setProperty("--scan-frame-y", `${lerp(receiptY, scanAnchorY, scannerLock).toFixed(2)}px`);
+    hero.style.setProperty("--scan-frame-rotate", `${lerp(receiptRotate, scanAnchorRotate, scannerLock).toFixed(2)}deg`);
+    hero.style.setProperty("--scan-frame-scale", lerp(receiptScale, scanAnchorScale, scannerLock).toFixed(3));
+    hero.style.setProperty("--scan-frame-flip-y", `${lerp(receiptFlipY, 0, scannerLock).toFixed(2)}deg`);
+    hero.style.setProperty("--scan-frame-flip-x", `${lerp(receiptFlipX, 0, scannerLock).toFixed(2)}deg`);
     hero.style.setProperty("--receipt-shadow-alpha", (0.66 + shadowPeak * 0.24).toFixed(3));
     hero.style.setProperty("--wordmark-shadow-x", `${(receiptX * 0.38).toFixed(2)}px`);
     hero.style.setProperty("--wordmark-shadow-y", `${(receiptY * 0.12).toFixed(2)}px`);
@@ -849,7 +862,7 @@ const initKineticHero = () => {
     }
 
     fields.forEach((field, index) => {
-      const fieldProgress = smoothstep(0.58 + index * 0.032, 0.75 + index * 0.022, progress);
+      const fieldProgress = smoothstep(0.56 + index * 0.026, 0.7 + index * 0.023, progress);
       field.style.setProperty("--field-fill", fieldProgress.toFixed(3));
       field.classList.toggle("is-filled", fieldProgress > 0.84);
       field.tabIndex = recordFlow > 0.72 ? 0 : -1;
@@ -912,64 +925,77 @@ const initKineticHero = () => {
   });
 
   const setPaperPieces = (progress) => {
-    if (progress < 0.32 || progress > 0.965) {
-      paperPieces.forEach((_, index) => {
-        const node = pieceNodes[index];
-        if (node.dataset.active !== "0") {
-          node.dataset.active = "0";
-          node.style.setProperty("--piece-opacity", "0");
-        }
-      });
+    if (!shredContext) return;
+
+    resizeShredCanvas();
+    shredContext.clearRect(0, 0, shredWidth, shredHeight);
+
+    if (progress < 0.36 || progress > 0.992 || !receipt.complete || !receipt.naturalWidth) {
       return;
     }
 
     const stageRect = stage.getBoundingClientRect();
     const receiptRect = receipt.getBoundingClientRect();
+    const recordRect = record.getBoundingClientRect();
     const fieldRects = fields.map((field) => field.getBoundingClientRect());
     const mobileScale = window.innerWidth <= 640 ? 0.55 : 1;
+    const naturalWidth = receipt.naturalWidth;
+    const naturalHeight = receipt.naturalHeight;
+    const recordLocalX = recordRect.left - stageRect.left;
+    const recordLocalY = recordRect.top - stageRect.top;
+    const absorbX = recordLocalX + recordRect.width * 0.5;
+    const absorbY = recordLocalY + recordRect.height * 0.54;
 
     paperPieces.forEach((piece, index) => {
-      const node = pieceNodes[index];
-      node.dataset.active = "1";
       const pieceProgress = smoothstep(piece.start, piece.end, progress);
-      const appear = smoothstep(piece.start, piece.start + 0.055, progress);
-      const build = smoothstep(piece.buildStart, piece.buildEnd, progress);
+      const appear = smoothstep(piece.start - 0.018, piece.start + 0.045, progress);
+      const pour = smoothstep(piece.pourStart, piece.pourEnd, progress);
       const absorb = smoothstep(piece.absorbStart, piece.absorbEnd, progress);
+      const visible = appear * (1 - absorb);
+
+      if (visible <= 0.006) return;
+
       const x = receiptRect.left - stageRect.left + receiptRect.width * piece.x;
       const y = receiptRect.top - stageRect.top + receiptRect.height * piece.y;
       const startWidth = receiptRect.width * piece.w;
       const startHeight = receiptRect.height * piece.h;
-      const width = lerp(startWidth, piece.targetW, build);
-      const height = lerp(startHeight, piece.targetH, build);
+      const chipScale = Math.max(0.08, 1 - pieceProgress * 0.12 - pour * 0.68 - absorb * 0.46);
+      const width = Math.max(1.1, startWidth * chipScale);
+      const height = Math.max(1.1, startHeight * chipScale);
       const fieldRect = fieldRects[piece.field] ?? fieldRects[0];
-      const targetX = fieldRect.left - stageRect.left + fieldRect.width * piece.tx - width * 0.5;
-      const targetY = fieldRect.top - stageRect.top + fieldRect.height * piece.ty - height * 0.5;
-      const tumble = Math.sin(pieceProgress * Math.PI) * (18 + index * 0.42);
-      const pour = smoothstep(piece.buildStart - 0.08, piece.buildEnd, progress);
+      const targetX = fieldRect.left - stageRect.left + fieldRect.width * clamp01(piece.tx) - width * 0.5;
+      const targetY = fieldRect.top - stageRect.top + fieldRect.height * clamp01(piece.ty) - height * 0.5;
+      const settleX = lerp(targetX, absorbX - width * 0.5, absorb * 0.4);
+      const settleY = lerp(targetY, absorbY - height * 0.5, absorb * 0.28);
+      const tumble = Math.sin(pieceProgress * Math.PI * piece.flutter) * (18 + (index % 31) * 1.8);
       const gravity = pieceProgress * pieceProgress * (window.innerWidth <= 640 ? 34 : 92);
-      const drop = piece.dy * pieceProgress * mobileScale + gravity - pour * (window.innerWidth <= 640 ? 42 : 74);
-      const drift = piece.dx * pieceProgress * mobileScale + Math.sin(progress * 20 + index) * 9 * pieceProgress * (1 - pour * 0.45);
+      const drop = piece.dy * pieceProgress * mobileScale + gravity - pour * (window.innerWidth <= 640 ? 12 : 24);
+      const drift = piece.dx * pieceProgress * mobileScale + Math.sin(progress * 24 + index * 0.37) * 11 * pieceProgress * (1 - pour * 0.45);
       const midX = x + drift;
       const midY = y + drop;
-      const currentX = lerp(midX, targetX, build);
-      const currentY = lerp(midY, targetY, build);
-      const settlePulse = Math.sin(build * Math.PI);
-      const opacity = appear * (1 - absorb * 0.96) * (0.18 + settlePulse * 0.42);
+      const currentX = lerp(midX, settleX, pour);
+      const currentY = lerp(midY, settleY, pour) + Math.sin(pour * Math.PI) * (window.innerWidth <= 640 ? -18 : -44);
+      const alpha = Math.min(0.86, visible * (0.48 + pour * 0.32));
+      const sourceX = Math.max(0, naturalWidth * piece.x);
+      const sourceY = Math.max(0, naturalHeight * piece.y);
+      const sourceW = Math.min(naturalWidth - sourceX, naturalWidth * piece.w);
+      const sourceH = Math.min(naturalHeight - sourceY, naturalHeight * piece.h);
 
-      node.style.left = `${x.toFixed(2)}px`;
-      node.style.top = `${y.toFixed(2)}px`;
-      node.style.width = `${width.toFixed(2)}px`;
-      node.style.height = `${height.toFixed(2)}px`;
-      node.style.backgroundSize = `${receiptRect.width.toFixed(2)}px ${receiptRect.height.toFixed(2)}px`;
-      node.style.backgroundPosition = `${(-receiptRect.width * piece.x).toFixed(2)}px ${(-receiptRect.height * piece.y).toFixed(2)}px`;
-      node.style.clipPath = morphPolygon(piece.clipA, piece.clipB, build);
-      node.style.setProperty("--piece-opacity", opacity.toFixed(3));
-      node.style.setProperty("--piece-x", `${(currentX - x).toFixed(2)}px`);
-      node.style.setProperty("--piece-y", `${(currentY - y).toFixed(2)}px`);
-      node.style.setProperty("--piece-rotate", `${lerp(piece.rot * pieceProgress + tumble, piece.targetRot, build).toFixed(2)}deg`);
-      node.style.setProperty("--piece-scale", (1 - pieceProgress * 0.06 - build * 0.34 - absorb * 0.28).toFixed(3));
-      node.style.setProperty("--piece-radius", `${lerp(0.5, 7, build).toFixed(2)}px`);
-      node.style.setProperty("--piece-paper-alpha", (build * 0.02).toFixed(3));
+      if (sourceW <= 0 || sourceH <= 0) return;
+
+      shredContext.save();
+      shredContext.globalAlpha = alpha;
+      shredContext.translate(currentX + width * 0.5, currentY + height * 0.5);
+      shredContext.rotate((lerp(piece.rot * pieceProgress * piece.spin + tumble, piece.targetRot, pour) * Math.PI) / 180);
+      shredContext.drawImage(receipt, sourceX, sourceY, sourceW, sourceH, -width * 0.5, -height * 0.5, width, height);
+
+      if (pour > 0.18) {
+        shredContext.globalCompositeOperation = "screen";
+        shredContext.fillStyle = `rgba(82, 198, 160, ${0.04 + pour * 0.1})`;
+        shredContext.fillRect(-width * 0.5, -height * 0.5, width, height);
+      }
+
+      shredContext.restore();
     });
   };
 
@@ -984,9 +1010,9 @@ const initKineticHero = () => {
       latestProgress = progress;
       setHeroVariables(progress);
 
-      const pieceActiveNow = progress >= 0.31 && progress <= 0.97;
-      const pieceWasActive = latestPieceProgress >= 0.31 && latestPieceProgress <= 0.97;
-      const pieceDelta = window.innerWidth <= 640 ? 0.01 : 0.007;
+      const pieceActiveNow = progress >= 0.36 && progress <= 0.995;
+      const pieceWasActive = latestPieceProgress >= 0.36 && latestPieceProgress <= 0.995;
+      const pieceDelta = window.innerWidth <= 640 ? 0.008 : 0.005;
       const shouldFlushPieces = !pieceActiveNow || !Number.isFinite(latestPieceProgress) || !pieceWasActive;
       const shouldStepPieces = pieceActiveNow && Math.abs(progress - latestPieceProgress) >= pieceDelta;
 
