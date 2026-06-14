@@ -407,7 +407,7 @@ const initKineticShaderBackground = () => {
 
   if (!gl) {
     canvas.style.background =
-      "radial-gradient(circle at 62% 32%, rgba(215,243,44,.12), transparent 34%), #010403";
+      "radial-gradient(circle at 62% 32%, rgba(82,198,160,.14), transparent 34%), #050806";
     return;
   }
 
@@ -446,7 +446,7 @@ const initKineticShaderBackground = () => {
       float value = 0.0;
       float amplitude = 0.5;
 
-      for (int i = 0; i < 5; i++) {
+      for (int i = 0; i < 4; i++) {
         value += amplitude * noise(p);
         p = p * 2.04 + vec2(8.13, 3.71);
         amplitude *= 0.5;
@@ -473,14 +473,16 @@ const initKineticShaderBackground = () => {
       float pointerAura = smoothstep(0.82, 0.0, length(p - pointer));
       float lowerWash = smoothstep(-0.9, 0.46, -p.y + u_progress * 0.38);
 
-      vec3 base = vec3(0.004, 0.015, 0.011);
-      vec3 acid = vec3(0.84, 0.95, 0.17);
-      vec3 oxide = vec3(0.43, 0.16, 0.07);
-      vec3 paper = vec3(0.93, 0.89, 0.76);
+      vec3 base = vec3(0.018, 0.028, 0.024);
+      vec3 acid = vec3(0.30, 0.70, 0.55);
+      vec3 oxide = vec3(0.42, 0.22, 0.13);
+      vec3 teal = vec3(0.08, 0.36, 0.30);
+      vec3 paper = vec3(0.88, 0.84, 0.68);
 
       vec3 color = base;
-      color += acid * (receiptAura * 0.065 + recordAura * 0.085 + pointerAura * 0.035);
-      color += oxide * (lowerWash * 0.13 + current * 0.045);
+      color += acid * (receiptAura * 0.055 + recordAura * 0.07 + pointerAura * 0.026);
+      color += teal * (receiptAura * 0.08 + pointerAura * 0.034);
+      color += oxide * (lowerWash * 0.11 + current * 0.038);
       color += paper * max(field - 0.62, 0.0) * 0.05;
 
       float vignette = smoothstep(1.38, 0.34, length(p));
@@ -543,7 +545,7 @@ const initKineticShaderBackground = () => {
 
   const measure = () => {
     const rect = canvas.getBoundingClientRect();
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1);
     width = Math.max(1, Math.floor(rect.width * dpr));
     height = Math.max(1, Math.floor(rect.height * dpr));
     canvas.width = width;
@@ -554,6 +556,16 @@ const initKineticShaderBackground = () => {
 
   const progress = () => Math.max(0, Math.min(1, (window.scrollY - heroTop) / heroTravel));
   const startedAt = performance.now();
+  let lastShaderFrame = 0;
+  let shaderVisible = true;
+  let shaderQueued = false;
+  const shaderFrameInterval = window.innerWidth <= 640 ? 84 : 50;
+
+  const requestShaderFrame = () => {
+    if (prefersReducedMotion || !shaderVisible || shaderQueued) return;
+    shaderQueued = true;
+    requestAnimationFrame(renderShader);
+  };
 
   hero.addEventListener(
     "pointermove",
@@ -566,6 +578,15 @@ const initKineticShaderBackground = () => {
   );
 
   const renderShader = (time) => {
+    shaderQueued = false;
+    if (!shaderVisible) return;
+
+    if (time - lastShaderFrame < shaderFrameInterval) {
+      requestShaderFrame();
+      return;
+    }
+
+    lastShaderFrame = time;
     pointer.x = lerp(pointer.x, pointer.targetX, 0.045);
     pointer.y = lerp(pointer.y, pointer.targetY, 0.045);
 
@@ -580,11 +601,23 @@ const initKineticShaderBackground = () => {
     gl.uniform2f(pointerLocation, pointer.x, pointer.y);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-    if (!prefersReducedMotion) requestAnimationFrame(renderShader);
+    requestShaderFrame();
   };
 
   measure();
   renderShader(performance.now());
+
+  if ("IntersectionObserver" in window) {
+    const shaderObserver = new IntersectionObserver(
+      ([entry]) => {
+        shaderVisible = Boolean(entry?.isIntersecting);
+        if (shaderVisible) requestShaderFrame();
+      },
+      { threshold: 0.01 }
+    );
+    shaderObserver.observe(canvas);
+  }
+
   window.addEventListener("resize", () => {
     measure();
     renderShader(performance.now());
@@ -617,20 +650,23 @@ const initKineticHero = () => {
   const morphPolygon = (from, to, amount) =>
     polygonString(from.map(([x, y], index) => [lerp(x, to[index][0], amount), lerp(y, to[index][1], amount)]));
 
-  const paperPieces = Array.from({ length: prefersReducedMotion ? 0 : 276 }, (_, index) => {
-    const columns = 23;
-    const rows = Math.ceil(276 / columns);
+  const pieceCount = prefersReducedMotion ? 0 : window.innerWidth <= 640 ? 84 : 132;
+  const pieceColumns = window.innerWidth <= 640 ? 12 : 16;
+
+  const paperPieces = Array.from({ length: pieceCount }, (_, index) => {
+    const columns = pieceColumns;
+    const rows = Math.ceil(pieceCount / columns);
     const column = index % columns;
     const row = Math.floor(index / columns);
-    const isStrip = randomUnit(index + 2050) > 0.72;
+    const isStrip = randomUnit(index + 2050) > 0.68;
     const jitterX = (randomUnit(index + 2100) - 0.5) * 0.018;
     const jitterY = (randomUnit(index + 2200) - 0.5) * 0.022;
-    const width = isStrip ? 0.009 + randomUnit(index + 2300) * 0.026 : 0.0038 + randomUnit(index + 2300) * 0.011;
-    const height = isStrip ? 0.004 + randomUnit(index + 2400) * 0.014 : 0.0036 + randomUnit(index + 2400) * 0.011;
+    const width = isStrip ? 0.011 + randomUnit(index + 2300) * 0.028 : 0.005 + randomUnit(index + 2300) * 0.012;
+    const height = isStrip ? 0.005 + randomUnit(index + 2400) * 0.015 : 0.0048 + randomUnit(index + 2400) * 0.012;
     const x = clamp01(0.035 + column * (0.93 / columns) + jitterX);
     const y = clamp01(0.03 + row * (0.91 / Math.max(1, rows - 1)) + jitterY);
     const outward = column < columns * 0.42 ? -1 : column > columns * 0.58 ? 1 : randomUnit(index + 2500) > 0.5 ? 1 : -1;
-    const field = Math.min(fields.length - 1, Math.floor((index / 276) * fields.length));
+    const field = Math.min(fields.length - 1, Math.floor((index / Math.max(1, pieceCount)) * fields.length));
     const start = 0.36 + row * 0.008 + randomUnit(index + 2600) * 0.09;
     const buildStart = 0.56 + field * 0.035 + randomUnit(index + 3450) * 0.055;
     const buildEnd = Math.min(0.93, buildStart + 0.18 + randomUnit(index + 3550) * 0.07);
@@ -706,10 +742,39 @@ const initKineticHero = () => {
     return chars;
   });
 
+  const setReceiptPointer = (event) => {
+    const rect = receipt.getBoundingClientRect();
+    const x = clamp01((event.clientX - rect.left) / rect.width);
+    const y = clamp01((event.clientY - rect.top) / rect.height);
+    hero.classList.add("is-receipt-hot");
+    hero.style.setProperty("--receipt-pointer-x", `${(x * 100).toFixed(2)}%`);
+    hero.style.setProperty("--receipt-pointer-y", `${(y * 100).toFixed(2)}%`);
+    hero.style.setProperty("--receipt-tilt-y", `${((x - 0.5) * 5.2).toFixed(2)}deg`);
+    hero.style.setProperty("--receipt-tilt-x", `${((0.5 - y) * 4.4).toFixed(2)}deg`);
+    hero.style.setProperty("--receipt-hover-lift", "-10px");
+  };
+
+  const clearReceiptPointer = () => {
+    hero.classList.remove("is-receipt-hot");
+    hero.style.setProperty("--receipt-tilt-y", "0deg");
+    hero.style.setProperty("--receipt-tilt-x", "0deg");
+    hero.style.setProperty("--receipt-hover-lift", "0px");
+  };
+
+  [receipt, scanFrame].forEach((target) => {
+    target.addEventListener("pointermove", setReceiptPointer, { passive: true });
+    target.addEventListener("pointerleave", clearReceiptPointer);
+    target.addEventListener("focus", () => hero.classList.add("is-receipt-hot"));
+    target.addEventListener("blur", clearReceiptPointer);
+  });
+
   let viewportHeight = window.innerHeight;
   let heroTop = hero.offsetTop;
   let heroTravel = Math.max(1, hero.offsetHeight - viewportHeight);
   let latestProgress = -1;
+  let latestPieceProgress = Number.NaN;
+  let displayedProgress = 0;
+  let targetProgress = 0;
   let ticking = false;
 
   const measure = () => {
@@ -725,7 +790,7 @@ const initKineticHero = () => {
     const tearFlow = smoothstep(0.34, 0.66, progress);
     const parseFlow = smoothstep(0.46, 0.84, progress);
     const recordFlow = smoothstep(0.48, 0.64, progress);
-    const completeFlow = smoothstep(0.8, 0.94, progress);
+    const completeFlow = smoothstep(0.74, 0.9, progress);
     const absorbFlow = smoothstep(0.54, 0.88, progress) * (1 - smoothstep(0.94, 1, progress) * 0.35);
     const isMobile = window.innerWidth <= 640;
     const copyFade = smoothstep(isMobile ? 0.16 : 0.2, isMobile ? 0.32 : 0.38, progress);
@@ -757,7 +822,7 @@ const initKineticHero = () => {
     hero.style.setProperty("--scan-opacity", scanFlow.toFixed(3));
     hero.style.setProperty("--scan-y", `${lerp(7, 93, scanSweep).toFixed(2)}%`);
     hero.style.setProperty("--scan-intensity", (0.35 + Math.sin(scanSweep * Math.PI) * 0.65).toFixed(3));
-    hero.style.setProperty("--receipt-shadow-alpha", (0.5 + shadowPeak * 0.22).toFixed(3));
+    hero.style.setProperty("--receipt-shadow-alpha", (0.66 + shadowPeak * 0.24).toFixed(3));
     hero.style.setProperty("--wordmark-shadow-x", `${(receiptX * 0.38).toFixed(2)}px`);
     hero.style.setProperty("--wordmark-shadow-y", `${(receiptY * 0.12).toFixed(2)}px`);
     hero.style.setProperty("--wordmark-shadow-scale", (0.82 + shadowPeak * 0.42 + parseFlow * 0.12).toFixed(3));
@@ -779,12 +844,12 @@ const initKineticHero = () => {
     if (wordmark) {
       const wordmarkExit = smoothstep(isMobile ? 0.24 : 0.26, isMobile ? 0.48 : 0.56, progress);
       wordmark.style.setProperty("--wordmark-opacity", (0.95 * (1 - wordmarkExit)).toFixed(3));
-      wordmark.style.setProperty("--kinetic-x", `${lerp(0, isMobile ? -8 : -18, progress).toFixed(2)}px`);
-      wordmark.style.setProperty("--kinetic-y", `${lerp(0, isMobile ? 74 : 132, wordmarkExit).toFixed(2)}px`);
+      wordmark.style.setProperty("--kinetic-x", `${lerp(0, isMobile ? 0 : -18, progress).toFixed(2)}px`);
+      wordmark.style.setProperty("--kinetic-y", `${lerp(0, isMobile ? 26 : 48, wordmarkExit).toFixed(2)}px`);
     }
 
     fields.forEach((field, index) => {
-      const fieldProgress = smoothstep(0.62 + index * 0.04, 0.78 + index * 0.028, progress);
+      const fieldProgress = smoothstep(0.58 + index * 0.032, 0.75 + index * 0.022, progress);
       field.style.setProperty("--field-fill", fieldProgress.toFixed(3));
       field.classList.toggle("is-filled", fieldProgress > 0.84);
       field.tabIndex = recordFlow > 0.72 ? 0 : -1;
@@ -792,8 +857,8 @@ const initKineticHero = () => {
 
       const chars = fieldCharacters[index] ?? [];
       chars.forEach((char, charIndex) => {
-        const charStart = charIndex / Math.max(1, chars.length);
-        const charReveal = smoothstep(charStart, charStart + 0.22, fieldProgress);
+        const charStart = (charIndex / Math.max(1, chars.length - 1)) * 0.72;
+        const charReveal = smoothstep(charStart, charStart + 0.16, fieldProgress);
         char.style.setProperty("--char-opacity", charReveal.toFixed(3));
         char.style.setProperty("--char-y", `${lerp(8, 0, charReveal).toFixed(2)}px`);
       });
@@ -847,6 +912,17 @@ const initKineticHero = () => {
   });
 
   const setPaperPieces = (progress) => {
+    if (progress < 0.32 || progress > 0.965) {
+      paperPieces.forEach((_, index) => {
+        const node = pieceNodes[index];
+        if (node.dataset.active !== "0") {
+          node.dataset.active = "0";
+          node.style.setProperty("--piece-opacity", "0");
+        }
+      });
+      return;
+    }
+
     const stageRect = stage.getBoundingClientRect();
     const receiptRect = receipt.getBoundingClientRect();
     const fieldRects = fields.map((field) => field.getBoundingClientRect());
@@ -854,6 +930,7 @@ const initKineticHero = () => {
 
     paperPieces.forEach((piece, index) => {
       const node = pieceNodes[index];
+      node.dataset.active = "1";
       const pieceProgress = smoothstep(piece.start, piece.end, progress);
       const appear = smoothstep(piece.start, piece.start + 0.055, progress);
       const build = smoothstep(piece.buildStart, piece.buildEnd, progress);
@@ -891,9 +968,6 @@ const initKineticHero = () => {
       node.style.setProperty("--piece-y", `${(currentY - y).toFixed(2)}px`);
       node.style.setProperty("--piece-rotate", `${lerp(piece.rot * pieceProgress + tumble, piece.targetRot, build).toFixed(2)}deg`);
       node.style.setProperty("--piece-scale", (1 - pieceProgress * 0.06 - build * 0.34 - absorb * 0.28).toFixed(3));
-      node.style.setProperty("--piece-brightness", (1 - pieceProgress * 0.08 + build * 0.32).toFixed(3));
-      node.style.setProperty("--piece-saturation", (1 + build * 0.35).toFixed(3));
-      node.style.setProperty("--piece-blur", `${(absorb * 1.25).toFixed(2)}px`);
       node.style.setProperty("--piece-radius", `${lerp(0.5, 7, build).toFixed(2)}px`);
       node.style.setProperty("--piece-paper-alpha", (build * 0.02).toFixed(3));
     });
@@ -901,11 +975,113 @@ const initKineticHero = () => {
 
   const render = () => {
     ticking = false;
-    const progress = prefersReducedMotion ? 0.86 : currentProgress();
-    if (Math.abs(progress - latestProgress) < 0.001) return;
-    latestProgress = progress;
-    setHeroVariables(progress);
-    setPaperPieces(progress);
+    targetProgress = prefersReducedMotion ? 0.9 : currentProgress();
+    const delta = targetProgress - displayedProgress;
+    const progress = Math.abs(delta) < 0.0008 ? targetProgress : displayedProgress + delta * 0.24;
+
+    displayedProgress = progress;
+    if (Math.abs(progress - latestProgress) >= 0.0005) {
+      latestProgress = progress;
+      setHeroVariables(progress);
+
+      const pieceActiveNow = progress >= 0.31 && progress <= 0.97;
+      const pieceWasActive = latestPieceProgress >= 0.31 && latestPieceProgress <= 0.97;
+      const pieceDelta = window.innerWidth <= 640 ? 0.01 : 0.007;
+      const shouldFlushPieces = !pieceActiveNow || !Number.isFinite(latestPieceProgress) || !pieceWasActive;
+      const shouldStepPieces = pieceActiveNow && Math.abs(progress - latestPieceProgress) >= pieceDelta;
+
+      if (pieceActiveNow || pieceWasActive || !Number.isFinite(latestPieceProgress)) {
+        if (shouldFlushPieces || shouldStepPieces) {
+          setPaperPieces(progress);
+          latestPieceProgress = progress;
+        }
+      }
+    }
+
+    if (Math.abs(targetProgress - displayedProgress) > 0.0008) {
+      requestRender();
+    }
+  };
+
+  const requestRender = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(render);
+  };
+
+  measure();
+  displayedProgress = prefersReducedMotion ? 0.9 : currentProgress();
+  targetProgress = displayedProgress;
+  render();
+
+  window.addEventListener("scroll", requestRender, { passive: true });
+  window.addEventListener("resize", () => {
+    measure();
+    requestRender();
+  });
+  window.addEventListener("load", () => {
+    measure();
+    requestRender();
+  });
+};
+
+const initReviewScroller = () => {
+  const section = document.querySelector("[data-review-scroll]");
+  const track = section?.querySelector("[data-review-track]");
+  if (!section || !track) return;
+
+  const clamp01 = (value) => Math.max(0, Math.min(1, value));
+  const smoothStep = (value) => value * value * (3 - 2 * value);
+
+  let sectionTop = 0;
+  let viewportHeight = window.innerHeight;
+  let scrollDistance = 0;
+  let latestX = Number.NaN;
+  let ticking = false;
+
+  const isStacked = () => window.matchMedia("(max-width: 980px)").matches || prefersReducedMotion;
+
+  const applyX = (value) => {
+    if (Number.isFinite(latestX) && Math.abs(value - latestX) < 0.35) return;
+    latestX = value;
+    track.style.setProperty("--review-track-x", `${value.toFixed(2)}px`);
+  };
+
+  const measure = () => {
+    viewportHeight = window.innerHeight;
+    sectionTop = section.getBoundingClientRect().top + window.scrollY;
+
+    if (isStacked()) {
+      scrollDistance = 0;
+      section.style.removeProperty("--review-scroll-height");
+      section.style.setProperty("--review-progress", "0");
+      applyX(0);
+      return;
+    }
+
+    const trackWidth = track.scrollWidth;
+    const viewportWidth = section.clientWidth;
+    scrollDistance = Math.max(0, trackWidth - viewportWidth);
+    const travel = Math.max(viewportHeight * 0.9, scrollDistance + viewportHeight * 0.34);
+
+    section.style.setProperty("--review-scroll-height", `${Math.round(travel + viewportHeight)}px`);
+  };
+
+  const render = () => {
+    ticking = false;
+
+    if (isStacked() || scrollDistance <= 0) {
+      section.style.setProperty("--review-progress", "0");
+      applyX(0);
+      return;
+    }
+
+    const travel = Math.max(1, section.offsetHeight - viewportHeight);
+    const progress = clamp01((window.scrollY - sectionTop) / travel);
+    const eased = smoothStep(progress);
+
+    section.style.setProperty("--review-progress", progress.toFixed(3));
+    applyX(-scrollDistance * eased);
   };
 
   const requestRender = () => {
@@ -919,6 +1095,10 @@ const initKineticHero = () => {
 
   window.addEventListener("scroll", requestRender, { passive: true });
   window.addEventListener("resize", () => {
+    measure();
+    requestRender();
+  });
+  window.addEventListener("load", () => {
     measure();
     requestRender();
   });
@@ -954,4 +1134,5 @@ const initSmoothAnchors = () => {
 
 initKineticShaderBackground();
 initKineticHero();
+initReviewScroller();
 initSmoothAnchors();

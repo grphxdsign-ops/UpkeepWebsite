@@ -20,8 +20,10 @@
     <script>document.documentElement.classList.add("js");</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+    <link rel="preload" as="image" href="assets/hero/upkeep-receipt-cutout-420.webp" imagesrcset="assets/hero/upkeep-receipt-cutout-420.webp 420w, assets/hero/upkeep-receipt-cutout-720.webp 720w, assets/hero/upkeep-receipt-cutout.webp 1024w" imagesizes="(max-width: 640px) 78vw, (max-width: 980px) 44vw, 420px" fetchpriority="high">
+    <link rel="stylesheet" href="styles.css?v=upkeep-perf-20260613">
   </head>
   <body class="kinetic-page">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -37,11 +39,9 @@
         <span>Upkeep</span>
       </a>
       <nav aria-label="Primary navigation">
-        <a href="#top" data-scroll-progress="0.42">How it works</a>
-        <a href="#top" data-scroll-progress="0.56">For business</a>
-        <a href="#top" data-scroll-progress="0.76">Security</a>
-        <a href="#top" data-scroll-progress="0.9">Pricing</a>
-        <a href="#top" data-scroll-progress="0.9">Resources</a>
+        <a href="#top">How it works</a>
+        <span class="nav-static" aria-disabled="true">Pricing</span>
+        <a href="#trusted">Reviews</a>
       </nav>
       <a class="login-link" href="#top" data-scroll-progress="0.9">Log in</a>
       <a class="header-cta" href="#top" data-scroll-progress="0.9">Get early access <span aria-hidden="true">&#8599;</span></a>
@@ -69,7 +69,7 @@
         </div>
 
         <div class="kinetic-visual" aria-label="Animated document to record preview">
-          <img class="kinetic-receipt-asset" src="assets/hero/upkeep-receipt-cutout.webp" alt="Receipt scanned by Upkeep with total and payment details.">
+          <img class="kinetic-receipt-asset" src="assets/hero/upkeep-receipt-cutout-720.webp" srcset="assets/hero/upkeep-receipt-cutout-420.webp 420w, assets/hero/upkeep-receipt-cutout-720.webp 720w, assets/hero/upkeep-receipt-cutout.webp 1024w" sizes="(max-width: 640px) 78vw, (max-width: 980px) 44vw, 420px" width="720" height="1080" fetchpriority="high" decoding="async" alt="Receipt scanned by Upkeep with total and payment details.">
           <div class="receipt-scan-frame" aria-hidden="true">
             <span class="scan-corner corner-tl"></span>
             <span class="scan-corner corner-tr"></span>
@@ -142,6 +142,56 @@
           <p><strong>SOC 2 TYPE II</strong><br>Enterprise grade security</p>
         </div>
         </div>
+      </section>
+
+      <section class="proof" id="trusted" aria-labelledby="proof-title">
+        <div class="proof-heading reveal">
+          <h2 id="proof-title">Trusted by teams that cannot afford messy records.</h2>
+          <p>Upkeep is built for daily paperwork: receipts, statements, invoices, work orders, and the small details that usually get handled too late.</p>
+        </div>
+
+        <div class="review-scroll reveal" data-review-scroll aria-label="Customer reviews">
+          <div class="review-scroll-sticky">
+            <div class="review-track" data-review-track>
+          <article class="proof-review reveal">
+            <p>“The clean record appears before anyone has to open a spreadsheet. Our team checks the fields, approves the exception, and moves on.”</p>
+            <div class="review-byline">
+              <strong>Mara Ives</strong>
+              <span>Operations lead, Harbor &amp; Pine</span>
+            </div>
+          </article>
+          <article class="proof-review reveal">
+            <p>“Receipts used to sit until Friday. Now the document, category, payment, and proof are together while the purchase is still fresh.”</p>
+            <div class="review-byline">
+              <strong>Lenox Baird</strong>
+              <span>Studio director, Cedar Works</span>
+            </div>
+          </article>
+          <article class="proof-review reveal">
+            <p>“It feels like the paperwork gets translated into something our accountant can use, without asking the team to learn another system.”</p>
+            <div class="review-byline">
+              <strong>Arielle Stone</strong>
+              <span>Practice manager, Northline Dental</span>
+            </div>
+          </article>
+              <article class="proof-review reveal">
+                <p>&ldquo;Expense details land in the right place before the close. The record is attached, searchable, and ready for the person who needs it next.&rdquo;</p>
+                <div class="review-byline">
+                  <strong>Jonah Vale</strong>
+                  <span>Finance ops, Mercer Goods</span>
+                </div>
+              </article>
+              <article class="proof-review reveal">
+                <p>&ldquo;The handoff finally feels calm. Staff upload what they have, and Upkeep turns the mess into something we can trust.&rdquo;</p>
+                <div class="review-byline">
+                  <strong>Celia Rowan</strong>
+                  <span>Owner, Shift Haus</span>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+
       </section>
 
       <section class="how" id="how" aria-labelledby="how-title">
@@ -267,6 +317,6 @@
       <p><a href="design-lab.html">Design lab</a> &middot; <a href="logo-samples.html">Logo samples</a> &middot; Privacy &middot; Terms &middot; Support</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=upkeep-perf-20260613"></script>
   </body>
 </html>
