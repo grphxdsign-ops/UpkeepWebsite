@@ -22,7 +22,7 @@ function init() {
 async function hydrateSession() {
   const session = await fetchJson("/api/auth/session").catch(() => null);
   if (session?.authenticated) {
-    window.location.href = profileUrl();
+    window.location.href = nextUrl;
   }
 }
 
@@ -50,7 +50,7 @@ async function submitAuth(event) {
         password: passwordInput.value
       })
     });
-    window.location.href = profileUrl();
+    window.location.href = mode === "signup" ? profileUrl() : nextUrl;
   } catch (error) {
     formError.textContent = error.message || "Could not access the workspace.";
   } finally {

@@ -15,6 +15,7 @@
     <meta name="twitter:description" content="Upload the paperwork. Upkeep reads it, organizes it, and clears the record for handoff.">
     <meta name="twitter:image" content="https://upkeep-website.vercel.app/assets/upkeep-concept.png">
     <title>Upkeep | Records ready in seconds</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="canonical" href="https://upkeep-website.vercel.app/">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23010403'/%3E%3Cpath d='M16 17c4-4 11-5 17 0v32c-6-5-13-4-17 0V17Z' fill='none' stroke='%237EBA86' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M33 17c6-5 13-4 17 0v32c-4-4-11-5-17 0V17Z' fill='none' stroke='%237EBA86' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M33 44V19M25 27l8-8 8 8' fill='none' stroke='%237EBA86' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
     <script>document.documentElement.classList.add("js");</script>
@@ -39,12 +40,12 @@
         <span>Upkeep</span>
       </a>
       <nav aria-label="Primary navigation">
-        <a href="#top">How it works</a>
-        <span class="nav-static" aria-disabled="true">Pricing</span>
+        <a href="#how">How it works</a>
         <a href="#trusted">Reviews</a>
+        <a href="#workspace">Workspace</a>
       </nav>
       <a class="login-link" href="/backend">Log in</a>
-      <a class="header-cta" href="#top" data-scroll-progress="0.9">Get early access <span aria-hidden="true">&#8599;</span></a>
+      <a class="header-cta" href="#request">Get early access <span aria-hidden="true">&#8599;</span></a>
     </header>
 
     <main id="main">
@@ -54,17 +55,23 @@
         <div class="kinetic-wordmark" aria-hidden="true">Upkeep</div>
         <div class="kinetic-copy reveal">
           <p class="kinetic-kicker">Documents to done</p>
-          <h1 aria-label="From paperwork to clean records.">From paperwork <br>to <span>clean records.</span></h1>
-          <p class="kinetic-text">Upkeep turns receipts, statements, and files into organized records you can actually use.</p>
+          <h1 aria-label="From paperwork to ready records.">From paperwork <br>to <span>ready records.</span></h1>
+          <p class="kinetic-text">Receipts become categorized expense lines, exports, reports, and tax-ready files without spreadsheet work.</p>
+          <div class="kinetic-outputs" aria-label="Prepared outputs">
+            <span>Categorized expense line</span>
+            <span>Export</span>
+            <span>Report</span>
+            <span>Tax-ready file</span>
+          </div>
           <div class="kinetic-actions" aria-label="Primary actions">
             <a class="kinetic-button" href="#top" data-scroll-progress="0.78">
-              See records form
+              Watch records form
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M5 12h13"></path>
                 <path d="m13 6 6 6-6 6"></path>
               </svg>
             </a>
-            <a class="kinetic-play" href="#top" data-scroll-progress="0.42"><span aria-hidden="true"></span> How it works</a>
+            <a class="kinetic-play" href="#how"><span aria-hidden="true"></span> How it works</a>
           </div>
         </div>
 
@@ -117,12 +124,12 @@
             <p>A receipt, statement, invoice, or daily file goes in without learning complex software.</p>
           </aside>
           <aside class="scroll-note note-right" data-scroll-note="1">
-            <strong>Upkeep reads the useful fields.</strong>
-            <p>Vendor, date, total, category, and payment separate from the page.</p>
+            <strong>The page becomes an expense line.</strong>
+            <p>Vendor, date, category, total, and payment move into fields.</p>
           </aside>
           <aside class="scroll-note note-left note-low" data-scroll-note="2">
-            <strong>The file becomes structure.</strong>
-            <p>The proof stays attached while the numbers become searchable.</p>
+            <strong>Exports and reports are ready.</strong>
+            <p>The original stays attached for review, handoff, or tax prep.</p>
           </aside>
           <aside class="scroll-note note-right note-low" data-scroll-note="3">
             <strong>Ready for review or handoff.</strong>
@@ -151,45 +158,109 @@
           <p>Upkeep is built for daily paperwork: receipts, statements, invoices, work orders, and the small details that usually get handled too late.</p>
         </div>
 
-        <div class="review-scroll reveal" data-review-scroll aria-label="Customer reviews">
-          <div class="review-scroll-sticky">
-            <div class="review-track" data-review-track>
+        <div class="review-vertical reveal" aria-label="Customer reviews">
+          <div class="review-track">
           <article class="proof-review reveal">
-            <p>“The clean record appears before anyone has to open a spreadsheet. Our team checks the fields, approves the exception, and moves on.”</p>
+            <div class="review-brand">
+              <span class="review-logo logo-harbor" aria-hidden="true">
+                <svg viewBox="0 0 48 48">
+                  <path d="M8 31c6-10 12-15 18-15 5 0 9 3 14 9"></path>
+                  <path d="M11 33h26"></path>
+                  <path d="M18 31c2-5 5-8 9-8"></path>
+                </svg>
+              </span>
+              <span>
+                <strong>Harbor &amp; Pine</strong>
+                <small>operations team</small>
+              </span>
+            </div>
+            <p>&ldquo;A receipt becomes a categorized expense line before anyone opens a spreadsheet. We check the field, approve it, and move on.&rdquo;</p>
             <div class="review-byline">
               <strong>Mara Ives</strong>
-              <span>Operations lead, Harbor &amp; Pine</span>
+              <span>2.5 hours saved each close</span>
             </div>
           </article>
           <article class="proof-review reveal">
-            <p>“Receipts used to sit until Friday. Now the document, category, payment, and proof are together while the purchase is still fresh.”</p>
+            <div class="review-brand">
+              <span class="review-logo logo-cedar" aria-hidden="true">
+                <svg viewBox="0 0 48 48">
+                  <path d="M24 8v32"></path>
+                  <path d="M14 21 24 10l10 11"></path>
+                  <path d="M16 31 24 20l8 11"></path>
+                </svg>
+              </span>
+              <span>
+                <strong>Cedar Works</strong>
+                <small>design studio</small>
+              </span>
+            </div>
+            <p>&ldquo;Receipts used to sit until Friday. Now the document, category, payment, and proof are together while the purchase is still fresh.&rdquo;</p>
             <div class="review-byline">
               <strong>Lenox Baird</strong>
-              <span>Studio director, Cedar Works</span>
+              <span>14 staff uploads, one review queue</span>
             </div>
           </article>
           <article class="proof-review reveal">
-            <p>“It feels like the paperwork gets translated into something our accountant can use, without asking the team to learn another system.”</p>
+            <div class="review-brand">
+              <span class="review-logo logo-northline" aria-hidden="true">
+                <svg viewBox="0 0 48 48">
+                  <path d="M13 25c0-8 5-14 11-14s11 6 11 14"></path>
+                  <path d="M16 25c3 3 13 3 16 0"></path>
+                  <path d="M19 31h10"></path>
+                </svg>
+              </span>
+              <span>
+                <strong>Northline Dental</strong>
+                <small>practice office</small>
+              </span>
+            </div>
+            <p>&ldquo;It translates the paper into a report-ready file our accountant can use, without asking the team to learn another system.&rdquo;</p>
             <div class="review-byline">
               <strong>Arielle Stone</strong>
-              <span>Practice manager, Northline Dental</span>
+              <span>Friday receipt pile cleared in 12 minutes</span>
             </div>
           </article>
               <article class="proof-review reveal">
-                <p>&ldquo;Expense details land in the right place before the close. The record is attached, searchable, and ready for the person who needs it next.&rdquo;</p>
+                <div class="review-brand">
+                  <span class="review-logo logo-mercer" aria-hidden="true">
+                    <svg viewBox="0 0 48 48">
+                      <path d="M12 36V16l12-6 12 6v20"></path>
+                      <path d="M17 36V21h14v15"></path>
+                      <path d="M20 27h8"></path>
+                    </svg>
+                  </span>
+                  <span>
+                    <strong>Mercer Goods</strong>
+                    <small>retail finance</small>
+                  </span>
+                </div>
+                <p>&ldquo;Expense details land in the right export before the close. The record is attached, searchable, and ready for the next person.&rdquo;</p>
                 <div class="review-byline">
                   <strong>Jonah Vale</strong>
-                  <span>Finance ops, Mercer Goods</span>
+                  <span>Month-end prep cut by 38%</span>
                 </div>
               </article>
               <article class="proof-review reveal">
-                <p>&ldquo;The handoff finally feels calm. Staff upload what they have, and Upkeep turns the mess into something we can trust.&rdquo;</p>
+                <div class="review-brand">
+                  <span class="review-logo logo-shift" aria-hidden="true">
+                    <svg viewBox="0 0 48 48">
+                      <path d="M13 31c4-8 8-12 13-12 4 0 7 3 9 9"></path>
+                      <path d="M11 36h26"></path>
+                      <path d="M18 17h12"></path>
+                      <path d="M24 11v12"></path>
+                    </svg>
+                  </span>
+                  <span>
+                    <strong>Shift Haus</strong>
+                    <small>hospitality group</small>
+                  </span>
+                </div>
+                <p>&ldquo;The handoff finally feels calm. Staff upload what they have, and Upkeep turns the mess into a tax-ready file.&rdquo;</p>
                 <div class="review-byline">
                   <strong>Celia Rowan</strong>
-                  <span>Owner, Shift Haus</span>
+                  <span>Same-day handoff after busy shifts</span>
                 </div>
               </article>
-            </div>
           </div>
         </div>
 
@@ -198,30 +269,108 @@
       <section class="how" id="how" aria-labelledby="how-title">
         <div class="section-heading reveal">
           <p class="quiet-label">Live example</p>
-          <h2 id="how-title">Clear the paperwork without opening a spreadsheet.</h2>
-          <p>Upkeep keeps the day&apos;s documents moving from intake to cleared, so records are ready before small tasks become a backlog.</p>
+          <h2 id="how-title">Watch a document become a usable workspace.</h2>
+          <p>A source file is scanned, checked, turned into record lines, and stored with exports ready beside it.</p>
         </div>
-        <div class="process-grid">
-          <article class="process-card reveal is-active" data-run-card="1">
-            <span>01</span>
-            <h3>Open the inbox.</h3>
-            <p>Drop in mixed paperwork from the day without sorting it first.</p>
-          </article>
-          <article class="process-card reveal" data-run-card="2">
-            <span>02</span>
-            <h3>Upkeep reads the stack.</h3>
-            <p>Vendor, total, notes, and statement lines lift out of the page automatically.</p>
-          </article>
-          <article class="process-card reveal" data-run-card="3">
-            <span>03</span>
-            <h3>The record takes shape.</h3>
-            <p>Useful fields appear as a prepared record, not as a wall of extracted text.</p>
-          </article>
-          <article class="process-card reveal" data-run-card="4">
-            <span>04</span>
-            <h3>Clear the final exception.</h3>
-            <p>The statement line is resolved while the ready fields stay usable.</p>
-          </article>
+        <div class="backend-process-video backend-walkthrough reveal" aria-label="Animated backend process example">
+          <div class="video-chrome">
+            <span>Upkeep workspace playback</span>
+            <span>00:32</span>
+          </div>
+          <div class="video-stage backend-demo-stage" aria-hidden="true">
+            <div class="demo-window">
+              <aside class="demo-sidebar">
+                <strong>Upkeep</strong>
+                <span class="demo-nav-item nav-intake">Inbox</span>
+                <span class="demo-nav-item nav-records">Records</span>
+                <span class="demo-nav-item nav-review">Review</span>
+                <span class="demo-nav-item nav-storage">Storage</span>
+              </aside>
+
+              <div class="demo-workspace">
+                <div class="demo-topbar">
+                  <span>North Pier Market receipt</span>
+                  <b>Workspace example</b>
+                </div>
+
+                <div class="demo-scenes">
+                  <article class="demo-scene demo-scene-intake">
+                    <div class="demo-dropzone">
+                      <span class="demo-file-icon">PDF</span>
+                      <strong>north-pier-receipt.pdf</strong>
+                      <small>Two purchases from one receipt</small>
+                    </div>
+                    <div class="demo-receipt-paper">
+                      <b>North Pier Market</b>
+                      <span>Printer paper <i>$42.80</i></span>
+                      <span>USB dock <i>$86.14</i></span>
+                      <strong>Total <i>$128.94</i></strong>
+                    </div>
+                  </article>
+
+                  <article class="demo-scene demo-scene-records">
+                    <div class="demo-record-head">
+                      <strong>Prepared records</strong>
+                      <span>2 lines read</span>
+                    </div>
+                    <div class="demo-transaction-row is-ready">
+                      <span>Printer paper</span>
+                      <b>Office supplies</b>
+                      <i>$42.80</i>
+                      <em>Ready</em>
+                    </div>
+                    <div class="demo-transaction-row needs-review">
+                      <span>USB dock</span>
+                      <b>Equipment</b>
+                      <i>$89.14?</i>
+                      <em>Review amount</em>
+                    </div>
+                    <p class="demo-review-note">Receipt line shows $86.14. Confirm before export.</p>
+                  </article>
+
+                  <article class="demo-scene demo-scene-review">
+                    <div class="demo-document-choice">
+                      <span>Document studio</span>
+                      <strong>Transaction list</strong>
+                    </div>
+                    <table class="demo-table">
+                      <tbody>
+                        <tr><td>Printer paper</td><td>Office supplies</td><td>$42.80</td></tr>
+                        <tr class="needs-review"><td>USB dock</td><td>Equipment</td><td>$86.14</td></tr>
+                      </tbody>
+                    </table>
+                    <button class="demo-download-button" type="button">Download as PDF</button>
+                  </article>
+
+                  <article class="demo-scene demo-scene-storage">
+                    <div class="demo-storage-card">
+                      <span class="demo-file-icon">PDF</span>
+                      <div>
+                        <strong>transaction-list-north-pier.pdf</strong>
+                        <small>2 records saved to storage</small>
+                      </div>
+                      <em>Stored</em>
+                    </div>
+                    <div class="demo-storage-meta">
+                      <span>Source receipt attached</span>
+                      <span>Review note kept</span>
+                    </div>
+                  </article>
+                </div>
+              </div>
+            </div>
+
+            <svg class="demo-cursor" viewBox="0 0 38 48" aria-hidden="true">
+              <path d="M7 4 31 26l-12 1 7 14-6 3-7-14-8 8L7 4Z"></path>
+            </svg>
+            <span class="demo-click-ring"></span>
+          </div>
+          <ol class="video-captions" aria-label="Backend process stages">
+            <li><strong>Upload</strong><span>A receipt enters the inbox.</span></li>
+            <li><strong>Read</strong><span>Two transaction lines are created.</span></li>
+            <li><strong>Review</strong><span>One amount is confirmed before export.</span></li>
+            <li><strong>Store</strong><span>The transaction list is saved with its source.</span></li>
+          </ol>
         </div>
       </section>
 
@@ -233,65 +382,47 @@
           <h2 id="workspace-title">The work stays organized from the first upload.</h2>
         </div>
         <div class="workspace-layout">
-          <div class="library-panel reveal">
+          <div class="library-panel storage-showcase reveal">
             <div class="panel-top">
-              <h3>Document inbox</h3>
-              <span>Search</span>
+              <h3>Document storage</h3>
+              <span>Example data</span>
             </div>
-            <div class="search-bar">Find vendor, total, asset, or note</div>
-            <div class="category-tabs" role="list" aria-label="Document categories">
-              <span role="listitem" class="is-active">All</span>
-              <span role="listitem">Receipts</span>
-              <span role="listitem">Statements</span>
-              <span role="listitem">Work orders</span>
+            <div class="search-bar">Search vendor, category, export, or receipt ID</div>
+            <div class="storage-stat-row" aria-label="Document storage summary">
+              <article><span>Stored</span><strong>42</strong></article>
+              <article><span>Ready</span><strong>37</strong></article>
+              <article><span>Exports</span><strong>8</strong></article>
             </div>
-            <div class="library-list">
-              <article><strong>Summit Supply</strong><span>Ready record</span></article>
-              <article><strong>Harbor Bank</strong><span>Ready record</span></article>
-              <article><strong>Handwritten fuel note</strong><span>Ready record</span></article>
+            <div class="library-list storage-example-list">
+              <article>
+                <span class="storage-file-icon" aria-hidden="true">PDF</span>
+                <div><strong>Summit Supply receipt</strong><small>Supplies - $284.19 - ready</small></div>
+                <span>Receipt</span>
+              </article>
+              <article>
+                <span class="storage-file-icon" aria-hidden="true">CSV</span>
+                <div><strong>June bank statement</strong><small>38 matched lines - review-ready</small></div>
+                <span>Statement</span>
+              </article>
+              <article>
+                <span class="storage-file-icon" aria-hidden="true">XLS</span>
+                <div><strong>Transaction list export</strong><small>37 clean records - downloaded today</small></div>
+                <span>Export</span>
+              </article>
             </div>
           </div>
           <div class="workspace-copy reveal">
-            <h3>Built for the way paperwork actually arrives.</h3>
+            <h3>Storage with the paper trail still attached.</h3>
             <p>
-              You do not need to rename files, sort folders, or copy numbers by
-              hand before you can start. Upkeep reads the stack, groups the records,
-              and makes the next action obvious.
+              The backend keeps the original document, the cleaned record, and the
+              export history in one place, so the user can find the proof later.
             </p>
             <ul>
-              <li>Receipts, statements, work orders, and notes enter one inbox.</li>
-              <li>Prepared fields are ready to search, clear, or hand off.</li>
-              <li>Unclear details are separated instead of slowing everything down.</li>
+              <li>Source files stay linked to the record they created.</li>
+              <li>Ready exports are searchable by vendor, amount, or document type.</li>
+              <li>Review items stay visible without cluttering stored files.</li>
             </ul>
           </div>
-        </div>
-      </section>
-
-      <section class="review" id="review" aria-labelledby="review-title">
-        <div class="section-heading reveal">
-          <p class="quiet-label">Cleared update</p>
-          <h2 id="review-title">The exception is cleared. The stack can move.</h2>
-        </div>
-        <div class="review-grid">
-          <article class="review-card reveal">
-            <span class="status ready">Ready</span>
-            <h3>Matched totals</h3>
-            <p>Clean fields can move forward without waiting on an exception queue.</p>
-          </article>
-          <article class="review-card reveal">
-            <span class="status cleared">Cleared</span>
-            <h3>Statement line resolved</h3>
-            <p>The record is prepared and the charge has been confirmed for handoff.</p>
-            <div class="field-example">
-              <span>Confirmed</span>
-              <strong>$84.20 hardware charge</strong>
-            </div>
-          </article>
-          <article class="review-card reveal">
-            <span class="status ready">Export</span>
-            <h3>Keep your workflow</h3>
-            <p>Prepared records are ready for reconciliation, handoff, or export.</p>
-          </article>
         </div>
       </section>
 
@@ -301,7 +432,7 @@
           <h2>Give Upkeep a stack of paperwork. Get organized records back.</h2>
           <p>Upload the document. Upkeep prepares the record. You stay in control through final clearance.</p>
         </div>
-        <a class="button light" href="mailto:hello@upkeep.local">Request access</a>
+        <a class="button light" href="/login">Start with a document</a>
       </section>
     </main>
 

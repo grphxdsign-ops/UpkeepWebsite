@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Set up your Upkeep profile</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <script>document.documentElement.classList.add("js");</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,30 +30,47 @@
           <h1>Tell Upkeep who is keeping what.</h1>
         </div>
 
-        <form class="login-panel profile-panel" id="profileForm">
-          <label>
-            <span>Your name</span>
-            <input id="profileName" name="name" type="text" autocomplete="name" required>
-          </label>
+        <form class="login-panel profile-panel" id="profileForm" novalidate>
+          <div class="profile-progress" aria-label="Profile setup progress">
+            <span id="profileStepLabel">Question 1 of 4</span>
+            <div class="profile-progress-track" aria-hidden="true"><i id="profileProgressFill"></i></div>
+          </div>
 
-          <label>
-            <span>Business</span>
-            <input id="profileBusiness" name="business" type="text" autocomplete="organization" required>
-          </label>
+          <section class="profile-step is-active" data-profile-step="0" aria-labelledby="profileNameLabel">
+            <label>
+              <span id="profileNameLabel">What should we call you?</span>
+              <input id="profileName" name="name" type="text" autocomplete="name" required>
+            </label>
+          </section>
 
-          <label>
-            <span>What are you using Upkeep for?</span>
-            <textarea id="profileUseFor" name="useFor" rows="4" required></textarea>
-          </label>
+          <section class="profile-step" data-profile-step="1" aria-labelledby="profileBusinessLabel">
+            <label>
+              <span id="profileBusinessLabel">What business is this for?</span>
+              <input id="profileBusiness" name="business" type="text" autocomplete="organization" required>
+            </label>
+          </section>
 
-          <label>
-            <span>Where did you hear about Upkeep?</span>
-            <input id="profileReferredFrom" name="referredFrom" type="text" required>
-          </label>
+          <section class="profile-step" data-profile-step="2" aria-labelledby="profileUseForLabel">
+            <label>
+              <span id="profileUseForLabel">What do you want Upkeep to help with?</span>
+              <textarea id="profileUseFor" name="useFor" rows="4" required></textarea>
+            </label>
+          </section>
+
+          <section class="profile-step" data-profile-step="3" aria-labelledby="profileReferredFromLabel">
+            <label>
+              <span id="profileReferredFromLabel">Where did you hear about Upkeep?</span>
+              <input id="profileReferredFrom" name="referredFrom" type="text" required>
+            </label>
+          </section>
 
           <p class="form-error" id="profileError" role="alert"></p>
 
-          <button class="submit-button" id="profileSubmit" type="submit">Continue to workspace</button>
+          <div class="profile-actions">
+            <button class="secondary-button" id="profileBack" type="button">Back</button>
+            <button class="submit-button" id="profileNext" type="button">Continue</button>
+            <button class="submit-button" id="profileSubmit" type="submit">Continue to workspace</button>
+          </div>
         </form>
       </section>
     </main>

@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Upkeep brand studio with site map, static visual directions, and motion prototypes.">
+    <title>Upkeep Brand Studio</title>
+    <script>document.documentElement.classList.add("js");</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="brand-studio.css">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@2.0.12/dist/lottie-player.js" defer></script>
+    <script type="module" src="brand-studio.js"></script>
+  </head>
+  <body data-barba="wrapper">
+    <div class="transition-scrim" aria-hidden="true"></div>
+
+    <header class="studio-header">
+      <a class="studio-brand" href="index.html" aria-label="Back to Upkeep home">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M16 17c4-4 11-5 17 0v32c-6-5-13-4-17 0V17Z"></path>
+          <path d="M33 17c6-5 13-4 17 0v32c-4-4-11-5-17 0V17Z"></path>
+          <path d="M33 44V19"></path>
+          <path d="M25 27l8-8 8 8"></path>
+        </svg>
+        <span>Upkeep Studio</span>
+      </a>
+      <nav aria-label="Brand studio sections">
+        <a href="#map">Map</a>
+        <a href="#looks">Looks</a>
+        <a href="#critique">Critique</a>
+        <a href="#motion">Motion</a>
+        <a href="#stack">Stack</a>
+      </nav>
+      <a class="figma-link" href="https://www.figma.com/board/wS0ppEEroXvX42JMgmpLqR?utm_source=codex&utm_content=edit_in_figjam&oai_id=&request_id=a80fc494-62e3-4044-ab28-c82387bb92a2" target="_blank" rel="noreferrer">FigJam map</a>
+    </header>
+
+    <main data-barba="container" data-barba-namespace="brand-studio">
+      <section class="studio-hero" id="top">
+        <div class="hero-copy">
+          <p class="studio-note">Design setup</p>
+          <h1>Paper becomes numbers. Numbers become records.</h1>
+          <p>
+            The site should sell the feeling: Upkeep takes a messy pile and makes
+            a calm, usable record trail in seconds. The technology stays behind the curtain.
+          </p>
+        </div>
+        <div class="hero-question">
+          <p>I am assuming the first buyer is a busy small-business operator, the mood is sleek automation magic, and the CTA is request access.</p>
+          <button class="transition-trigger" type="button">Preview page transition</button>
+        </div>
+      </section>
+
+      <section class="map-section" id="map" aria-labelledby="map-title">
+        <div class="section-kicker">Site map</div>
+        <div class="map-intro">
+          <h2 id="map-title">The page has one job: make the process feel obvious.</h2>
+          <p>Every section should reduce friction or make the transformation more believable.</p>
+        </div>
+
+        <div class="journey-map" aria-label="Upkeep visitor and product journey">
+          <div class="map-node visitor">
+            <span>Visitor</span>
+            <strong>Arrives with paperwork friction</strong>
+          </div>
+          <div class="map-path" aria-hidden="true"></div>
+          <div class="map-node promise">
+            <span>Promise</span>
+            <strong>Documents become ready records</strong>
+          </div>
+          <div class="map-path" aria-hidden="true"></div>
+          <div class="map-node process">
+            <span>Process</span>
+            <strong>Scan, read, organize</strong>
+          </div>
+          <div class="map-path" aria-hidden="true"></div>
+          <div class="map-node output">
+            <span>Output</span>
+            <strong>Forms, records, exports</strong>
+          </div>
+          <div class="map-path" aria-hidden="true"></div>
+          <div class="map-node action">
+            <span>Action</span>
+            <strong>Request access</strong>
+          </div>
+        </div>
+
+        <div class="section-map-grid">
+          <article>
+            <span>01</span>
+            <h3>Hero</h3>
+            <p>One memorable scan-to-record visual. Short promise. No software lecture.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Process</h3>
+            <p>Document enters, numbers clarify, records are ready. This becomes the motion spine.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Outputs</h3>
+            <p>Receipts, statements, work orders, and forms appear as tangible results.</p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>Workspace</h3>
+            <p>Show review and export only after the visitor understands the transformation.</p>
+          </article>
+          <article>
+            <span>05</span>
+            <h3>Trust</h3>
+            <p>No complex software. No accounting knowledge needed. The user stays in control.</p>
+          </article>
+          <article>
+            <span>06</span>
+            <h3>CTA</h3>
+            <p>Close with one decisive action, not a menu of competing asks.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="looks-section" id="looks" aria-labelledby="looks-title">
+        <div class="section-kicker">Static directions</div>
+        <div class="looks-head">
+          <h2 id="looks-title">Five lanes, one story.</h2>
+          <p>These are direction probes. Choose the mood, then the motion system gets built around it.</p>
+        </div>
+
+        <div class="look-switcher" role="tablist" aria-label="Design direction options">
+          <button class="is-active" type="button" role="tab" aria-selected="true" data-look-target="stage">Cinematic stage</button>
+          <button type="button" role="tab" aria-selected="false" data-look-target="night">Moody scan</button>
+          <button type="button" role="tab" aria-selected="false" data-look-target="line">Minimal line</button>
+          <button type="button" role="tab" aria-selected="false" data-look-target="kinetic">Kinetic wordmark</button>
+          <button type="button" role="tab" aria-selected="false" data-look-target="tactile">2.5D tactile</button>
+        </div>
+
+        <div class="look-stage">
+          <article class="look-panel is-active stage-look" data-look="stage" aria-label="Cinematic stage design direction">
+            <img src="assets/concepts/cinematic-stage.png" alt="Cinematic Upkeep concept with paper moving through a transformation stage.">
+            <div class="look-copy">
+              <span>Lane A</span>
+              <h3>Cinematic paper stage</h3>
+              <p>Best if the brand should feel premium, calm, and physical. Use this when the hero needs a real object.</p>
+            </div>
+          </article>
+
+          <article class="look-panel night-look" data-look="night" aria-label="Moody scan design direction">
+            <img src="assets/concepts/moody-scan.png" alt="Dark moody Upkeep concept with documents scanned across a black glass surface.">
+            <div class="look-copy">
+              <span>Lane B</span>
+              <h3>Moody scan table</h3>
+              <p>Best if we want Dark.design energy: sleek, focused, and almost cinematic at night.</p>
+            </div>
+          </article>
+
+          <article class="look-panel line-look" data-look="line" aria-label="Minimal line design direction">
+            <img src="assets/concepts/minimal-line.png" alt="Minimal Upkeep concept with a document line becoming a record.">
+            <div class="look-copy">
+              <span>Lane C</span>
+              <h3>Minimal document line</h3>
+              <p>Best if the brand should feel almost effortless. Strong for Webflow export and clean Rive motion.</p>
+            </div>
+          </article>
+
+          <article class="look-panel kinetic-look" data-look="kinetic" aria-label="Kinetic wordmark design direction">
+            <img src="assets/concepts/godly-kinetic.png" alt="Modern Upkeep concept with a large wordmark and numbers flowing into a form.">
+            <div class="look-copy">
+              <span>Lane D</span>
+              <h3>Kinetic wordmark</h3>
+              <p>Best if we want the most memorable first impression. The brand itself becomes the machine.</p>
+            </div>
+          </article>
+
+          <article class="look-panel tactile-look" data-look="tactile" aria-label="Tactile 2.5D design direction">
+            <img src="assets/concepts/tactile-25d.png" alt="Tactile Upkeep concept with a floating paper document and accounting forms.">
+            <div class="look-copy">
+              <span>Lane E</span>
+              <h3>2.5D tactile scanner</h3>
+              <p>Best if we want Spline-like depth without forcing true 3D before the concept proves it needs it.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="critique-section" id="critique" aria-labelledby="critique-title">
+        <div class="section-kicker">Interview and critique</div>
+        <div class="critique-head">
+          <h2 id="critique-title">Judge every lane by the same promise.</h2>
+          <p>The design wins only if a visitor understands the transformation before they understand the technology.</p>
+        </div>
+
+        <div class="critique-grid">
+          <article class="self-interview">
+            <span>Self interview</span>
+            <h3>What am I refusing to do?</h3>
+            <p>No generic dashboard hero. No OCR lecture. No stack of floating SaaS cards. The first view needs one memorable artifact: messy input becoming clean output.</p>
+          </article>
+          <article>
+            <span>Visitor question</span>
+            <h3>What happens to my documents?</h3>
+            <p>They move through a visible process: received, read, turned into numbers, and shaped into records the user can keep or export.</p>
+          </article>
+          <article>
+            <span>Motion question</span>
+            <h3>What should move?</h3>
+            <p>The document path, extracted numbers, record assembly, and confirmation moments. Backgrounds can breathe, but they should never become the product.</p>
+          </article>
+          <article>
+            <span>Your interview</span>
+            <h3>Still waiting on three answers.</h3>
+            <p>First buyer, desired mood, and primary CTA. Current assumption: small-business operator, sleek automation magic, request access.</p>
+          </article>
+        </div>
+
+        <div class="lane-score">
+          <div><span>A</span><strong>Most premium</strong><em>Cinematic stage has the best chance of feeling high-end without extra UI clutter.</em></div>
+          <div><span>B</span><strong>Most atmospheric</strong><em>Moody scan can become sleek and memorable, but it needs disciplined contrast.</em></div>
+          <div><span>C</span><strong>Most minimal</strong><em>Minimal line is cleanest for Webflow handoff, but risks feeling too quiet.</em></div>
+          <div><span>D</span><strong>Most iconic</strong><em>Kinetic wordmark gives the brand the strongest visual hook if we commit hard.</em></div>
+          <div><span>E</span><strong>Most product-like</strong><em>2.5D tactile is easiest to understand, with optional Spline depth later.</em></div>
+        </div>
+      </section>
+
+      <section class="motion-section" id="motion" aria-labelledby="motion-title">
+        <div class="section-kicker">Motion prototypes</div>
+        <div class="motion-head">
+          <h2 id="motion-title">Motion should explain the product before copy does.</h2>
+          <p>These prototypes are intentionally simple: scan, extract, organize. Once a lane wins, these become Rive, Shader Gradient, Lottie, or Spline assets.</p>
+        </div>
+
+        <div class="motion-lab">
+          <article class="motion-prototype flow-prototype">
+            <canvas id="paperFlowCanvas" aria-label="Animated document to record prototype"></canvas>
+            <div>
+              <h3>Document to numbers to records</h3>
+              <p>Core hero motion. This is the product story in one loop.</p>
+            </div>
+          </article>
+
+          <article class="motion-prototype rive-prototype">
+            <div class="rive-stage" aria-hidden="true">
+              <svg viewBox="0 0 620 320">
+                <path class="rive-path" d="M76 180 C 172 82, 250 260, 330 160 S 474 76, 548 156"></path>
+                <g class="doc-shape">
+                  <rect x="54" y="122" width="82" height="108" rx="7"></rect>
+                  <path d="M76 154h38M76 180h28M76 206h46"></path>
+                </g>
+                <g class="number-group">
+                  <text x="256" y="138">$84.20</text>
+                  <text x="288" y="180">12</text>
+                  <text x="238" y="218">May 14</text>
+                </g>
+                <g class="form-shape">
+                  <rect x="470" y="102" width="100" height="136" rx="8"></rect>
+                  <path d="M492 136h52M492 166h42M492 196h58"></path>
+                </g>
+              </svg>
+            </div>
+            <div>
+              <h3>Rive state machine</h3>
+              <p>States: upload, reading, numbers found, form ready. This becomes the editable Rive file.</p>
+            </div>
+          </article>
+
+          <article class="motion-prototype shader-prototype">
+            <canvas id="shaderCanvas" aria-label="Animated gradient field prototype"></canvas>
+            <div class="shader-content">
+              <h3>Shader Gradient atmosphere</h3>
+              <p>A restrained animated field should guide attention toward the scan path, not decorate the page.</p>
+            </div>
+          </article>
+
+          <article class="motion-prototype lottie-prototype">
+            <div class="lottie-shell">
+              <lottie-player src="assets/motion/upkeep-upload-record.json" background="transparent" speed="1" loop autoplay aria-label="Animated upload to record icon"></lottie-player>
+              <div class="lottie-fallback" aria-hidden="true">
+                <span></span>
+              </div>
+            </div>
+            <div>
+              <h3>Lottie confirmation icon</h3>
+              <p>Micro-motion for successful upload, ready record, and exported form states.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="stack-section" id="stack" aria-labelledby="stack-title">
+        <div class="section-kicker">Implementation stack</div>
+        <div class="stack-head">
+          <h2 id="stack-title">Use the right motion tool for the right job.</h2>
+          <p>Do not force 3D. Do not fake every asset in CSS. Pick the smallest serious tool that makes the chosen direction feel alive.</p>
+        </div>
+
+        <div class="stack-rows">
+          <div><span>Spline</span><strong>Physical scanner or ledger object only if the selected lane needs real 3D.</strong></div>
+          <div><span>Rive</span><strong>Primary 2D process animation: upload, read, extract, record.</strong></div>
+          <div><span>Shader Gradient</span><strong>Animated atmospheric field behind the scan path.</strong></div>
+          <div><span>Lottie Files</span><strong>Small animated icons for success, export, and ready states.</strong></div>
+          <div><span>Icons8</span><strong>Animated illustration reference for friendly helper visuals, not hero clutter.</strong></div>
+          <div><span>Lenis</span><strong data-stack-status="lenis">Smooth scroll initializing.</strong></div>
+          <div><span>Barba.js</span><strong data-stack-status="barba">Page transitions initializing.</strong></div>
+          <div><span>Webflow</span><strong>Use as a handoff constraint: embed Rive, Spline, Lottie, and clean section structure.</strong></div>
+          <div><span>Neuronsinc</span><strong>Attention rule: one focal object, one process, one CTA per viewport.</strong></div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

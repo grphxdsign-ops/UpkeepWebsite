@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Upkeep Layout Renders</title>
+    <script>document.documentElement.classList.add("js");</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="renders.css">
+  </head>
+  <body>
+    <header class="render-nav">
+      <a class="brand" href="index.html" aria-label="Upkeep home">
+        <svg class="brand-logo" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M16 17c4-4 11-5 17 0v32c-6-5-13-4-17 0V17Z"></path>
+          <path d="M33 17c6-5 13-4 17 0v32c-4-4-11-5-17 0V17Z"></path>
+          <path d="M33 44V19"></path>
+          <path d="M25 27l8-8 8 8"></path>
+        </svg>
+        <span>Upkeep</span>
+      </a>
+      <nav aria-label="Render concepts">
+        <a href="renders.html?render=1">01</a>
+        <a href="renders.html?render=2">02</a>
+        <a href="renders.html?render=3">03</a>
+        <a href="renders.html?render=4">04</a>
+        <a href="renders.html?render=5">05</a>
+      </nav>
+    </header>
+
+    <main class="render-deck">
+      <section class="concept concept-artifact" data-render="1" aria-label="Concept 1 Artifact Desk">
+        <div class="concept-copy">
+          <p>Layout 01</p>
+          <h1>Records, staged like evidence.</h1>
+          <a href="#request">Request access</a>
+        </div>
+        <div class="artifact-scene" aria-hidden="true">
+          <span class="massive-mark">UPKEEP</span>
+          <div class="desk-laptop">
+            <div class="laptop-screen">
+              <div class="museum-top">Vision OCR intake</div>
+              <div class="museum-title">Messy upload becomes clean record.</div>
+              <div class="museum-fields">
+                <span>Vendor / Summit Supply</span>
+                <span>Total / $52.97</span>
+                <span>Status / Ready</span>
+              </div>
+            </div>
+          </div>
+          <div class="desk-shadow"></div>
+          <article class="desk-paper one"><strong>Receipt</strong><span>$52.97</span></article>
+          <article class="desk-paper two"><strong>Statement</strong><span>Matched</span></article>
+          <article class="desk-paper three"><strong>Work order</strong><span>AC Unit #3</span></article>
+        </div>
+      </section>
+
+      <section class="concept concept-ribbon" data-render="2" aria-label="Concept 2 Ribbon Ledger">
+        <div class="ribbon-stage" aria-hidden="true">
+          <div class="book-orb">
+            <svg viewBox="0 0 160 160">
+              <path d="M38 44c12-10 30-10 42 1v70c-14-11-31-10-42 1V44Z"></path>
+              <path d="M81 45c13-11 31-11 43-1v72c-11-11-29-12-43-1V45Z"></path>
+              <path d="M81 112V42"></path>
+              <path d="M62 62l19-20 19 20"></path>
+            </svg>
+          </div>
+          <svg class="wide-ribbon" viewBox="0 0 1200 420">
+            <path id="wideRibbonPath" d="M-40 260 C 210 20, 415 415, 640 205 S 970 35, 1260 195"></path>
+            <text><textPath href="#wideRibbonPath">UPLOAD * READ * MATCH * FILE * EXPORT * SEARCH * UPLOAD * READ * MATCH *</textPath></text>
+          </svg>
+          <span class="ribbon-word">UPKEEP</span>
+        </div>
+        <div class="concept-copy invert">
+          <p>Layout 02</p>
+          <h1>Throw it in. Watch it keep.</h1>
+          <a href="#request">Start intake</a>
+        </div>
+      </section>
+
+      <section class="concept concept-hands" data-render="3" aria-label="Concept 3 Hands Device">
+        <div class="hands-copy">
+          <p>Layout 03</p>
+          <h1>No software.<br>Just clean records.</h1>
+        </div>
+        <div class="hands-scene" aria-hidden="true">
+          <span class="hand left"></span>
+          <span class="hand right"></span>
+          <div class="tablet">
+            <div class="tablet-ui">
+              <header><span>Upkeep</span><b>Ready in seconds</b></header>
+              <div class="glass-object"></div>
+              <div class="tablet-callout c1">Vendor found</div>
+              <div class="tablet-callout c2">$52.97 matched</div>
+              <div class="tablet-callout c3">Export ready</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="concept concept-cyclone" data-render="4" aria-label="Concept 4 Paper Cyclone">
+        <div class="cyclone-copy">
+          <p>Layout 04</p>
+          <h1>The pile finds its place.</h1>
+          <span>Receipts, statements, and service notes pull into one clean trail.</span>
+        </div>
+        <div class="cyclone" aria-hidden="true">
+          <span class="ring r1"></span>
+          <span class="ring r2"></span>
+          <span class="ring r3"></span>
+          <article class="orbit-paper p1">Receipt</article>
+          <article class="orbit-paper p2">Statement</article>
+          <article class="orbit-paper p3">Work order</article>
+          <article class="orbit-paper p4">Note</article>
+          <div class="clean-ledger">
+            <strong>Clean record</strong>
+            <span>Summit Supply</span>
+            <span>$52.97</span>
+            <span>Ready</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="concept concept-editorial" data-render="5" aria-label="Concept 5 Editorial Proof">
+        <div class="editorial-left">
+          <p>Layout 05</p>
+          <h1>Ready before the coffee cools.</h1>
+        </div>
+        <div class="editorial-strip" aria-hidden="true">
+          <span>receipt</span><i></i><span>statement</span><i></i><span>work order</span><i></i><span>note</span>
+        </div>
+        <div class="editorial-proof" aria-hidden="true">
+          <article class="proof-input">
+            <small>Messy inputs</small>
+            <strong>Four files</strong>
+            <span>receipt</span>
+            <span>statement</span>
+            <span>work order</span>
+          </article>
+          <article class="proof-ocr">
+            <small>Vision OCR</small>
+            <strong>Fields pulled into place</strong>
+            <div class="scan-bars">
+              <i></i><i></i><i></i><i></i>
+            </div>
+          </article>
+          <article class="proof-output">
+            <small>Clean record</small>
+            <strong>One ready trail</strong>
+            <span>Vendor matched</span>
+            <span>Total checked</span>
+            <span>Export ready</span>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="renders.js"></script>
+  </body>
+</html>

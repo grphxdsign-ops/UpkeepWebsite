@@ -110,6 +110,69 @@ async function handleApi(request, response, url) {
     return;
   }
 
+  if (request.method === "POST" && url.pathname === "/api/account/profile") {
+    const user = await currentUser(request);
+    if (!user) {
+      sendJson(response, 401, { error: "Sign in required." });
+      return;
+    }
+
+    const payload = await readJsonBody(request);
+    let updated;
+    try {
+      updated = await updateAccountProfile(user.id, payload);
+    } catch (error) {
+      sendJson(response, 400, { error: error.message });
+      return;
+    }
+
+    const token = getCookie(request, sessionCookieName);
+    const session = token ? sessions.get(token) : null;
+    if (session) session.user = publicUser(updated);
+    sendJson(response, 200, profilePayload(updated));
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/account/email-change-request") {
+    const user = await currentUser(request);
+    if (!user) {
+      sendJson(response, 401, { error: "Sign in required." });
+      return;
+    }
+
+    const payload = await readJsonBody(request);
+    try {
+      await requestEmailChange(user, payload);
+      sendJson(response, 200, {
+        ok: true,
+        message: "Verification queued for the current and new email."
+      });
+    } catch (error) {
+      sendJson(response, 400, { error: error.message });
+    }
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/account/password-change-request") {
+    const user = await currentUser(request);
+    if (!user) {
+      sendJson(response, 401, { error: "Sign in required." });
+      return;
+    }
+
+    const payload = await readJsonBody(request);
+    try {
+      await requestPasswordChange(user, payload);
+      sendJson(response, 200, {
+        ok: true,
+        message: "Password verification email queued."
+      });
+    } catch (error) {
+      sendJson(response, 400, { error: error.message });
+    }
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/api/workspace") {
     const user = await currentUser(request);
     const [documents, records, exports] = await Promise.all([
@@ -163,8 +226,7 @@ async function handleApi(request, response, url) {
   if (request.method === "GET" && url.pathname === "/api/export.csv") {
     const records = await listRows("upkeep_records");
     const set = url.searchParams.get("set") || "records";
-    const selectedIds = selectedIdSet(url);
-    const scopedRecords = selectedIds.size ? records.filter((record) => selectedIds.has(record.id)) : records;
+    const scopedRecords = exportReadyRecords(records, selectedIdSet(url));
     const csv = recordsToCsv(scopedRecords, set);
     const filename = exportFileName(set);
     await logExport(set, "csv", filename, scopedRecords);
@@ -179,8 +241,7 @@ async function handleApi(request, response, url) {
   if (request.method === "GET" && url.pathname === "/api/export.sheet") {
     const records = await listRows("upkeep_records");
     const set = url.searchParams.get("set") || "records";
-    const selectedIds = selectedIdSet(url);
-    const scopedRecords = selectedIds.size ? records.filter((record) => selectedIds.has(record.id)) : records;
+    const scopedRecords = exportReadyRecords(records, selectedIdSet(url));
     const html = recordsToSheetHtml(scopedRecords, set);
     const filename = exportFileName(set).replace(/\.csv$/i, ".xls");
     await logExport(set, "sheet", filename, scopedRecords);
@@ -195,8 +256,7 @@ async function handleApi(request, response, url) {
   if (request.method === "GET" && url.pathname === "/api/export.doc") {
     const records = await listRows("upkeep_records");
     const set = url.searchParams.get("set") || "records";
-    const selectedIds = selectedIdSet(url);
-    const scopedRecords = selectedIds.size ? records.filter((record) => selectedIds.has(record.id)) : records;
+    const scopedRecords = exportReadyRecords(records, selectedIdSet(url));
     const html = recordsToDocumentHtml(scopedRecords, set);
     const filename = exportFileName(set).replace(/\.csv$/i, ".doc");
     await logExport(set, "doc", filename, scopedRecords);
@@ -211,8 +271,7 @@ async function handleApi(request, response, url) {
   if (request.method === "GET" && url.pathname === "/api/export.pdf") {
     const records = await listRows("upkeep_records");
     const set = url.searchParams.get("set") || "records";
-    const selectedIds = selectedIdSet(url);
-    const scopedRecords = selectedIds.size ? records.filter((record) => selectedIds.has(record.id)) : records;
+    const scopedRecords = exportReadyRecords(records, selectedIdSet(url));
     const filename = exportFileName(set).replace(/\.csv$/i, ".pdf");
     await logExport(set, "pdf", filename, scopedRecords);
     response.writeHead(200, {
@@ -312,16 +371,8 @@ async function serveStatic(request, response, url) {
     return;
   }
 
-  if (isBackendPage && session) {
-    const user = await currentUser(request);
-    if (user && !publicUser(user).profileComplete) {
-      redirect(response, `/profile?next=${encodeURIComponent("/backend")}`);
-      return;
-    }
-  }
-
   if ((pathname === "/login" || pathname === "/login.html") && session) {
-    redirect(response, `/profile?next=${encodeURIComponent("/backend")}`);
+    redirect(response, "/backend");
     return;
   }
 
@@ -411,6 +462,102 @@ async function updateUserProfile(userId, profile) {
   return users[index];
 }
 
+async function updateAccountProfile(userId, payload) {
+  const users = await readUsers();
+  const index = users.findIndex((user) => user.id === userId);
+  if (index === -1) throw new Error("Account not found.");
+
+  const previous = users[index].profile || {};
+  const profile = {
+    ...previous,
+    updatedAt: new Date().toISOString()
+  };
+
+  if (Object.prototype.hasOwnProperty.call(payload, "name")) {
+    const name = cleanProfileField(payload.name);
+    if (!name) throw new Error("Add your name.");
+    profile.name = name;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(payload, "business")) {
+    const business = cleanProfileField(payload.business);
+    if (!business) throw new Error("Add your business.");
+    profile.business = business;
+  }
+
+  users[index] = {
+    ...users[index],
+    profile,
+    updated_at: new Date().toISOString()
+  };
+  await writeUsers(users);
+  return users[index];
+}
+
+async function requestEmailChange(user, payload) {
+  const currentPassword = String(payload.currentPassword || "");
+  if (!verifyPassword(currentPassword, user.password_hash)) {
+    throw new Error("Current password is incorrect.");
+  }
+
+  const newEmail = normalizeEmail(payload.newEmail);
+  const confirmEmail = normalizeEmail(payload.confirmEmail);
+  if (!newEmail || newEmail !== confirmEmail) {
+    throw new Error("The new email entries must match.");
+  }
+  validateEmailAddress(newEmail);
+  if (newEmail === user.email) {
+    throw new Error("That email is already on this account.");
+  }
+
+  const users = await readUsers();
+  if (users.some((item) => item.email === newEmail && item.id !== user.id)) {
+    throw new Error("An account already exists for that email.");
+  }
+
+  const index = users.findIndex((item) => item.id === user.id);
+  if (index === -1) throw new Error("Account not found.");
+  users[index] = {
+    ...users[index],
+    pending_email_change: {
+      new_email: newEmail,
+      requested_at: new Date().toISOString(),
+      verification_id: createId("verify_email")
+    },
+    updated_at: new Date().toISOString()
+  };
+  await writeUsers(users);
+}
+
+async function requestPasswordChange(user, payload) {
+  const currentPassword = String(payload.currentPassword || "");
+  const newPassword = String(payload.newPassword || "");
+  const confirmPassword = String(payload.confirmPassword || "");
+  if (!verifyPassword(currentPassword, user.password_hash)) {
+    throw new Error("Current password is incorrect.");
+  }
+  if (newPassword !== confirmPassword) {
+    throw new Error("The new password entries must match.");
+  }
+  if (verifyPassword(newPassword, user.password_hash)) {
+    throw new Error("Choose a new password that is different from the current one.");
+  }
+  validatePasswordValue(newPassword);
+
+  const users = await readUsers();
+  const index = users.findIndex((item) => item.id === user.id);
+  if (index === -1) throw new Error("Account not found.");
+  users[index] = {
+    ...users[index],
+    pending_password_change: {
+      requested_at: new Date().toISOString(),
+      verification_id: createId("verify_password")
+    },
+    updated_at: new Date().toISOString()
+  };
+  await writeUsers(users);
+}
+
 function profilePayload(user) {
   const profile = user.profile || {};
   return {
@@ -451,10 +598,17 @@ function normalizeEmail(email) {
 }
 
 function validateCredentials(email, password) {
+  validateEmailAddress(email);
+  validatePasswordValue(password);
+}
+
+function validateEmailAddress(email) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     throw new Error("Enter a valid email address.");
   }
+}
 
+function validatePasswordValue(password) {
   if (password.length < 8) {
     throw new Error("Password must be at least 8 characters.");
   }
@@ -1153,6 +1307,13 @@ async function downloadExport(response, id) {
 function selectedIdSet(url) {
   const raw = url.searchParams.get("ids") || "";
   return new Set(raw.split(",").map((id) => id.trim()).filter(Boolean));
+}
+
+function exportReadyRecords(records, selectedIds = new Set()) {
+  const scoped = selectedIds.size
+    ? records.filter((record) => selectedIds.has(record.id))
+    : records;
+  return scoped.filter((record) => record.status === "ready" && !record.needs_review);
 }
 
 async function readJsonBody(request) {

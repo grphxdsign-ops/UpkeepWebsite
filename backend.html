@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Upkeep Workspace</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <script>
       document.documentElement.classList.add("js");
       try {
@@ -60,6 +61,30 @@
       <symbol id="icon-moon" viewBox="0 0 24 24">
         <path d="M20.2 14.5A7.6 7.6 0 0 1 9.5 3.8 8.4 8.4 0 1 0 20.2 14.5Z"></path>
       </symbol>
+      <symbol id="icon-security" viewBox="0 0 24 24">
+        <path d="M7.5 10.5V8a4.5 4.5 0 0 1 9 0v2.5"></path>
+        <path d="M6.8 10.5h10.4c1.2 0 2.1.9 2.1 2.1v5.1c0 1.2-.9 2.1-2.1 2.1H6.8c-1.2 0-2.1-.9-2.1-2.1v-5.1c0-1.2.9-2.1 2.1-2.1Z"></path>
+        <path d="M12 15.8v-1.7"></path>
+      </symbol>
+      <symbol id="icon-bell" viewBox="0 0 24 24">
+        <path d="M8.3 18.5h7.4"></path>
+        <path d="M10 20.2h4"></path>
+        <path d="M5.8 16.4c1.1-1.1 1.6-2.4 1.6-4.1V10a4.6 4.6 0 0 1 9.2 0v2.3c0 1.7.5 3 1.6 4.1H5.8Z"></path>
+      </symbol>
+      <symbol id="icon-device" viewBox="0 0 24 24">
+        <path d="M5 5.5h14c.8 0 1.5.7 1.5 1.5v8.5H3.5V7c0-.8.7-1.5 1.5-1.5Z"></path>
+        <path d="M9 19h6"></path>
+        <path d="M12 15.5V19"></path>
+      </symbol>
+      <symbol id="icon-privacy" viewBox="0 0 24 24">
+        <path d="M12 3.6 18.2 6v5.1c0 4-2.3 7.1-6.2 9.3-3.9-2.2-6.2-5.3-6.2-9.3V6L12 3.6Z"></path>
+        <path d="m9.6 12 1.6 1.6 3.3-3.5"></path>
+      </symbol>
+      <symbol id="icon-download" viewBox="0 0 24 24">
+        <path d="M12 4.2v10.3"></path>
+        <path d="m8.4 11 3.6 3.6 3.6-3.6"></path>
+        <path d="M5.2 18.8h13.6"></path>
+      </symbol>
     </svg>
     <main class="backend-shell">
       <aside class="backend-sidebar" aria-label="Backend navigation">
@@ -73,61 +98,53 @@
           <span>Upkeep</span>
         </a>
         <nav class="backend-nav" aria-label="Workspace views">
-          <a href="#intake" class="is-active"><span class="nav-mark"><svg><use href="#icon-inbox"></use></svg></span><span>Inbox</span></a>
-          <a href="#records"><span class="nav-mark"><svg><use href="#icon-records"></use></svg></span><span>Records</span></a>
-          <a href="#review"><span class="nav-mark"><svg><use href="#icon-review"></use></svg></span><span>Review</span></a>
-          <a href="#storage"><span class="nav-mark"><svg><use href="#icon-storage"></use></svg></span><span>Storage</span></a>
+          <a href="#intake" class="is-active"><span class="nav-mark"><span class="iconsax-mask" style="--icon: url('assets/iconsax/inbox.svg')"></span></span><span>Inbox</span></a>
+          <a href="#records"><span class="nav-mark"><span class="iconsax-mask" style="--icon: url('assets/iconsax/records.svg')"></span></span><span>Records</span></a>
+          <a href="#review"><span class="nav-mark"><span class="iconsax-mask" style="--icon: url('assets/iconsax/review.svg')"></span></span><span>Review</span></a>
+          <a href="#storage"><span class="nav-mark"><span class="iconsax-mask" style="--icon: url('assets/iconsax/storage.svg')"></span></span><span>Storage</span></a>
         </nav>
-        <div class="theme-switcher" aria-label="Appearance">
-          <button class="theme-choice is-active" type="button" data-theme-choice="dark">
-            <svg><use href="#icon-moon"></use></svg>
-            <span>Dark</span>
-          </button>
-          <button class="theme-choice" type="button" data-theme-choice="light">
-            <svg><use href="#icon-sun"></use></svg>
-            <span>Light</span>
-          </button>
-        </div>
         <button class="sidebar-account" id="profileShortcut" type="button" data-view-link="profile" aria-label="Open profile and settings">
           <span class="sidebar-avatar" id="sidebarInitial">U</span>
           <div>
             <strong id="sidebarProfileName">Upkeep user</strong>
             <small id="sidebarProfileBusiness">Workspace loading</small>
           </div>
-          <svg class="sidebar-account-icon"><use href="#icon-profile"></use></svg>
+          <span class="sidebar-account-icon iconsax-mask" style="--icon: url('assets/iconsax/profile.svg')" aria-hidden="true"></span>
         </button>
         <button class="backend-logout" id="logoutButton" type="button">Log out</button>
       </aside>
 
       <section class="workspace" aria-label="Backend application workspace">
         <header class="workspace-topbar">
-          <span class="workspace-icon" id="workspaceIcon" aria-hidden="true"><svg><use href="#icon-inbox"></use></svg></span>
-          <div>
-            <p class="quiet-label" id="workspaceLabel">Inbox</p>
-            <h1 id="workspaceGreeting">Your records, cleaned up.</h1>
-            <p id="workspaceSubcopy">Drop messy source files in. Upkeep turns them into review-ready financial records.</p>
-          </div>
-          <div class="workspace-actions" aria-label="Workspace quick actions">
-            <span class="workspace-business" id="workspaceBusiness">Business setup pending</span>
-            <a class="button primary compact" id="workspaceAction" href="#intake" data-view-link="intake">Add files</a>
-          </div>
+          <img class="workspace-gradient-asset" src="assets/ui-kit/animated-gradient.jpg" alt="" aria-hidden="true">
+          <span class="workspace-icon" id="workspaceIcon" aria-hidden="true"><span class="iconsax-mask" style="--icon: url('assets/iconsax/inbox.svg')"></span></span>
+          <h1 id="workspaceGreeting">Your records, cleaned up.</h1>
         </header>
 
         <section class="app-view inbox-view is-active" id="intake" aria-labelledby="intakeTitle">
           <section class="intake-panel">
-            <div class="panel-heading">
-              <div>
-                <p class="quiet-label">Inbox</p>
-                <h2 id="intakeTitle">Add source documents</h2>
-              </div>
-              <span id="uploadCount">0 files</span>
-            </div>
+            <h2 id="intakeTitle" class="visually-hidden">Inbox file intake</h2>
+            <span id="uploadCount" class="visually-hidden">0 files</span>
 
             <label class="drop-target" for="documentInput">
               <input id="documentInput" type="file" accept=".txt,.csv,.json,image/*" multiple>
               <span class="drop-orbit" aria-hidden="true"></span>
-              <strong>Bring in the paper trail</strong>
-              <small>Receipts, statements, CSVs, JSON, or images</small>
+              <span class="drop-asset-stage" aria-hidden="true">
+                <img class="drop-asset drop-asset-scan" src="assets/ui-kit/scan.png" alt="">
+                <span class="drop-document-card">
+                  <span class="drop-document-icon"><span class="iconsax-mask" style="--icon: url('assets/iconsax/document.svg')"></span></span>
+                  <span class="drop-document-lines">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </span>
+                </span>
+                <span class="drop-scan-line"></span>
+              </span>
+              <span class="drop-copy">
+                <strong>Drop the paper trail here</strong>
+                <small>Receipts, statements, CSVs, JSON, or images</small>
+              </span>
             </label>
 
             <div class="file-list" id="fileList" aria-live="polite">
@@ -135,11 +152,11 @@
             </div>
 
             <div class="intake-actions">
-              <button class="button primary" id="processButton" type="button" disabled>Process</button>
+              <button class="button primary" id="processButton" type="button" disabled>Scan</button>
               <button class="button secondary" id="clearButton" type="button">Clear</button>
             </div>
 
-            <p class="status-line" id="statusLine">Ready for upload.</p>
+            <p class="status-line" id="statusLine"></p>
           </section>
         </section>
 
@@ -168,58 +185,123 @@
               </article>
             </div>
 
-            <div class="queue-actions">
-              <button class="button secondary" id="selectAllRecordsButton" type="button" disabled>Select all transactions</button>
-              <a class="button primary" href="#review" data-view-link="review">Build export</a>
-            </div>
-
             <div class="records-list" id="recordsList" aria-live="polite">
               <p>No records yet.</p>
             </div>
           </section>
 
-          <aside class="detail-panel" aria-labelledby="detailTitle">
-            <p class="quiet-label">Record detail</p>
+          <aside class="detail-panel line-editor" aria-labelledby="detailTitle">
+            <p class="quiet-label">Line editor</p>
             <h2 id="detailTitle">Select a record</h2>
-            <dl id="detailFields">
-              <div><dt>Status</dt><dd>Waiting</dd></div>
-              <div><dt>Amount</dt><dd>-</dd></div>
-              <div><dt>Document</dt><dd>-</dd></div>
-            </dl>
+            <div class="detail-fields" id="detailFields">
+              <div><span>Status</span><strong>Waiting</strong></div>
+              <div><span>Amount</span><strong>-</strong></div>
+              <div><span>Document</span><strong>-</strong></div>
+            </div>
             <div class="detail-actions">
-              <button class="button primary" id="saveButton" type="button" disabled>Save changes</button>
-              <button class="button secondary" id="approveButton" type="button" disabled>Mark ready</button>
-              <button class="button secondary" id="flagButton" type="button" disabled>Needs review</button>
-              <button class="button danger" id="deleteRecordButton" type="button" disabled>Delete line</button>
+              <button class="button primary" id="saveButton" type="button" disabled>Save</button>
+              <button class="button secondary" id="approveButton" type="button" disabled>Ready</button>
+              <button class="button danger" id="deleteRecordButton" type="button" disabled>Delete</button>
             </div>
           </aside>
         </section>
 
         <section class="app-view review-view" id="review" aria-labelledby="reviewTitle">
+          <section class="preview-panel" aria-label="Export preview">
+            <div class="panel-heading">
+              <div>
+                <p class="quiet-label">Transaction list</p>
+                <h2 id="previewTitle">Transaction list</h2>
+              </div>
+              <span id="previewCount">0 records</span>
+            </div>
+            <div class="export-preview" id="exportPreview"></div>
+          </section>
           <section class="export-panel" aria-label="Create export documents">
             <div class="report-builder">
               <div>
-                <p class="quiet-label">Review</p>
+                <p class="quiet-label">Document studio</p>
                 <h2 id="reviewTitle">Create documents</h2>
               </div>
               <div class="doc-type-grid" id="reportTypeOptions" aria-label="Document type">
                 <button class="doc-type-option is-active" type="button" data-report-type="balance-transactions">
+                  <span class="doc-motion doc-motion-list" aria-hidden="true">
+                    <svg class="doc-motion-svg" viewBox="0 0 96 64">
+                      <rect class="doc-page" x="12" y="9" width="72" height="46" rx="7"></rect>
+                      <path class="doc-gridline" d="M23 22h50M23 32h50M23 42h50"></path>
+                      <path class="doc-gridline faint" d="M38 17v31M58 17v31"></path>
+                      <g class="txn-row row-a"><path d="M22 21h18"></path><path d="M46 21h11"></path><path d="M63 21h10"></path></g>
+                      <g class="txn-row row-b"><path d="M22 32h24"></path><path d="M52 32h8"></path><path d="M66 32h7"></path></g>
+                      <g class="txn-row row-c"><path d="M22 43h14"></path><path d="M42 43h18"></path><path d="M66 43h7"></path></g>
+                      <path class="motion-sweep" d="M18 15h60"></path>
+                      <path class="doc-check" d="M71 46l3 3 7-8"></path>
+                    </svg>
+                  </span>
                   <strong>Transaction list</strong>
                   <span>Line-by-line export</span>
                 </button>
                 <button class="doc-type-option" type="button" data-report-type="banking-reconciliation">
+                  <span class="doc-motion doc-motion-bank" aria-hidden="true">
+                    <svg class="doc-motion-svg" viewBox="0 0 96 64">
+                      <path class="bank-roof" d="M18 25 48 11l30 14Z"></path>
+                      <path class="bank-base" d="M20 50h56"></path>
+                      <path class="bank-column column-a" d="M29 28v18"></path>
+                      <path class="bank-column column-b" d="M42 28v18"></path>
+                      <path class="bank-column column-c" d="M55 28v18"></path>
+                      <path class="bank-column column-d" d="M68 28v18"></path>
+                      <path class="reconcile-sheet left" d="M18 18h18M18 35h14M18 42h17"></path>
+                      <path class="reconcile-sheet right" d="M60 18h18M62 35h16M61 42h14"></path>
+                      <path class="match-line line-a" d="M34 34C42 29 54 29 62 34"></path>
+                      <path class="match-line line-b" d="M36 42C43 47 53 47 60 42"></path>
+                      <path class="doc-check" d="M44 37l4 4 9-11"></path>
+                    </svg>
+                  </span>
                   <strong>Bank reconciliation</strong>
                   <span>Matched banking review</span>
                 </button>
                 <button class="doc-type-option" type="button" data-report-type="income-statement">
+                  <span class="doc-motion doc-motion-income" aria-hidden="true">
+                    <svg class="doc-motion-svg" viewBox="0 0 96 64">
+                      <path class="axis" d="M19 49h58"></path>
+                      <rect class="income-bar bar-a" x="24" y="32" width="10" height="17" rx="3"></rect>
+                      <rect class="income-bar bar-b" x="43" y="23" width="10" height="26" rx="3"></rect>
+                      <rect class="income-bar bar-c" x="62" y="15" width="10" height="34" rx="3"></rect>
+                      <path class="income-line" d="M25 28C36 31 43 18 53 22s12-9 21-6"></path>
+                      <path class="income-total" d="M24 13h22M24 19h14"></path>
+                    </svg>
+                  </span>
                   <strong>Income statement</strong>
                   <span>Income and expense rollup</span>
                 </button>
                 <button class="doc-type-option" type="button" data-report-type="balance-sheet">
+                  <span class="doc-motion doc-motion-balance" aria-hidden="true">
+                    <svg class="doc-motion-svg" viewBox="0 0 96 64">
+                      <path class="scale-post" d="M48 20v28"></path>
+                      <path class="scale-foot" d="M37 50h22"></path>
+                      <g class="scale-beam">
+                        <path d="M24 23h48"></path>
+                        <path class="scale-chain left-chain" d="M30 23v13"></path>
+                        <path class="scale-chain right-chain" d="M66 23v13"></path>
+                        <path class="scale-pan left-pan" d="M20 38h20l-4 8H24Z"></path>
+                        <path class="scale-pan right-pan" d="M56 38h20l-4 8H60Z"></path>
+                      </g>
+                      <path class="balance-equals" d="M43 15h10M43 19h10"></path>
+                    </svg>
+                  </span>
                   <strong>Balance sheet</strong>
                   <span>Assets, liabilities, equity</span>
                 </button>
                 <button class="doc-type-option" type="button" data-report-type="cash-flow">
+                  <span class="doc-motion doc-motion-cash" aria-hidden="true">
+                    <svg class="doc-motion-svg" viewBox="0 0 96 64">
+                      <path class="flow-path path-a" d="M17 21C31 8 49 35 63 20s18-2 18-2"></path>
+                      <path class="flow-path path-b" d="M15 40c12-13 26 8 39-2s18-13 29-3"></path>
+                      <circle class="cash-dot dot-a" cx="20" cy="21" r="3"></circle>
+                      <circle class="cash-dot dot-b" cx="42" cy="34" r="3"></circle>
+                      <circle class="cash-dot dot-c" cx="72" cy="28" r="3"></circle>
+                      <path class="cash-ledger" d="M25 50h46M34 55h28"></path>
+                    </svg>
+                  </span>
                   <strong>Cash flow statement</strong>
                   <span>Cash movement summary</span>
                 </button>
@@ -238,16 +320,6 @@
                 <a class="button primary" id="exportPdfButton" href="/api/export.pdf?set=balance-transactions">Download as PDF</a>
               </div>
             </div>
-          </section>
-          <section class="preview-panel" aria-label="Export preview">
-            <div class="panel-heading">
-              <div>
-                <p class="quiet-label">Preview</p>
-                <h2 id="previewTitle">Transaction list</h2>
-              </div>
-              <span id="previewCount">0 records</span>
-            </div>
-            <div class="export-preview" id="exportPreview"></div>
           </section>
         </section>
 
@@ -270,56 +342,61 @@
         </section>
 
         <section class="app-view profile-view" id="profile" aria-labelledby="profileTitle">
-          <section class="profile-panel">
-            <div class="panel-heading">
-              <div>
-                <p class="quiet-label">Profile</p>
-                <h2 id="profileTitle">Profile details</h2>
-              </div>
-              <a class="button secondary compact" href="/profile?next=/backend%23profile">Edit</a>
-            </div>
+          <section class="profile-panel settings-shell">
+            <aside class="settings-rail" aria-label="Settings categories">
+              <button class="settings-rail-item is-active" type="button">
+                <span><span class="iconsax-mask" style="--icon: url('assets/iconsax/profile.svg')"></span></span>
+                <strong>Account settings</strong>
+                <small>Contact information</small>
+              </button>
+              <button class="settings-rail-item" type="button">
+                <span><span class="iconsax-mask" style="--icon: url('assets/iconsax/notifications.svg')"></span></span>
+                <strong>Notifications</strong>
+                <small>Updates and alerts</small>
+              </button>
+              <button class="settings-rail-item" type="button">
+                <span><span class="iconsax-mask" style="--icon: url('assets/iconsax/privacy.svg')"></span></span>
+                <strong>Data privacy</strong>
+                <small>Records and exports</small>
+              </button>
+            </aside>
 
-            <dl class="profile-fields" id="profileFields">
-              <div><dt>Name</dt><dd>-</dd></div>
-              <div><dt>Business</dt><dd>-</dd></div>
-              <div><dt>Using Upkeep for</dt><dd>-</dd></div>
-              <div><dt>Heard from</dt><dd>-</dd></div>
-            </dl>
+            <section class="settings-detail" aria-labelledby="profileTitle">
+              <div class="settings-detail-head">
+                <h2 id="profileTitle">Account settings</h2>
+              </div>
+
+              <div class="profile-fields account-rows" id="profileFields">
+                <article><div><span>Name</span><strong>-</strong></div></article>
+                <article><div><span>Business</span><strong>-</strong></div></article>
+              </div>
+
+              <div class="settings-preferences">
+                <article class="preference-row">
+                  <div>
+                    <strong>Appearance</strong>
+                    <span>Switch the workspace between focused dark mode and soft light mode.</span>
+                  </div>
+                  <div class="theme-control" aria-label="Theme mode">
+                    <button type="button" data-theme-choice="dark">
+                      <svg><use href="#icon-moon"></use></svg>
+                      Dark
+                    </button>
+                    <button type="button" data-theme-choice="light">
+                      <svg><use href="#icon-sun"></use></svg>
+                      Light
+                    </button>
+                  </div>
+                </article>
+              </div>
+
+              <div class="settings-list account-summary" id="profileSummary">
+                <article><span>Records</span><strong>0</strong></article>
+                <article><span>Exports</span><strong>0</strong></article>
+                <article><span>Account</span><strong>Signed in</strong></article>
+              </div>
+            </section>
           </section>
-
-          <aside class="settings-panel" aria-label="Profile settings and account summary">
-            <div class="panel-heading">
-              <div>
-                <p class="quiet-label">Settings</p>
-                <h2>Workspace settings</h2>
-              </div>
-            </div>
-
-            <div class="settings-preferences">
-              <article class="preference-row">
-                <div>
-                  <strong>Appearance</strong>
-                  <span>Switch the workspace between focused dark mode and soft light mode.</span>
-                </div>
-                <div class="theme-control" aria-label="Theme mode">
-                  <button type="button" data-theme-choice="dark">
-                    <svg><use href="#icon-moon"></use></svg>
-                    Dark
-                  </button>
-                  <button type="button" data-theme-choice="light">
-                    <svg><use href="#icon-sun"></use></svg>
-                    Light
-                  </button>
-                </div>
-              </article>
-            </div>
-
-            <div class="settings-list" id="profileSummary">
-              <article><span>Records</span><strong>0</strong></article>
-              <article><span>Exports</span><strong>0</strong></article>
-              <article><span>Account</span><strong>Signed in</strong></article>
-            </div>
-          </aside>
         </section>
         <datalist id="categoryOptions"></datalist>
       </section>

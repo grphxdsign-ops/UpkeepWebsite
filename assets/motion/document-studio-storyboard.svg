@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="820" viewBox="0 0 1320 820" role="img" aria-labelledby="title desc">
+  <title id="title">Upkeep Document Studio motion storyboard</title>
+  <desc id="desc">Static start, mid, and end states for five document studio animations.</desc>
+  <defs>
+    <style>
+      .bg { fill: #030806; }
+      .panel { fill: #0d140f; stroke: rgba(255,253,246,.12); }
+      .ink { fill: #fffdf6; }
+      .muted { fill: rgba(255,253,246,.56); }
+      .green { stroke: #9ee86f; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .green-fill { fill: rgba(158,232,111,.2); stroke: #9ee86f; }
+      .line { stroke: rgba(255,253,246,.32); fill: none; stroke-linecap: round; }
+      text { font-family: Manrope, Arial, sans-serif; }
+      .label { font-size: 20px; font-weight: 800; }
+      .small { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    </style>
+  </defs>
+  <rect class="bg" width="1320" height="820"/>
+  <text class="ink label" x="46" y="54">Document Studio motion board</text>
+  <text class="muted small" x="46" y="82">Start / mid / end states used to build the final SVG animations</text>
+  <text class="muted small" x="318" y="132">Start</text>
+  <text class="muted small" x="626" y="132">Mid</text>
+  <text class="muted small" x="934" y="132">End</text>
+
+  <g transform="translate(46 154)">
+    <text class="ink label" x="0" y="48">Transaction list</text>
+    <g transform="translate(272 0)">
+      <rect class="panel" width="230" height="96" rx="12"/>
+      <path class="line" d="M42 29h80M42 49h58M42 69h94"/>
+    </g>
+    <g transform="translate(580 0)">
+      <rect class="panel" width="230" height="96" rx="12"/>
+      <path class="green" stroke-width="3" d="M38 24h154"/>
+      <path class="line" d="M42 43h80M42 61h96M42 77h70"/>
+    </g>
+    <g transform="translate(888 0)">
+      <rect class="panel" width="230" height="96" rx="12"/>
+      <path class="line" d="M42 30h144M42 50h144M42 70h144"/>
+      <path class="green" stroke-width="3" d="M178 68l9 9 19-24"/>
+    </g>
+  </g>
+
+  <g transform="translate(46 284)">
+    <text class="ink label" x="0" y="48">Bank reconciliation</text>
+    <g transform="translate(272 0)">
+      <rect class="panel" width="230" height="96" rx="12"/>
+      <path class="green" stroke-width="3" d="M74 55h82M86 55V34M114 55V34M142 55V34M64 32l50-20 50 20Z"/>
+    </g>
+    <g transform="translate(580 0)">
+      <rect class="panel" width="230" height="96" rx="12"/>
+      <path class="line" d="M40 34h42M148 34h42"/>
+      <path class="green" stroke-width="3" d="M80 48C100 30 130 30 150 48"/>
+    </g>
+    <g transform="translate(888 0)">
+      <rect class="panel" width="230" height="96" rx="12"/>
+      <path class="green" stroke-width="3" d="M98 50l15 15 31-40"/>
+      <path class="line" d="M50 72h130"/>
+    </g>
+  </g>
+
+  <g transform="translate(46 414)">
+    <text class="ink label" x="0" y="48">Income statement</text>
+    <g transform="translate(272 0)">
+      <rect class="panel" width="230" height="96" rx="12"/>
+      <rect class="green-fill" x="66" y="55" width="18" height="18" rx="4"/>
+      <rect class="green-fill" x="106" y="45" width="18" height="28" rx="4"/>
+      <rect class="green-fill" x="146" y="36" width="18" height="37" rx="4"/>
+    </g>
+    <g transform="translate(580 0)">
+      <rect class="panel" width="230" height="96" rx="12"/>
+      <path class="green" stroke-width="3" d="M54 52c24 12 42-22 70-12s32-20 54-17"/>
+    </g>
+    <g transform="translate(888 0)">
+      <rect class="panel" width="230" height="96" rx="12"/>
+      <rect class="green-fill" x="66" y="48" width="18" height="26" rx="4"/>
+      <rect class="green-fill" x="106" y="29" width="18" height="45" rx="4"/>
+      <rect class="green-fill" x="146" y="18" width="18" height="56" rx="4"/>
+      <path class="line" d="M56 76h126"/>
+    </g>
+  </g>
+
+  <g transform="translate(46 544)">
+    <text class="ink label" x="0" y="48">Balance sheet</text>
+    <g transform="translate(272 0)">
+      <rect class="panel" width="230" height="96" rx="12"/>
+      <path class="green" stroke-width="3" d="M114 28v45M86 74h56M66 38h96"/>
+    </g>
+    <g transform="translate(580 0)">
+      <rect class="panel" width="230" height="96" rx="12"/>
+      <path class="green" stroke-width="3" d="M66 45l96-14"/>
+      <path class="green-fill" d="M50 64h42l-8 17H58Z"/>
+      <path class="green-fill" d="M138 49h42l-8 17h-26Z"/>
+    </g>
+    <g transform="translate(888 0)">
+      <rect class="panel" width="230" height="96" rx="12"/>
+      <path class="green" stroke-width="3" d="M66 38h96M114 28v45M86 74h56"/>
+      <path class="line" d="M104 20h20M104 26h20"/>
+    </g>
+  </g>
+
+  <g transform="translate(46 674)">
+    <text class="ink label" x="0" y="48">Cash flow</text>
+    <g transform="translate(272 0)">
+      <rect class="panel" width="230" height="96" rx="12"/>
+      <path class="line" d="M50 42c38-34 74 34 128-4"/>
+    </g>
+    <g transform="translate(580 0)">
+      <rect class="panel" width="230" height="96" rx="12"/>
+      <path class="green" stroke-width="3" d="M50 34c28-28 62 24 90 2s34-10 42-8"/>
+      <circle class="green-fill" cx="82" cy="42" r="6"/>
+      <circle class="green-fill" cx="136" cy="38" r="6"/>
+    </g>
+    <g transform="translate(888 0)">
+      <rect class="panel" width="230" height="96" rx="12"/>
+      <path class="green" stroke-width="3" d="M50 34c28-28 62 24 90 2s34-10 42-8"/>
+      <path class="green" stroke-width="3" d="M64 72h104M86 80h60"/>
+    </g>
+  </g>
+</svg>

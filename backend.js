@@ -6,11 +6,44 @@ const state = {
   user: null,
   profile: null,
   selectedRecordId: "",
-  selectedExportIds: new Set(),
+  customCategories: new Set(),
   selectedStorageIds: new Set(),
   reportType: "balance-transactions",
   stage: "intake"
 };
+
+const TAX_CATEGORY_OPTIONS = [
+  "Advertising",
+  "Car and truck expenses",
+  "Commissions and fees",
+  "Contract labor",
+  "Depletion",
+  "Depreciation",
+  "Employee benefit programs",
+  "Insurance",
+  "Interest - mortgage",
+  "Interest - other",
+  "Legal and professional services",
+  "Office expense",
+  "Pension and profit-sharing plans",
+  "Rent or lease - vehicles, machinery, equipment",
+  "Rent or lease - other business property",
+  "Repairs and maintenance",
+  "Supplies",
+  "Taxes and licenses",
+  "Travel",
+  "Deductible meals",
+  "Utilities",
+  "Wages",
+  "Sales income",
+  "Interest income",
+  "Bank and merchant fees",
+  "Software and subscriptions",
+  "Telephone and internet",
+  "Owner transfer",
+  "Uncategorized income",
+  "Uncategorized business expense"
+];
 
 const els = {
   logoutButton: document.querySelector("#logoutButton"),
@@ -73,20 +106,22 @@ function init() {
   els.processButton.addEventListener("click", processSelectedFiles);
   els.clearButton.addEventListener("click", clearFiles);
   els.refreshButton?.addEventListener("click", loadWorkspace);
-  els.selectAllRecordsButton.addEventListener("click", toggleAllRecords);
+  els.selectAllRecordsButton?.addEventListener("click", toggleAllRecords);
   els.recordsList.addEventListener("click", handleRecordClick);
-  els.recordsList.addEventListener("change", handleRecordSelection);
   els.detailFields.addEventListener("change", handleDetailFieldChange);
+  els.detailFields.addEventListener("click", handleDetailAction);
   els.navLinks.forEach((link) => link.addEventListener("click", handleNavClick));
+  window.addEventListener("hashchange", showInitialView);
   els.saveButton.addEventListener("click", saveSelectedRecord);
-  els.approveButton.addEventListener("click", () => updateSelectedRecord("ready"));
-  els.flagButton.addEventListener("click", () => updateSelectedRecord("needs_review"));
+  els.approveButton.addEventListener("click", toggleSelectedReviewStatus);
+  els.flagButton?.addEventListener("click", () => updateSelectedRecord("needs_review"));
   els.deleteRecordButton.addEventListener("click", deleteSelectedRecord);
   els.storageList.addEventListener("change", handleStorageSelection);
   els.downloadStorageButton.addEventListener("click", downloadSelectedStorage);
   els.deleteStorageButton.addEventListener("click", deleteSelectedStorage);
   els.reportType.addEventListener("change", handleReportTypeChange);
   els.reportTypeOptions.addEventListener("click", handleReportOptionClick);
+  els.profileFields?.addEventListener("click", handleProfileAction);
   els.themeChoices.forEach((button) => {
     button.addEventListener("click", () => setTheme(button.dataset.themeChoice));
   });
@@ -129,7 +164,7 @@ async function loadWorkspace() {
   try {
     const workspace = await fetchJson("/api/workspace");
     applyWorkspace(workspace);
-    setStatus("Ready.");
+    setStatus("");
   } catch (error) {
     setStatus(error.message || "Could not load workspace.", "error");
   }
@@ -149,7 +184,7 @@ function handleFiles(event) {
 }
 
 function renderFiles() {
-  const shownCount = state.files.length || state.documents.length;
+  const shownCount = state.files.length;
   els.uploadCount.textContent = `${shownCount} file${shownCount === 1 ? "" : "s"}`;
   els.processButton.disabled = state.files.length === 0;
 
@@ -171,36 +206,13 @@ function renderFiles() {
 }
 
 function renderInboxDocuments() {
-  if (!state.documents.length) {
-    els.fileList.innerHTML = `
-      <article class="empty-state empty-state-inline">
-        <span class="empty-kicker">No source files yet</span>
-        <strong>Start with a receipt, invoice, statement, or image.</strong>
-        <p>Upkeep keeps the original file close while it prepares clean records for review.</p>
-      </article>
-    `;
-    return;
-  }
-
-  els.fileList.innerHTML = state.documents.map((document) => {
-    const records = state.records.filter((record) => record.document_id === document.id);
-    const review = records.filter((record) => record.needs_review || record.status === "needs_review").length;
-    const matched = records.length - review;
-    const needsReview = review > 0 || document.status === "needs_review";
-    const summary = needsReview
-      ? `${matched} matched - ${review} to review`
-      : `${matched} lines matched`;
-    return `
-      <article class="file-item inbox-card">
-        <span class="file-type">${escapeHtml(fileKind(document.name, document.file_type))}</span>
-        <div>
-          <strong>${escapeHtml(document.name)}</strong>
-          <small>${escapeHtml(document.file_type || "Document")} - ${summary}</small>
-        </div>
-        <b class="status-pill ${needsReview ? "review" : ""}">${needsReview ? "Review" : "Ready"}</b>
-      </article>
-    `;
-  }).join("");
+  els.fileList.innerHTML = `
+    <article class="empty-state empty-state-inline">
+      <span class="empty-kicker">Ready for the next source</span>
+      <strong>Start with a receipt, invoice, statement, or image.</strong>
+      <p>After scanning, records move into the review queue so this inbox stays clean.</p>
+    </article>
+  `;
 }
 
 async function processSelectedFiles() {
@@ -225,7 +237,6 @@ async function processSelectedFiles() {
     });
 
     applyWorkspace(workspace);
-    state.selectedExportIds = new Set((workspace.createdRecords || []).map((record) => record.id));
     updateExportLinks();
     updateRecordSelectionAction();
     renderExportPreview();
@@ -306,56 +317,78 @@ function renderRecords() {
     return;
   }
 
-  els.recordsList.innerHTML = state.records.map((record) => {
+  const rows = state.records.map((record) => {
     const needsReview = record.needs_review || record.status === "needs_review";
+    const amount = record.deposit || record.withdrawal || record.amount;
     return `
-      <article class="record-item ${record.id === state.selectedRecordId ? "is-selected" : ""}" data-record-id="${escapeHtml(record.id)}">
-        <button class="record-main" type="button">
-          <strong>${escapeHtml(recordTitle(record))}</strong>
-          <span>${escapeHtml(recordSheetSummary(record))}</span>
+      <article class="record-item ledger-row ${record.id === state.selectedRecordId ? "is-selected" : ""}" role="row" data-record-id="${escapeHtml(record.id)}">
+        <button class="record-main ledger-main" type="button" role="cell">
+          <strong>${escapeHtml(record.title || "Misc expense")}</strong>
+          <span>${escapeHtml(record.document_name || "Source document")}</span>
         </button>
-        <input class="record-check" type="checkbox" aria-label="Include ${escapeHtml(record.title || "record")} in export" data-export-id="${escapeHtml(record.id)}" ${state.selectedExportIds.has(record.id) ? "checked" : ""}>
-        <span class="status-pill ${needsReview ? "review" : ""}">${needsReview ? "Review" : "Ready"}</span>
+        <span class="ledger-date" role="cell">${escapeHtml(record.record_date || "No date")}</span>
+        <span class="ledger-category" role="cell">${escapeHtml(record.category || formatCategory(record.record_type))}</span>
+        <strong class="ledger-amount" role="cell">${escapeHtml(currency(amount || 0))}</strong>
+        <span class="status-pill ${needsReview ? "review" : ""}" role="cell">${needsReview ? "Review" : "Ready"}</span>
       </article>
     `;
   }).join("");
+
+  els.recordsList.innerHTML = `
+    <div class="ledger-table" role="table" aria-label="Prepared records">
+      <div class="ledger-head" role="row">
+        <span>Payee / source</span>
+        <span>Date</span>
+        <span>Category</span>
+        <span>Amount</span>
+        <span>Status</span>
+      </div>
+      ${rows}
+    </div>
+  `;
   updateRecordSelectionAction();
 }
 
 function renderDetail() {
   const record = selectedRecord();
   const hasRecord = Boolean(record);
+  const recordNeedsReview = hasRecord && (record.needs_review || record.status === "needs_review");
 
   els.detailTitle.textContent = record ? recordTitle(record) : "Select a record";
   els.saveButton.disabled = !hasRecord;
   els.approveButton.disabled = !hasRecord;
-  els.flagButton.disabled = !hasRecord;
+  if (els.flagButton) els.flagButton.disabled = !hasRecord;
   els.deleteRecordButton.disabled = !hasRecord;
+  els.approveButton.textContent = recordNeedsReview ? "Ready" : "Review";
+  els.approveButton.classList.toggle("ready-toggle", recordNeedsReview);
+  els.approveButton.classList.toggle("review-toggle", !recordNeedsReview);
 
   if (!record) {
     els.detailFields.innerHTML = `
-      <div><dt>Status</dt><dd>Waiting</dd></div>
-      <div><dt>Amount</dt><dd>-</dd></div>
-      <div><dt>Document</dt><dd>-</dd></div>
+      <article class="empty-state empty-state-inline">
+        <span class="empty-kicker">No line selected</span>
+        <strong>Choose a record to edit the extracted details.</strong>
+        <p>Each field can be corrected before it goes into an export.</p>
+      </article>
     `;
     return;
   }
 
   const fields = detailFieldConfig(record);
   els.detailFields.innerHTML = `
-    <div><dt>Status</dt><dd>${statusBadge(record)}</dd></div>
-    ${fields.map((field) => `
-    <div class="${field.questionable ? "needs-field-review" : ""}">
-      <dt>${escapeHtml(field.label)}</dt>
-      <dd>${fieldInput(field)}</dd>
+    <div class="editor-statusbar">
+      <span>${statusBadge(record)}</span>
+      <strong>${escapeHtml(record.review_note || "Fields can be edited before export.")}</strong>
     </div>
-  `).join("")}`;
+    <div class="editor-grid">
+      ${fields.map((field) => fieldInput(field)).join("")}
+    </div>`;
 }
 
 function detailFieldConfig(record) {
   const questionable = questionableFields(record);
   return [
-    { key: "category", label: "Transaction", value: record.category || formatCategory(record.record_type), list: "categoryOptions", questionable: questionable.has("category") },
+    { key: "category", label: "Category", value: record.category || formatCategory(record.record_type), type: "category", questionable: questionable.has("category") },
     { key: "title", label: "Payee / Source", value: record.title || "", questionable: questionable.has("title") },
     { key: "amount", label: "Amount", value: record.amount ?? "", type: "number", step: "0.01", questionable: questionable.has("amount") },
     { key: "record_date", label: "Date", value: record.record_date || "", questionable: questionable.has("record_date") },
@@ -366,16 +399,39 @@ function detailFieldConfig(record) {
 }
 
 function fieldInput(field) {
+  if (field.type === "category") return categoryInput(field);
   const type = field.type || "text";
   const list = field.list ? ` list="${field.list}"` : "";
   const step = field.step ? ` step="${field.step}"` : "";
-  return `<input class="detail-input" data-detail-field="${escapeHtml(field.key)}" type="${type}"${step}${list} value="${escapeHtml(field.value)}">`;
+  return `
+    <label class="editor-field ${field.questionable ? "needs-field-review" : ""}">
+      <span>${escapeHtml(field.label)}</span>
+      <input class="detail-input" data-detail-field="${escapeHtml(field.key)}" type="${type}"${step}${list} value="${escapeHtml(field.value)}">
+    </label>
+  `;
+}
+
+function categoryInput(field) {
+  const categories = categoryOptionsWithCurrent(field.value);
+  return `
+    <label class="editor-field category-editor ${field.questionable ? "needs-field-review" : ""}">
+      <span>${escapeHtml(field.label)}</span>
+      <select class="detail-input detail-select" data-detail-field="category">
+        ${categories.map((category) => `<option value="${escapeHtml(category)}" ${category === field.value ? "selected" : ""}>${escapeHtml(category)}</option>`).join("")}
+      </select>
+      <span class="category-create">
+        <input class="detail-input category-custom-input" data-detail-field="categoryCustom" type="text" value="" placeholder="Create category">
+        <button class="settings-row-action category-create-button" type="button" data-create-category>Use custom</button>
+      </span>
+    </label>
+  `;
 }
 
 function handleDetailFieldChange(event) {
   const input = event.target.closest("[data-detail-field]");
   const record = selectedRecord();
   if (!input || !record) return;
+  if (input.dataset.detailField === "categoryCustom") return;
   record[input.dataset.detailField] = input.value;
   if (input.dataset.detailField === "category") {
     record.record_type = inferClientRecordType(input.value, record.record_type);
@@ -385,8 +441,27 @@ function handleDetailFieldChange(event) {
   renderExportPreview();
 }
 
+function handleDetailAction(event) {
+  const createButton = event.target.closest("[data-create-category]");
+  const record = selectedRecord();
+  if (!createButton || !record) return;
+  const customInput = els.detailFields.querySelector("[data-detail-field='categoryCustom']");
+  const value = String(customInput?.value || "").trim();
+  if (!value) {
+    customInput?.focus();
+    return;
+  }
+  state.customCategories.add(value);
+  record.category = value;
+  record.record_type = inferClientRecordType(value, record.record_type);
+  renderCategoryOptions();
+  renderRecords();
+  renderDetail();
+  updateExportLinks();
+  renderExportPreview();
+}
+
 function handleRecordClick(event) {
-  if (event.target.matches(".record-check")) return;
   const row = event.target.closest("[data-record-id]");
   if (!row) return;
   state.selectedRecordId = row.dataset.recordId;
@@ -400,51 +475,34 @@ function handleRecordClick(event) {
 function handleViewShortcut(event) {
   const shortcut = event.target.closest("[data-view-link]");
   if (!shortcut) return;
-  const target = shortcut.dataset.viewLink;
+  const target = normalizeViewId(shortcut.dataset.viewLink);
   if (!target || !els.views.some((view) => view.id === target)) return;
   event.preventDefault();
   showView(target, `#${target}`);
   window.history.replaceState(null, "", `#${target}`);
 }
 
-function handleRecordSelection(event) {
-  const checkbox = event.target.closest("[data-export-id]");
-  if (!checkbox) return;
-  if (checkbox.checked) {
-    state.selectedExportIds.add(checkbox.dataset.exportId);
-  } else {
-    state.selectedExportIds.delete(checkbox.dataset.exportId);
-  }
-  updateExportLinks();
-  updateRecordSelectionAction();
-  renderExportPreview();
-}
-
 function toggleAllRecords() {
-  if (!state.records.length) return;
-  const selectedCount = state.records.filter((record) => state.selectedExportIds.has(record.id)).length;
-  if (selectedCount === state.records.length) {
-    state.selectedExportIds.clear();
-  } else {
-    state.selectedExportIds = new Set(state.records.map((record) => record.id));
-  }
-  renderRecords();
-  updateExportLinks();
   renderExportPreview();
 }
 
 function updateRecordSelectionAction() {
-  const count = state.records.filter((record) => state.selectedExportIds.has(record.id)).length;
-  els.selectAllRecordsButton.disabled = state.records.length === 0;
-  els.selectAllRecordsButton.textContent = count === state.records.length && state.records.length
-    ? "Clear selected transactions"
-    : "Select all transactions";
+  if (!els.selectAllRecordsButton) return;
+  els.selectAllRecordsButton.disabled = true;
+  els.selectAllRecordsButton.textContent = "Ready records sync automatically";
 }
 
 async function saveSelectedRecord() {
   const record = selectedRecord();
   if (!record) return;
   await updateSelectedRecord(record.status === "ready" && !record.needs_review ? "ready" : "needs_review");
+}
+
+async function toggleSelectedReviewStatus() {
+  const record = selectedRecord();
+  if (!record) return;
+  const needsReview = record.needs_review || record.status === "needs_review";
+  await updateSelectedRecord(needsReview ? "ready" : "needs_review");
 }
 
 async function updateSelectedRecord(status) {
@@ -479,7 +537,7 @@ async function updateSelectedRecord(status) {
     renderRecords();
     renderDetail();
     renderExportPreview();
-    setStatus(status === "ready" ? "Record is ready for handoff." : "Record is back in review.");
+    setStatus(status === "ready" ? "Record marked ready." : "Record moved to review.");
   } catch (error) {
     setStatus(error.message || "Could not update record.", "error");
   }
@@ -495,7 +553,6 @@ async function deleteSelectedRecord() {
       method: "DELETE"
     });
     state.records = state.records.filter((item) => item.id !== record.id);
-    state.selectedExportIds.delete(record.id);
     state.selectedRecordId = state.records[0]?.id || "";
     renderStats({
       documents: state.documents.length,
@@ -521,7 +578,11 @@ function setStage(stage) {
   state.stage = stage;
   const target = stage === "read" || stage === "prepare"
       ? "#records"
-      : "#intake";
+      : stage === "intake"
+        ? "#intake"
+        : "";
+
+  if (!target) return;
 
   els.navLinks.forEach((link) => {
     link.classList.toggle("is-active", link.getAttribute("href") === target);
@@ -530,13 +591,14 @@ function setStage(stage) {
 
 function handleNavClick(event) {
   event.preventDefault();
-  const target = event.currentTarget.getAttribute("href")?.replace("#", "");
+  const target = normalizeViewId(event.currentTarget.getAttribute("href")?.replace("#", ""));
   showView(target, `#${target}`);
   window.history.replaceState(null, "", `#${target}`);
 }
 
 function showView(viewId, activeHref) {
-  const normalized = viewId || "intake";
+  const normalized = normalizeViewId(viewId) || "intake";
+  const previous = currentViewId();
   els.views.forEach((view) => view.classList.toggle("is-active", view.id === normalized));
   els.navLinks.forEach((link) => {
     const href = link.getAttribute("href");
@@ -544,15 +606,35 @@ function showView(viewId, activeHref) {
   });
   els.profileShortcut?.classList.toggle("is-active", normalized === "profile");
   updateWorkspaceHeader(normalized);
+  if (previous !== normalized) {
+    resetWorkspaceScroll("smooth");
+  }
+}
+
+function resetWorkspaceScroll(behavior = "auto") {
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior });
+  window.requestAnimationFrame(scrollToTop);
+  window.setTimeout(scrollToTop, 90);
 }
 
 function showInitialView() {
-  const target = window.location.hash.replace("#", "");
+  const rawTarget = window.location.hash.replace("#", "");
+  const target = normalizeViewId(rawTarget);
   if (target && els.views.some((view) => view.id === target)) {
     showView(target, `#${target}`);
+    resetWorkspaceScroll("auto");
+    if (rawTarget && rawTarget !== target) {
+      window.history.replaceState(null, "", `#${target}`);
+    }
     return;
   }
   updateWorkspaceHeader(currentViewId());
+}
+
+function normalizeViewId(viewId = "") {
+  const normalized = String(viewId || "").trim().toLowerCase();
+  if (normalized === "settings" || normalized === "account") return "profile";
+  return normalized;
 }
 
 function currentViewId() {
@@ -560,7 +642,8 @@ function currentViewId() {
 }
 
 function setStatus(message, type = "info") {
-  els.statusLine.textContent = message;
+  const cleanMessage = message === "Ready." || message === "Ready for upload." ? "" : message;
+  els.statusLine.textContent = cleanMessage;
   els.statusLine.dataset.type = type;
 }
 
@@ -704,24 +787,178 @@ function renderProfile() {
   const user = state.user || {};
   const name = profile.name || "Not set";
   const business = profile.business || "Not set";
-  const useFor = profile.useFor || "Not set";
-  const referredFrom = profile.referredFrom || "Not set";
 
   els.profileFields.innerHTML = `
-    <div><dt>Name</dt><dd>${escapeHtml(name)}</dd></div>
-    <div><dt>Email</dt><dd>${escapeHtml(user.email || "Not set")}</dd></div>
-    <div><dt>Business</dt><dd>${escapeHtml(business)}</dd></div>
-    <div><dt>Using Upkeep for</dt><dd>${escapeHtml(useFor)}</dd></div>
-    <div><dt>Heard from</dt><dd>${escapeHtml(referredFrom)}</dd></div>
+    ${editableAccountRow("name", "Name", name)}
+    ${emailAccountRow(user.email || "Not set")}
+    ${passwordAccountRow()}
+    ${editableAccountRow("business", "Business", business)}
   `;
 
   els.profileSummary.innerHTML = `
     <article><span>Records</span><strong>${escapeHtml(state.records.length)}</strong></article>
+    <article><span>Ready</span><strong>${escapeHtml(state.records.filter(isReadyRecord).length)}</strong></article>
     <article><span>Exports</span><strong>${escapeHtml(state.exports.length)}</strong></article>
-    <article><span>Business</span><strong>${escapeHtml(business)}</strong></article>
     <article><span>Account</span><strong>${user.profileComplete ? "Profile complete" : "Needs setup"}</strong></article>
   `;
   renderShellProfile();
+}
+
+function editableAccountRow(field, label, value) {
+  return `
+    <article class="account-row editable-account-row" data-account-field="${escapeHtml(field)}">
+      <div>
+        <span>${escapeHtml(label)}</span>
+        <input class="account-inline-input" type="text" value="${escapeHtml(value === "Not set" ? "" : value)}" placeholder="${escapeHtml(label)}">
+      </div>
+      <button class="settings-row-action" type="button" data-save-profile-field="${escapeHtml(field)}">Save</button>
+      <small class="account-row-note" aria-live="polite"></small>
+    </article>
+  `;
+}
+
+function emailAccountRow(email) {
+  return `
+    <article class="account-row secure-account-row" data-secure-row="email">
+      <div>
+        <span>Email</span>
+        <strong>${escapeHtml(email)}</strong>
+        <small>Changing this starts a verification sequence to both the old and new email.</small>
+        <div class="security-grid">
+          <input class="account-inline-input" type="email" data-email-new placeholder="New email">
+          <input class="account-inline-input" type="email" data-email-confirm placeholder="Confirm new email">
+          <input class="account-inline-input" type="password" data-email-password placeholder="Current password">
+        </div>
+      </div>
+      <button class="settings-row-action" type="button" data-request-email-change>Send verification</button>
+      <small class="account-row-note" aria-live="polite"></small>
+    </article>
+  `;
+}
+
+function passwordAccountRow() {
+  return `
+    <article class="account-row secure-account-row" data-secure-row="password">
+      <div>
+        <span>Password</span>
+        <strong data-password-display data-hidden-label="************" data-shown-label="Encrypted and never displayed">************</strong>
+        <small>Upkeep never shows the saved password. Changes require current-password validation and email verification.</small>
+        <div class="security-grid">
+          <input class="account-inline-input" type="password" data-password-current placeholder="Current password">
+          <input class="account-inline-input" type="password" data-password-new placeholder="New password">
+          <input class="account-inline-input" type="password" data-password-confirm placeholder="Confirm new password">
+        </div>
+      </div>
+      <span class="account-row-actions">
+        <button class="settings-row-action" type="button" data-toggle-password>Reveal</button>
+        <button class="settings-row-action" type="button" data-request-password-change>Send verification</button>
+      </span>
+      <small class="account-row-note" aria-live="polite"></small>
+    </article>
+  `;
+}
+
+async function handleProfileAction(event) {
+  const togglePassword = event.target.closest("[data-toggle-password]");
+  if (togglePassword) {
+    const row = togglePassword.closest("[data-secure-row='password']");
+    const display = row?.querySelector("[data-password-display]");
+    const hidden = display?.dataset.hiddenLabel || "************";
+    const shown = display?.dataset.shownLabel || "Encrypted and never displayed";
+    const showing = display?.textContent === shown;
+    if (display) display.textContent = showing ? hidden : shown;
+    togglePassword.textContent = showing ? "Reveal" : "Hide";
+    return;
+  }
+
+  const saveButton = event.target.closest("[data-save-profile-field]");
+  if (saveButton) {
+    const row = saveButton.closest("[data-account-field]");
+    const field = saveButton.dataset.saveProfileField;
+    const value = row?.querySelector(".account-inline-input")?.value || "";
+    await saveProfileField(field, value, row);
+    return;
+  }
+
+  const emailButton = event.target.closest("[data-request-email-change]");
+  if (emailButton) {
+    await requestEmailChange(emailButton.closest("[data-secure-row='email']"));
+    return;
+  }
+
+  const passwordButton = event.target.closest("[data-request-password-change]");
+  if (passwordButton) {
+    await requestPasswordChange(passwordButton.closest("[data-secure-row='password']"));
+  }
+}
+
+async function saveProfileField(field, value, row) {
+  const cleanValue = String(value || "").trim();
+  const note = row?.querySelector(".account-row-note");
+  if (!cleanValue) {
+    setInlineNote(note, "Add a value before saving.", "error");
+    return;
+  }
+
+  setInlineNote(note, "Saving...");
+  try {
+    const payload = await fetchJson("/api/account/profile", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [field]: cleanValue })
+    });
+    state.user = payload.user || state.user;
+    state.profile = payload.profile || state.profile;
+    renderProfile();
+    renderShellProfile();
+    setStatus(`${field === "business" ? "Business name" : "Name"} saved.`);
+  } catch (error) {
+    setInlineNote(note, error.message || "Could not save.", "error");
+  }
+}
+
+async function requestEmailChange(row) {
+  const note = row?.querySelector(".account-row-note");
+  const newEmail = row?.querySelector("[data-email-new]")?.value || "";
+  const confirmEmail = row?.querySelector("[data-email-confirm]")?.value || "";
+  const currentPassword = row?.querySelector("[data-email-password]")?.value || "";
+  setInlineNote(note, "Checking account...");
+  try {
+    const payload = await fetchJson("/api/account/email-change-request", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ newEmail, confirmEmail, currentPassword })
+    });
+    setInlineNote(note, payload.message || "Verification emails queued.");
+    setStatus("Email change verification started.");
+  } catch (error) {
+    setInlineNote(note, error.message || "Could not start verification.", "error");
+  }
+}
+
+async function requestPasswordChange(row) {
+  const note = row?.querySelector(".account-row-note");
+  const currentPassword = row?.querySelector("[data-password-current]")?.value || "";
+  const newPassword = row?.querySelector("[data-password-new]")?.value || "";
+  const confirmPassword = row?.querySelector("[data-password-confirm]")?.value || "";
+  setInlineNote(note, "Checking account...");
+  try {
+    const payload = await fetchJson("/api/account/password-change-request", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ currentPassword, newPassword, confirmPassword })
+    });
+    setInlineNote(note, payload.message || "Password verification email queued.");
+    setStatus("Password change verification started.");
+  } catch (error) {
+    setInlineNote(note, error.message || "Could not start verification.", "error");
+  }
+}
+
+function setInlineNote(note, message, type = "info") {
+  if (!note) return;
+  note.textContent = message;
+  note.dataset.type = type;
 }
 
 function renderShellProfile() {
@@ -745,58 +982,31 @@ function updateWorkspaceHeader(viewId = "intake", firstName = "") {
   const name = firstName || (state.profile?.name || state.user?.email?.split("@")[0] || "").split(/\s+/).filter(Boolean)[0] || "there";
   const headerCopy = {
     intake: {
-      label: "Inbox",
-      icon: "icon-inbox",
-      title: "Bring in the source files.",
-      subcopy: "Upload receipts, statements, exports, or images. Upkeep keeps the original attached while it prepares clean records.",
-      action: "Add files",
-      actionView: "intake"
+      icon: "assets/iconsax/inbox.svg",
+      title: "Paperwork starts here."
     },
     records: {
-      label: "Records",
-      icon: "icon-records",
-      title: state.records.length ? `${name}, review what Upkeep found.` : "Review what Upkeep finds.",
-      subcopy: state.records.length
-        ? `${readyCount} ready, ${reviewCount} waiting for a quick look. Select any line to fix categories, dates, amounts, or notes.`
-        : "Processed files become readable financial lines here, with review flags when something needs attention.",
-      action: "Build export",
-      actionView: "review"
+      icon: "assets/iconsax/records.svg",
+      title: state.records.length ? `${name}, ${readyCount} ready and ${reviewCount} to review.` : "Review what Upkeep finds."
     },
     review: {
-      label: "Review",
-      icon: "icon-review",
-      title: "Turn records into documents.",
-      subcopy: "Pick the export you need, preview the output, then download a clean file for your accountant or records.",
-      action: "Choose records",
-      actionView: "records"
+      icon: "assets/iconsax/review.svg",
+      title: "Build clean documents."
     },
     storage: {
-      label: "Storage",
-      icon: "icon-storage",
-      title: "Downloaded files live here.",
-      subcopy: "Every export you create stays easy to find, re-download, or clear out when the job is done.",
-      action: "Create export",
-      actionView: "review"
+      icon: "assets/iconsax/storage.svg",
+      title: "Downloaded files live here."
     },
     profile: {
-      label: "Settings",
-      icon: "icon-profile",
-      title: "Profile and workspace settings.",
-      subcopy: "Keep your business details current and choose the display mode that feels best for the work.",
-      action: "Open inbox",
-      actionView: "intake"
+      icon: "assets/iconsax/profile.svg",
+      title: "Account settings."
     }
   };
   const copy = headerCopy[viewId] || headerCopy.intake;
 
-  if (els.workspaceLabel) els.workspaceLabel.textContent = copy.label;
   if (els.workspaceGreeting) els.workspaceGreeting.textContent = copy.title;
-  if (els.workspaceSubcopy) els.workspaceSubcopy.textContent = copy.subcopy;
-  if (els.workspaceIcon) els.workspaceIcon.innerHTML = `<svg><use href="#${copy.icon}"></use></svg>`;
-  if (els.workspaceAction) {
-    els.workspaceAction.textContent = copy.action;
-    els.workspaceAction.href = `#${copy.actionView}`;
-    els.workspaceAction.dataset.viewLink = copy.actionView;
+  if (els.workspaceIcon) {
+    els.workspaceIcon.innerHTML = `<span class="iconsax-mask" style="--icon: url('${copy.icon}')"></span>`;
   }
 }
 
@@ -848,9 +1058,7 @@ async function deleteSelectedStorage() {
 
 function updateExportLinks() {
   const set = state.reportType;
-  const ids = Array.from(state.selectedExportIds);
   const query = new URLSearchParams({ set });
-  if (ids.length) query.set("ids", ids.join(","));
   els.exportCsvButton.href = `/api/export.csv?${query.toString()}`;
   els.exportSheetButton.href = `/api/export.sheet?${query.toString()}`;
   els.exportDocButton.href = `/api/export.doc?${query.toString()}`;
@@ -886,9 +1094,9 @@ function renderExportPreview() {
   if (!records.length) {
     els.exportPreview.innerHTML = `
       <article class="empty-state export-empty">
-        <span class="empty-kicker">Preview waiting</span>
-        <strong>Select records to build this document.</strong>
-        <p>Ready records show up here as a clean table or summary before you download.</p>
+        <span class="empty-kicker">Nothing ready yet</span>
+        <strong>Mark records as ready to build this document.</strong>
+        <p>Only reviewed lines flow into this preview and the downloads below.</p>
         <a class="button secondary compact" href="#records" data-view-link="records">Choose records</a>
       </article>
     `;
@@ -901,12 +1109,12 @@ function renderExportPreview() {
         <thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Payee / Source</th><th>Amount</th><th>Status</th></tr></thead>
         <tbody>${records.slice(0, 12).map((record) => `
           <tr>
-            <td>${escapeHtml(record.record_date || "-")}</td>
-            <td>${escapeHtml(formatTransactionType(record.record_type))}</td>
-            <td>${escapeHtml(record.category || "-")}</td>
-            <td>${escapeHtml(record.title || "Misc expense")}</td>
-            <td>${escapeHtml(currency(record.amount || 0))}</td>
-            <td>${escapeHtml(record.needs_review || record.status === "needs_review" ? "Review" : "Ready")}</td>
+            <td data-label="Date">${escapeHtml(record.record_date || "-")}</td>
+            <td data-label="Type">${escapeHtml(formatTransactionType(record.record_type))}</td>
+            <td data-label="Category">${escapeHtml(record.category || "-")}</td>
+            <td data-label="Payee / Source">${escapeHtml(record.title || "Misc expense")}</td>
+            <td data-label="Amount">${escapeHtml(currency(record.amount || 0))}</td>
+            <td data-label="Status">${escapeHtml(record.needs_review || record.status === "needs_review" ? "Review" : "Ready")}</td>
           </tr>
         `).join("")}</tbody>
       </table>
@@ -925,14 +1133,17 @@ function renderExportPreview() {
         <div><dt>Expenses</dt><dd>${currency(expense)}</dd></div>
         <div><dt>Net</dt><dd>${currency(income - expense)}</dd></div>
       </dl>
-      <p>${escapeHtml(records.filter((record) => record.needs_review || record.status === "needs_review").length)} record(s) still need review before final handoff.</p>
+      <p>Every line in this preview is marked ready.</p>
     </article>
   `;
 }
 
 function selectedExportRecords() {
-  const ids = state.selectedExportIds;
-  return ids.size ? state.records.filter((record) => ids.has(record.id)) : state.records;
+  return state.records.filter(isReadyRecord);
+}
+
+function isReadyRecord(record) {
+  return record?.status === "ready" && !record.needs_review;
 }
 
 function exportLabel(set) {
@@ -947,28 +1158,14 @@ function exportLabel(set) {
 }
 
 function renderCategoryOptions() {
-  const categories = [
-    "Sales income",
-    "Interest income",
-    "Uncategorized income",
-    "Advertising and marketing",
-    "Bank and merchant fees",
-    "Insurance",
-    "Legal and professional services",
-    "Meals - needs business purpose review",
-    "Office supplies",
-    "Rent or lease",
-    "Repairs and maintenance",
-    "Software and subscriptions",
-    "Supplies",
-    "Telephone and internet",
-    "Travel",
-    "Utilities",
-    "Vehicle expense",
-    "Owner transfer",
-    "Uncategorized business expense"
-  ];
+  const categories = categoryOptionsWithCurrent();
   els.categoryOptions.innerHTML = categories.map((category) => `<option value="${escapeHtml(category)}"></option>`).join("");
+}
+
+function categoryOptionsWithCurrent(current = "") {
+  const categories = new Set([...TAX_CATEGORY_OPTIONS, ...state.customCategories]);
+  if (current) categories.add(current);
+  return Array.from(categories).sort((a, b) => a.localeCompare(b));
 }
 
 function escapeHtml(value) {

@@ -559,7 +559,7 @@ const initKineticShaderBackground = () => {
   let lastShaderFrame = 0;
   let shaderVisible = true;
   let shaderQueued = false;
-  const shaderFrameInterval = window.innerWidth <= 640 ? 84 : 50;
+  const shaderFrameInterval = window.innerWidth <= 640 ? 150 : 95;
 
   const requestShaderFrame = () => {
     if (prefersReducedMotion || !shaderVisible || shaderQueued) return;
@@ -647,10 +647,10 @@ const initKineticHero = () => {
   };
   const shatterStart = 0.705;
   const shatterComplete = 0.855;
-  const recordRevealStart = 0.865;
-  const recordRevealEnd = 0.915;
+  const recordRevealStart = 0.835;
+  const recordRevealEnd = 0.895;
   const shatterEnd = 0.999;
-  const particleFieldStarts = [0.91, 0.925, 0.94, 0.955, 0.968, 0.978];
+  const particleFieldStarts = [0.902, 0.918, 0.934, 0.95, 0.964, 0.976];
   const accentCanvasRgb = (getComputedStyle(document.documentElement).getPropertyValue("--accent-rgb").trim() || "158 232 111")
     .split(/\s+/)
     .slice(0, 3)
@@ -666,10 +666,10 @@ const initKineticHero = () => {
 
   const shredContext = shredLayer instanceof HTMLCanvasElement ? shredLayer.getContext("2d", { alpha: true }) : null;
   const grid = window.innerWidth <= 640
-    ? { columns: 18, rows: 28 }
+    ? { columns: 12, rows: 20 }
     : window.innerWidth <= 980
-      ? { columns: 24, rows: 36 }
-      : { columns: 30, rows: 44 };
+      ? { columns: 16, rows: 24 }
+      : { columns: 22, rows: 30 };
   const pieceCount = prefersReducedMotion || !shredContext ? 0 : grid.columns * grid.rows;
 
   const paperPieces = Array.from({ length: pieceCount }, (_, index) => {
@@ -774,6 +774,7 @@ const initKineticHero = () => {
   let displayedProgress = 0;
   let targetProgress = 0;
   let ticking = false;
+  let heroVisible = true;
 
   const resizeShredCanvas = () => {
     if (!shredContext) return;
@@ -838,7 +839,7 @@ const initKineticHero = () => {
     const receiptFlipX = lerp(isMobile ? 5 : 8, 0, smoothstep(0.02, 0.28, progress));
     const receiptScale = lerp(1, isMobile ? 0.76 : 0.84, parseFlow);
     const cutFlow = smoothstep(shatterStart, shatterComplete, progress);
-    const dissolveFade = smoothstep(shatterStart + 0.035, recordRevealStart - 0.01, progress);
+    const dissolveFade = smoothstep(shatterStart + 0.06, recordRevealEnd + 0.01, progress);
     const receiptOpacity = Math.max(0, 1 - dissolveFade);
     const shadowPeak = Math.sin(clamp01((progress - 0.05) / 0.58) * Math.PI);
     const scannerLock = smoothstep(0.24, 0.34, progress);
@@ -1098,7 +1099,7 @@ const initKineticHero = () => {
 
       const pieceActiveNow = progress >= shatterStart && progress <= shatterEnd;
       const pieceWasActive = latestPieceProgress >= shatterStart && latestPieceProgress <= shatterEnd;
-      const pieceDelta = window.innerWidth <= 640 ? 0.008 : 0.005;
+      const pieceDelta = window.innerWidth <= 640 ? 0.018 : 0.012;
       const shouldFlushPieces = !pieceActiveNow || !Number.isFinite(latestPieceProgress) || !pieceWasActive;
       const shouldStepPieces = pieceActiveNow && Math.abs(progress - latestPieceProgress) >= pieceDelta;
 
@@ -1116,6 +1117,10 @@ const initKineticHero = () => {
   };
 
   const requestRender = () => {
+    if (!heroVisible) {
+      const nextProgress = currentProgress();
+      if (Math.abs(nextProgress - displayedProgress) <= 0.002) return;
+    }
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(render);
@@ -1125,6 +1130,17 @@ const initKineticHero = () => {
   displayedProgress = prefersReducedMotion ? 0.9 : currentProgress();
   targetProgress = displayedProgress;
   render();
+
+  if ("IntersectionObserver" in window) {
+    const heroObserver = new IntersectionObserver(
+      ([entry]) => {
+        heroVisible = Boolean(entry?.isIntersecting);
+        if (heroVisible) requestRender();
+      },
+      { rootMargin: "240px 0px", threshold: 0.01 }
+    );
+    heroObserver.observe(hero);
+  }
 
   window.addEventListener("scroll", requestRender, { passive: true });
   window.addEventListener("resize", () => {
@@ -1141,6 +1157,11 @@ const initReviewScroller = () => {
   const section = document.querySelector("[data-review-scroll]");
   const track = section?.querySelector("[data-review-track]");
   if (!section || !track) return;
+  if (section.classList.contains("readable-rail")) {
+    section.style.setProperty("--review-progress", "0");
+    track.style.setProperty("--review-track-x", "0px");
+    return;
+  }
 
   const clamp01 = (value) => Math.max(0, Math.min(1, value));
   const smoothStep = (value) => value * value * (3 - 2 * value);
@@ -1239,7 +1260,9 @@ const initSmoothAnchors = () => {
       const target = document.querySelector(id);
       if (!target) return;
       event.preventDefault();
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      const headerOffset = document.querySelector(".site-header")?.getBoundingClientRect().height || 0;
+      const top = target.getBoundingClientRect().top + window.scrollY - headerOffset - 18;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
     });
   });
 };
